@@ -1,0 +1,259 @@
+# Celestial Signs - AI Assistant Rules
+# This file optimizes GitHub Copilot (Claude Sonnet 4.5) for this project
+
+## Project Context
+You are helping build "Celestial Signs", a web application that monitors astronomical events and correlates them with biblical eschatological prophecies. The visual experience should match theskylive.com while adding unique prophetic analysis capabilities.
+
+## Core Technology Stack
+- Frontend: Next.js 14 (App Router), TypeScript, React, Catalyst UI, Tailwind CSS
+- 3D/Visualization: Three.js, Cesium.js, D3-Celestial.js
+- Backend: Python 3.11+, FastAPI, SQLAlchemy 2.0
+- Database: PostgreSQL 15 + PostGIS
+- Data Sources: Astroquery (JPL Horizons), Skyfield, czml3
+- Development: Spec-Driven Development (SDD) via spec-kit
+
+## Development Philosophy
+This project follows Spec-Driven Development (SDD), not "vibe coding". Always:
+1. Read `/specify/constitution.md` before generating code
+2. Follow established patterns from existing files
+3. Generate complete, production-ready code (not proof-of-concepts)
+4. Include comprehensive error handling
+5. Add detailed comments explaining "why", not just "what"
+
+## Code Style Requirements
+
+### Python (Backend)
+- Use type hints for ALL function parameters and returns
+- Follow PEP 8 (Black formatting)
+- Use descriptive variable names (no single letters except loop counters)
+- Add docstrings to all public functions (Google style)
+- Handle errors explicitly (no bare `except:` clauses)
+- Use Pydantic models for data validation
+- Prefer async/await for I/O operations
+
+Example function signature:
+```python
+async def fetch_ephemeris(
+    object_name: str,
+    start_time: datetime,
+    end_time: datetime,
+    step_size: str = "1d"
+) -> list[EphemerisData]:
+    """
+    Fetch ephemeris data from JPL Horizons using Astroquery.
+    
+    Args:
+        object_name: Target object (e.g., "Mars", "3I/ATLAS")
+        start_time: Start of query window
+        end_time: End of query window
+        step_size: Time step between data points (e.g., "1d", "1h")
+    
+    Returns:
+        List of ephemeris data points with position vectors
+    
+    Raises:
+        HorizonsAPIError: If API request fails
+        ValidationError: If response data is invalid
+    """
+    # TODO: Implementation here
+```
+
+### TypeScript (Frontend)
+- Use interfaces for all props and data structures
+- Prefer functional components with hooks over class components
+- Use Catalyst UI components for ALL standard UI elements (Button, Input, etc.)
+- Follow Prettier formatting
+- Use descriptive names for event handlers (onClick, onSubmit, not just "handle")
+- Implement proper loading and error states for all async operations
+
+Example component:
+```typescript
+interface SolarSystemViewerProps {
+  initialDate: Date;
+  focusObject?: string;
+  onObjectSelect?: (objectId: string) => void;
+}
+
+export function SolarSystemViewer({
+  initialDate,
+  focusObject,
+  onObjectSelect
+}: SolarSystemViewerProps) {
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  
+  // TODO: Implementation here
+  
+  if (error) {
+    return <ErrorDisplay message={error} />
+  }
+  
+  if (isLoading) {
+    return <LoadingSpinner />
+  }
+  
+  return (
+    // Component JSX
+  )
+}
+```
+
+## Catalyst UI Usage
+ALWAYS use Catalyst components when available. Do NOT use generic HTML elements or other UI libraries for standard UI.
+
+Available Catalyst components (prefer these):
+- Layout: `Navbar`, `Sidebar`, `Divider`
+- Forms: `Button`, `Input`, `Select`, `Checkbox`, `Radio`, `Textarea`
+- Feedback: `Badge`, `Dialog`, `Dropdown`, `Popover`, `Toast`
+- Display: `Table`, `Avatar`, `Card` (if available)
+
+Example:
+```typescript
+import { Button } from '@catalyst/button'
+import { Input } from '@catalyst/input'
+import { Badge } from '@catalyst/badge'
+
+// DO THIS:
+<Button onClick={handleSubmit}>Submit</Button>
+
+// NOT THIS:
+<button className="...">Submit</button>
+```
+
+## Data Source Guidelines
+
+### JPL Horizons API
+- ALWAYS use Astroquery library (`astroquery.jplhorizons`) - never raw HTTP requests
+- The API returns "fake JSON" (text embedded in JSON string) - Astroquery handles parsing
+- Cache results in PostgreSQL with 24-hour TTL
+- Handle connection timeouts gracefully (retry 3 times with exponential backoff)
+
+Example:
+```python
+from astroquery.jplhorizons import Horizons
+
+# TODO: Copilot will generate Horizons query using Astroquery
+obj = Horizons(id='Mars', location='@sun', epochs={'start': '2025-10-25', 'stop': '2025-11-25', 'step': '1d'})
+vec_table = obj.vectors()
+
+# vec_table is an Astropy Table, convert to list of dicts
+vectors = [dict(row) for row in vec_table]
+```
+
+### PostgreSQL + PostGIS
+- Use SQLAlchemy for all database operations (no raw SQL strings)
+- Leverage PostGIS for spatial queries (earthquakes, volcanoes)
+- Add indexes for all foreign keys and frequently queried columns
+- Use UUIDs for primary keys (except theological tables which use SERIAL)
+
+## Theological Framework
+The theological interpretation follows literal, premillennial eschatology. When generating content related to biblical prophecy:
+- Cite scripture accurately (book chapter:verse format)
+- Use neutral, informative language (avoid dogmatic assertions)
+- Reference the `prophecies` and `celestial_signs` tables for authoritative definitions
+- Make clear distinctions between literal and symbolic interpretations
+- Respect the user's theological presuppositions as defined in constitution.md
+
+## Error Handling Patterns
+
+### Backend (FastAPI)
+```python
+from fastapi import HTTPException
+
+try:
+    result = await fetch_data_from_api()
+except ConnectionError:
+    raise HTTPException(
+        status_code=503,
+        detail="External data source unavailable. Please try again later."
+    )
+except ValidationError as e:
+    raise HTTPException(
+        status_code=422,
+        detail=f"Invalid data received: {str(e)}"
+    )
+```
+
+### Frontend (React)
+```typescript
+try {
+  const data = await fetchEphemerisVectors(objectName)
+  setEphemeris(data)
+} catch (error) {
+  console.error('Failed to fetch ephemeris:', error)
+  setError('Unable to load orbital data. Please check your connection.')
+  // Optionally: Report to error tracking service
+}
+```
+
+## Performance Guidelines
+- Frontend bundle size target: < 1MB initial load
+- API response time target: < 300ms for cached data, < 2s for live API calls
+- Three.js scenes must maintain 60 FPS on modern hardware
+- Database queries must use indexes (verify with EXPLAIN ANALYZE)
+- Cache external API responses for 24 hours minimum
+
+## Testing Requirements
+When generating code, also consider:
+- Unit tests for all business logic (backend services)
+- Integration tests for API endpoints
+- Type safety (no `any` in TypeScript, no untyped dicts in Python)
+- Edge cases (empty arrays, null values, API failures)
+
+## File Organization
+Follow the established structure:
+- Frontend components: `/frontend/components/{category}/{ComponentName}.tsx`
+- Backend services: `/backend/app/services/{category}/{service_name}.py`
+- API routes: `/backend/app/api/v1/{resource}.py`
+- Database models: `/backend/app/models/{model_name}.py`
+
+## When Implementing Features
+1. Check if similar code exists (DRY principle)
+2. Look for established patterns in the codebase
+3. Use consistent naming (ephemeris not ephemerides, object_name not objectName in DB)
+4. Add comments for complex algorithms or non-obvious logic
+5. Consider edge cases and error scenarios
+6. Implement proper TypeScript/Python types
+
+## Astronomy-Specific Considerations
+- Dates: Always use ISO 8601 format (UTC timezone)
+- Coordinates: J2000 reference frame by default
+- Units: AU for solar system distances, km for Earth-centric
+- Time: Julian Date (JD) for precise astronomical calculations
+- Always validate celestial object names against known catalogs
+
+## What NOT to Do
+- ❌ Generate dummy/placeholder data in production code
+- ❌ Use `any` type in TypeScript or untyped parameters in Python
+- ❌ Skip error handling ("TODO: add error handling")
+- ❌ Create new UI components when Catalyst equivalent exists
+- ❌ Make direct HTTP requests to JPL APIs (use Astroquery)
+- ❌ Store plain text secrets in code (use environment variables)
+- ❌ Violate the DRY principle (copy-paste code)
+
+## When Asked to Implement a Feature
+1. First, ask yourself: "Is there a spec for this in /specify/specs/?"
+2. If no spec exists, suggest creating one via `/speckit.specify`
+3. Follow the technical plan if one exists
+4. Generate complete, production-ready code
+5. Include proper types, error handling, and comments
+6. Consider the user's workflow (loading states, feedback, errors)
+
+## Copilot-Specific Hints
+When you see comments like:
+```typescript
+// TODO: Copilot will generate the full component implementation
+// This should fetch ephemeris data from the API and render orbital paths
+```
+
+You should:
+1. Read the surrounding context (imports, types, props)
+2. Follow established patterns from similar files
+3. Generate complete, working code (not another TODO)
+4. Match the project's style guidelines
+5. Include appropriate error handling
+
+## Final Reminder
+This is a complex, multi-module application with scientific accuracy requirements. Quality over speed. Production-ready code over quick prototypes. Comprehensive error handling over happy-path-only implementations.
+
+When in doubt, ask the user for clarification rather than making assumptions about requirements or architectural decisions.
