@@ -32,56 +32,186 @@ const PLANETS = {
     a0: 0.38709927, e0: 0.20563593, i0: 7.00497902,
     ml0: 252.2503235, lp0: 77.45779628, o0: 48.33076593,
     ad: 0.00000037, ed: 0.00001906, id: -0.00594749,
-    mld: 149472.67411175, lpd: 0.16047689, od: -0.12534081
+    mld: 149472.67411175, lpd: 0.16047689, od: -0.12534081,
+    type: 'planet' as const
   },
   venus: {
     name: "Venus",
     a0: 0.72333566, e0: 0.00677672, i0: 3.39467605,
     ml0: 181.9790995, lp0: 131.60246718, o0: 76.67984255,
     ad: 0.00000039, ed: -0.00004107, id: -0.00007889,
-    mld: 58517.81538729, lpd: 0.00268329, od: -0.27769418
+    mld: 58517.81538729, lpd: 0.00268329, od: -0.27769418,
+    type: 'planet' as const
   },
   earth: {
     name: "Earth",
     a0: 1.00000261, e0: 0.01671123, i0: -0.00001531,
     ml0: 100.46457166, lp0: 102.93768193, o0: 0,
     ad: 0.00000562, ed: -0.00004392, id: -0.01294668,
-    mld: 35999.37244981, lpd: 0.32327364, od: 0
+    mld: 35999.37244981, lpd: 0.32327364, od: 0,
+    type: 'planet' as const
   },
   mars: {
     name: "Mars",
     a0: 1.52371034, e0: 0.09339410, i0: 1.84969142,
     ml0: -4.55343205, lp0: -23.94362959, o0: 49.55953891,
     ad: 0.00001847, ed: 0.00007882, id: -0.00813131,
-    mld: 19140.30268499, lpd: 0.44441088, od: -0.29257343
+    mld: 19140.30268499, lpd: 0.44441088, od: -0.29257343,
+    type: 'planet' as const
   },
   jupiter: {
     name: "Jupiter",
     a0: 5.20288700, e0: 0.04838624, i0: 1.30439695,
     ml0: 34.39644051, lp0: 14.72847983, o0: 100.47390909,
     ad: -0.00011607, ed: -0.00013253, id: -0.00183714,
-    mld: 3034.74612775, lpd: 0.21252668, od: 0.20469106
+    mld: 3034.74612775, lpd: 0.21252668, od: 0.20469106,
+    type: 'planet' as const
   },
   saturn: {
     name: "Saturn",
     a0: 9.53667594, e0: 0.05386179, i0: 2.48599187,
     ml0: 49.95424423, lp0: 92.59887831, o0: 113.66242448,
     ad: -0.00125060, ed: -0.00050991, id: 0.00193609,
-    mld: 1222.49362201, lpd: -0.41897216, od: -0.28867794
+    mld: 1222.49362201, lpd: -0.41897216, od: -0.28867794,
+    type: 'planet' as const
   },
   uranus: {
     name: "Uranus",
     a0: 19.18916464, e0: 0.04725744, i0: 0.77263783,
     ml0: 313.23810451, lp0: 170.95427630, o0: 74.01692503,
     ad: -0.00196176, ed: -0.00004397, id: -0.00242939,
-    mld: 428.48202785, lpd: 0.40805281, od: 0.04240589
+    mld: 428.48202785, lpd: 0.40805281, od: 0.04240589,
+    type: 'planet' as const
   },
   neptune: {
     name: "Neptune",
     a0: 30.06992276, e0: 0.00859048, i0: 1.77004347,
     ml0: -55.12002969, lp0: 44.96476227, o0: 131.78422574,
     ad: 0.00026291, ed: 0.00005105, id: 0.00035372,
-    mld: 218.45945325, lpd: -0.32241464, od: -0.00508664
+    mld: 218.45945325, lpd: -0.32241464, od: -0.00508664,
+    type: 'planet' as const
+  }
+};
+
+// Notable asteroids in the main belt
+const ASTEROIDS = {
+  ceres: {
+    name: "Ceres",
+    a0: 2.7654, e0: 0.0785, i0: 10.5935,
+    ml0: 113.4106, lp0: 73.1485, o0: 80.2679,
+    ad: 0.0000, ed: 0.0000, id: 0.0000,
+    mld: 0.2141, lpd: 0.0000, od: 0.0000,
+    type: 'asteroid' as const,
+    diameter: 939.4 // km
+  },
+  vesta: {
+    name: "Vesta",
+    a0: 2.3618, e0: 0.0887, i0: 7.1404,
+    ml0: 151.1985, lp0: 103.8514, o0: 150.7287,
+    ad: 0.0000, ed: 0.0000, id: 0.0000,
+    mld: 0.2715, lpd: 0.0000, od: 0.0000,
+    type: 'asteroid' as const,
+    diameter: 525.4
+  },
+  pallas: {
+    name: "Pallas",
+    a0: 2.7725, e0: 0.2308, i0: 34.8362,
+    ml0: 78.2280, lp0: 309.1073, o0: 173.0801,
+    ad: 0.0000, ed: 0.0000, id: 0.0000,
+    mld: 0.2135, lpd: 0.0000, od: 0.0000,
+    type: 'asteroid' as const,
+    diameter: 512.0
+  },
+  hygiea: {
+    name: "Hygiea",
+    a0: 3.1415, e0: 0.1125, i0: 3.8317,
+    ml0: 283.2027, lp0: 312.3150, o0: 283.2027,
+    ad: 0.0000, ed: 0.0000, id: 0.0000,
+    mld: 0.1674, lpd: 0.0000, od: 0.0000,
+    type: 'asteroid' as const,
+    diameter: 407.1
+  },
+  eunomia: {
+    name: "Eunomia",
+    a0: 2.6436, e0: 0.1862, i0: 11.7397,
+    ml0: 98.4822, lp0: 293.1407, o0: 98.4822,
+    ad: 0.0000, ed: 0.0000, id: 0.0000,
+    mld: 0.2260, lpd: 0.0000, od: 0.0000,
+    type: 'asteroid' as const,
+    diameter: 268.0
+  },
+  juno: {
+    name: "Juno",
+    a0: 2.6707, e0: 0.2569, i0: 12.9818,
+    ml0: 33.0772, lp0: 169.8699, o0: 247.7824,
+    ad: 0.0000, ed: 0.0000, id: 0.0000,
+    mld: 0.2238, lpd: 0.0000, od: 0.0000,
+    type: 'asteroid' as const,
+    diameter: 233.0
+  }
+};
+
+// Notable comets and interstellar objects
+const COMETS = {
+  halley: {
+    name: "Halley's Comet",
+    a0: 17.8341, e0: 0.9671, i0: 162.2627,
+    ml0: 38.3843, lp0: 111.3325, o0: 58.4201,
+    ad: 0.0000, ed: 0.0000, id: 0.0000,
+    mld: 0.0291, lpd: 0.0000, od: 0.0000,
+    type: 'comet' as const,
+    period: 75.3 // years
+  },
+  hale_bopp: {
+    name: "Hale-Bopp",
+    a0: 186.36, e0: 0.9951, i0: 89.43,
+    ml0: 130.59, lp0: 282.47, o0: 130.59,
+    ad: 0.0000, ed: 0.0000, id: 0.0000,
+    mld: 0.0027, lpd: 0.0000, od: 0.0000,
+    type: 'comet' as const,
+    period: 2380 // years
+  },
+  oumuamua: {
+    name: "1I/'Oumuamua",
+    a0: 1.2016, e0: 1.1995, i0: 122.69,
+    ml0: 24.62, lp0: 241.64, o0: 24.62,
+    ad: 0.0000, ed: 0.0000, id: 0.0000,
+    mld: 0.2559, lpd: 0.0000, od: 0.0000,
+    type: 'interstellar' as const,
+    hyperbolic: true
+  },
+  borisov: {
+    name: "2I/Borisov",
+    a0: 3.156, e0: 3.357, i0: 44.05,
+    ml0: 209.13, lp0: 308.01, o0: 209.13,
+    ad: 0.0000, ed: 0.0000, id: 0.0000,
+    mld: 0.1558, lpd: 0.0000, od: 0.0000,
+    type: 'interstellar' as const,
+    hyperbolic: true
+  }
+};
+
+// Near-Earth Objects (sample)
+const NEOS = {
+  apophis: {
+    name: "Apophis",
+    a0: 0.9224, e0: 0.1911, i0: 3.3314,
+    ml0: 286.029, lp0: 126.422, o0: 204.446,
+    ad: 0.0000, ed: 0.0000, id: 0.0000,
+    mld: 0.8870, lpd: 0.0000, od: 0.0000,
+    type: 'neo' as const,
+    pha: true, // Potentially Hazardous Asteroid
+    diameter: 0.37
+  },
+  ryugu: {
+    name: "Ryugu",
+    a0: 1.190, e0: 0.190, i0: 5.884,
+    ml0: 211.468, lp0: 211.468, o0: 211.468,
+    ad: 0.0000, ed: 0.0000, id: 0.0000,
+    mld: 0.5529, lpd: 0.0000, od: 0.0000,
+    type: 'neo' as const,
+    pha: false,
+    diameter: 0.92
   }
 };
 
@@ -98,15 +228,35 @@ const PLANET_COLORS = {
   sun: 0xFFFFFF
 };
 
+const ASTEROID_COLORS = {
+  ceres: 0x8B7355,    // Brownish
+  vesta: 0xA0522D,    // Sienna
+  pallas: 0x696969,   // Dim gray
+  hygiea: 0x8B4513,   // Saddle brown
+  eunomia: 0x708090,  // Slate gray
+  juno: 0x2F4F4F,     // Dark slate gray
+  default: 0x696969   // Default asteroid gray
+};
+
+const COMET_COLORS = {
+  halley: 0xE6E6FA,   // Lavender (icy blue-white)
+  hale_bopp: 0xF0F8FF, // Alice blue
+  oumuamua: 0xFFD700, // Gold (metallic)
+  borisov: 0xFFE4B5,  // Moccasin
+  default: 0xE6E6FA   // Default comet color
+};
+
+const NEO_COLORS = {
+  apophis: 0xFF4500,  // Orange red (hazardous)
+  ryugu: 0x8B4513,    // Saddle brown
+  default: 0xFF6347   // Tomato (warning red)
+};
+
 const ORBIT_COLORS = {
-  mercury: 0x967E76,
-  venus: 0x9CD4C2,
-  earth: 0x5B8CDF,
-  mars: 0xD33826,
-  jupiter: 0xB2B767,
-  saturn: 0xDE7C72,
-  uranus: 0xB7C0DF,
-  neptune: 0x9A8BB3
+  ...PLANET_COLORS,
+  ...ASTEROID_COLORS,
+  ...COMET_COLORS,
+  ...NEO_COLORS
 };
 
 // Props interface for enhanced controls
@@ -558,17 +708,47 @@ function addPlanets(
     neptune: 0.58
   };
   
-  Object.entries(PLANETS).forEach(([key, planet]) => {
+  // Asteroid sizes (much smaller, scaled by diameter)
+  const asteroidSizes: { [key: string]: number } = {
+    ceres: 0.08,    // Largest asteroid
+    vesta: 0.06,
+    pallas: 0.05,
+    hygiea: 0.04,
+    eunomia: 0.03,
+    juno: 0.03,
+    default: 0.02   // Small asteroids
+  };
+  
+  // Comet sizes (variable, often elongated)
+  const cometSizes: { [key: string]: number } = {
+    halley: 0.04,
+    hale_bopp: 0.06,
+    oumuamua: 0.02,
+    borisov: 0.03,
+    default: 0.03
+  };
+  
+  // NEO sizes (small but potentially hazardous)
+  const neoSizes: { [key: string]: number } = {
+    apophis: 0.025,
+    ryugu: 0.030,
+    default: 0.020
+  };
+  
+  // Combine all celestial objects
+  const allObjects = { ...PLANETS, ...ASTEROIDS, ...COMETS, ...NEOS };
+  
+  Object.entries(allObjects).forEach(([key, objectData]) => {
     // Update orbital elements for current time
-    const elements = updateMeanElements(currentTime, planet);
+    const elements = updateMeanElements(currentTime, objectData);
     
     // Create orbit
     const orbitGeometry = getEllipticalOrbitGeometry(elements.a, elements.e);
     const orbitMaterial = new THREE.LineBasicMaterial({
-      color: ORBIT_COLORS[key as keyof typeof ORBIT_COLORS],
-      opacity: 0.8,
+      color: ORBIT_COLORS[key as keyof typeof ORBIT_COLORS] || 0x666666,
+      opacity: 0.6,
       transparent: true,
-      linewidth: 2
+      linewidth: objectData.type === 'planet' ? 2 : 1
     });
     const orbit = new THREE.LineSegments(orbitGeometry, orbitMaterial);
     
@@ -580,60 +760,116 @@ function addPlanets(
     scene.add(orbit);
     orbitsRef.current.set(key, orbit);
     
-    // Create planet as proper 3D sphere
-    const planetRadius = planetSizes[key] || 0.3;
-    const planetGeometry = new THREE.SphereGeometry(planetRadius, 32, 32);
+    // Determine size based on object type
+    let objectSize = 0.1; // default
+    let objectColor = 0xFFFFFF; // default white
     
-    // Luminous material with emissive properties
-    const planetMaterial = new THREE.MeshStandardMaterial({
-      color: PLANET_COLORS[key as keyof typeof PLANET_COLORS],
-      emissive: PLANET_COLORS[key as keyof typeof PLANET_COLORS],
-      emissiveIntensity: 0.5, // Self-illuminated planets
-      metalness: 0.3,
-      roughness: 0.7
-    });
+    switch (objectData.type) {
+      case 'planet':
+        objectSize = planetSizes[key] || 0.3;
+        objectColor = PLANET_COLORS[key as keyof typeof PLANET_COLORS] || 0xFFFFFF;
+        break;
+      case 'asteroid':
+        objectSize = asteroidSizes[key] || asteroidSizes.default;
+        objectColor = ASTEROID_COLORS[key as keyof typeof ASTEROID_COLORS] || ASTEROID_COLORS.default;
+        break;
+      case 'comet':
+        objectSize = cometSizes[key] || cometSizes.default;
+        objectColor = COMET_COLORS[key as keyof typeof COMET_COLORS] || COMET_COLORS.default;
+        break;
+      case 'neo':
+      case 'interstellar':
+        objectSize = neoSizes[key] || neoSizes.default;
+        objectColor = NEO_COLORS[key as keyof typeof NEO_COLORS] || NEO_COLORS.default;
+        break;
+    }
     
-    const planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
-    planetMesh.name = key;
+    // Create object as proper 3D mesh based on type
+    let objectGeometry: THREE.BufferGeometry;
+    let objectMaterial: THREE.Material;
+    
+    if (objectData.type === 'comet') {
+      // Comets are elongated ellipsoids
+      objectGeometry = new THREE.SphereGeometry(objectSize * 0.7, 16, 16);
+      objectGeometry.scale(1, 2, 1); // Make it elongated
+      objectMaterial = new THREE.MeshStandardMaterial({
+        color: objectColor,
+        emissive: objectColor,
+        emissiveIntensity: 0.3,
+        metalness: 0.1,
+        roughness: 0.9
+      });
+    } else {
+      // Planets, asteroids, NEOs are spheres
+      objectGeometry = new THREE.SphereGeometry(objectSize, objectData.type === 'planet' ? 32 : 16, objectData.type === 'planet' ? 32 : 16);
+      objectMaterial = new THREE.MeshStandardMaterial({
+        color: objectColor,
+        emissive: objectColor,
+        emissiveIntensity: objectData.type === 'planet' ? 0.5 : 0.2,
+        metalness: objectData.type === 'asteroid' ? 0.3 : 0.1,
+        roughness: objectData.type === 'asteroid' ? 0.7 : 0.8
+      });
+    }
+    
+    const objectMesh = new THREE.Mesh(objectGeometry, objectMaterial);
+    objectMesh.name = key;
     
     // Calculate initial position
     const position = getPlanetPosition(currentTime, elements);
-    planetMesh.position.set(position.x, position.y, position.z);
+    objectMesh.position.set(position.x, position.y, position.z);
     
-    scene.add(planetMesh);
-    planetsRef.current.set(key, planetMesh);
+    scene.add(objectMesh);
+    planetsRef.current.set(key, objectMesh);
 
-    // Add subtle glow effect for each planet
-    const glowGeometry = new THREE.SphereGeometry(planetRadius * 1.3, 16, 16);
-    const glowMaterial = new THREE.MeshBasicMaterial({
-      color: PLANET_COLORS[key as keyof typeof PLANET_COLORS],
-      transparent: true,
-      opacity: 0.2,
-      blending: THREE.AdditiveBlending,
-      side: THREE.BackSide
-    });
-    const glow = new THREE.Mesh(glowGeometry, glowMaterial);
-    planetMesh.add(glow); // Attach glow to planet
+    // Add glow effect for planets and bright objects
+    if (objectData.type === 'planet' || objectData.type === 'comet') {
+      const glowGeometry = new THREE.SphereGeometry(objectSize * 1.3, 16, 16);
+      const glowMaterial = new THREE.MeshBasicMaterial({
+        color: objectColor,
+        transparent: true,
+        opacity: 0.15,
+        blending: THREE.AdditiveBlending,
+        side: THREE.BackSide
+      });
+      const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+      objectMesh.add(glow);
+    }
 
-    // Create CSS2D label
-    const labelDiv = document.createElement('div');
-    labelDiv.className = 'planet-label';
-    labelDiv.textContent = planet.name;
-    labelDiv.style.color = '#' + PLANET_COLORS[key as keyof typeof PLANET_COLORS].toString(16).padStart(6, '0');
-    labelDiv.style.fontFamily = 'Arial, sans-serif';
-    labelDiv.style.fontSize = '12px';
-    labelDiv.style.fontWeight = 'bold';
-    labelDiv.style.padding = '2px 6px';
-    labelDiv.style.background = 'rgba(0, 0, 0, 0.7)';
-    labelDiv.style.borderRadius = '3px';
-    labelDiv.style.pointerEvents = 'none';
-    labelDiv.style.userSelect = 'none';
+    // Create CSS2D label (only for planets and notable objects)
+    const shouldShowLabel = objectData.type === 'planet' || 
+                           ['ceres', 'vesta', 'halley', 'apophis', 'oumuamua'].includes(key);
+    
+    if (shouldShowLabel) {
+      const labelDiv = document.createElement('div');
+      labelDiv.className = 'celestial-label';
+      labelDiv.textContent = objectData.name;
+      
+      // Color code labels by type
+      let labelColor = '#ffffff';
+      switch (objectData.type) {
+        case 'planet': labelColor = '#4a90e2'; break;
+        case 'asteroid': labelColor = '#8b7355'; break;
+        case 'comet': labelColor = '#e6e6fa'; break;
+        case 'neo': labelColor = '#ff4500'; break;
+        case 'interstellar': labelColor = '#ffd700'; break;
+      }
+      
+      labelDiv.style.color = labelColor;
+      labelDiv.style.fontFamily = 'Arial, sans-serif';
+      labelDiv.style.fontSize = objectData.type === 'planet' ? '12px' : '10px';
+      labelDiv.style.fontWeight = 'bold';
+      labelDiv.style.padding = '2px 6px';
+      labelDiv.style.background = 'rgba(0, 0, 0, 0.7)';
+      labelDiv.style.borderRadius = '3px';
+      labelDiv.style.pointerEvents = 'none';
+      labelDiv.style.userSelect = 'none';
 
-    const label = new CSS2DObject(labelDiv);
-    label.position.set(0, planetRadius + 0.5, 0); // Offset above planet based on size
-    label.visible = showLabels;
-    planetMesh.add(label);
-    labelsRef.current.set(key, label);
+      const label = new CSS2DObject(labelDiv);
+      label.position.set(0, objectSize + 0.5, 0);
+      label.visible = showLabels;
+      objectMesh.add(label);
+      labelsRef.current.set(key, label);
+    }
   });
 }
 
@@ -750,18 +986,55 @@ function updatePlanetPositions(
   currentTime: number,
   planetsRef: React.MutableRefObject<Map<string, THREE.Mesh>> // Changed to Mesh
 ) {
-  Object.entries(PLANETS).forEach(([key, planetData]) => {
-    const planet = planetsRef.current.get(key);
-    if (!planet) return;
+  // Combine all celestial objects
+  const allObjects = { ...PLANETS, ...ASTEROIDS, ...COMETS, ...NEOS };
+  
+  Object.entries(allObjects).forEach(([key, objectData]) => {
+    const object = planetsRef.current.get(key);
+    if (!object) return;
 
     // Recalculate orbital elements for current time
-    const elements = updateMeanElements(currentTime, planetData);
+    const elements = updateMeanElements(currentTime, objectData);
     
     // Get new position
     const position = getPlanetPosition(currentTime, elements);
     
-    // Update planet position
-    planet.position.set(position.x, position.y, position.z);
+    // Update object position
+    object.position.set(position.x, position.y, position.z);
+    
+    // Update label position if it exists (for labeled objects)
+    const shouldHaveLabel = objectData.type === 'planet' || 
+                           ['ceres', 'vesta', 'halley', 'apophis', 'oumuamua'].includes(key);
+    if (shouldHaveLabel) {
+      // Get size for label offset
+      let objectSize = 0.1;
+      switch (objectData.type) {
+        case 'planet':
+          const planetSizes = { mercury: 0.15, venus: 0.35, earth: 0.38, mars: 0.20, jupiter: 1.2, saturn: 1.0, uranus: 0.6, neptune: 0.58 };
+          objectSize = planetSizes[key as keyof typeof planetSizes] || 0.3;
+          break;
+        case 'asteroid':
+          const asteroidSizes = { ceres: 0.08, vesta: 0.06, pallas: 0.05, hygiea: 0.04, eunomia: 0.03, juno: 0.03, default: 0.02 };
+          objectSize = asteroidSizes[key as keyof typeof asteroidSizes] || asteroidSizes.default;
+          break;
+        case 'comet':
+          const cometSizes = { halley: 0.04, hale_bopp: 0.06, oumuamua: 0.02, borisov: 0.03, default: 0.03 };
+          objectSize = cometSizes[key as keyof typeof cometSizes] || cometSizes.default;
+          break;
+        case 'neo':
+        case 'interstellar':
+          const neoSizes = { apophis: 0.025, ryugu: 0.030, default: 0.020 };
+          objectSize = neoSizes[key as keyof typeof neoSizes] || neoSizes.default;
+          break;
+      }
+      
+      // Find and update label position
+      object.children.forEach((child) => {
+        if (child instanceof CSS2DObject) {
+          child.position.set(0, objectSize + 0.5, 0);
+        }
+      });
+    }
   });
 }
 

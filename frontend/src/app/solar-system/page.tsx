@@ -369,8 +369,26 @@ export default function SolarSystemPage() {
 
           <div className="space-y-3 text-sm">
             <div className="rounded-lg bg-zinc-950/50 p-3">
-              <p className="text-xs text-zinc-400 mb-1">Planets Tracked</p>
-              <p className="text-2xl font-bold text-blue-400">8</p>
+              <p className="text-xs text-zinc-400 mb-1">Celestial Objects Tracked</p>
+              <div className="grid grid-cols-2 gap-2 text-center">
+                <div>
+                  <p className="text-lg font-bold text-blue-400">8</p>
+                  <p className="text-xs text-zinc-500">Planets</p>
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-amber-400">6</p>
+                  <p className="text-xs text-zinc-500">Asteroids</p>
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-cyan-400">4</p>
+                  <p className="text-xs text-zinc-500">Comets</p>
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-red-400">2</p>
+                  <p className="text-xs text-zinc-500">NEOs</p>
+                </div>
+              </div>
+              <p className="text-center text-xs text-zinc-400 mt-2">Total: 20 objects</p>
             </div>
 
             <div className="rounded-lg bg-zinc-950/50 p-3">
@@ -392,8 +410,9 @@ export default function SolarSystemPage() {
               <ul className="space-y-1 text-xs text-zinc-500">
                 <li>• Pure THREE.js rendering</li>
                 <li>• No React Three Fiber overhead</li>
-                <li>• Sprite-based planets (lightweight)</li>
+                <li>• Multi-object tracking (20+ objects)</li>
                 <li>• Keplerian mechanics (accurate)</li>
+                <li>• Type-specific visual styling</li>
                 <li>• Scene rotation (TheSkyLive style)</li>
               </ul>
             </div>
