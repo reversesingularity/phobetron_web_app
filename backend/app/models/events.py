@@ -7,7 +7,7 @@ from sqlalchemy import (
     CheckConstraint, Index, Text
 )
 from sqlalchemy.dialects.postgresql import UUID, ARRAY
-from geoalchemy2 import Geography
+# Removed geoalchemy2 - PostGIS not available on Railway PostgreSQL
 from app.db.base import Base
 
 
@@ -37,9 +37,11 @@ class Earthquakes(Base):
     magnitude_type = Column(String(10), nullable=True,
                            comment="Type: Mw, ML, Ms, etc.")
     
-    # Location - PostGIS geography point (lat/lon)
-    location = Column(Geography(geometry_type='POINT', srid=4326), nullable=False,
-                     comment="Geographic location (WGS84)")
+    # Location - Decimal coordinates (no PostGIS required)
+    latitude = Column(Float, nullable=False,
+                     comment="Latitude in decimal degrees (-90 to 90)")
+    longitude = Column(Float, nullable=False,
+                      comment="Longitude in decimal degrees (-180 to 180)")
     
     # Depth
     depth_km = Column(Float, nullable=True,
@@ -59,9 +61,13 @@ class Earthquakes(Base):
         CheckConstraint('magnitude > 0', name='ck_earthquake_magnitude_positive'),
         CheckConstraint('depth_km IS NULL OR depth_km >= 0',
                        name='ck_earthquake_depth_nonnegative'),
+        CheckConstraint('latitude >= -90 AND latitude <= 90',
+                       name='ck_earthquake_latitude_range'),
+        CheckConstraint('longitude >= -180 AND longitude <= 180',
+                       name='ck_earthquake_longitude_range'),
         Index('idx_earthquake_time', 'event_time'),
         Index('idx_earthquake_magnitude', 'magnitude'),
-        Index('idx_earthquake_location', 'location', postgresql_using='gist'),
+        Index('idx_earthquake_coordinates', 'latitude', 'longitude'),
     )
     
     def __repr__(self):
@@ -226,9 +232,11 @@ class VolcanicActivity(Base):
     eruption_end = Column(DateTime, nullable=True,
                          comment="End time of eruption (null if ongoing)")
     
-    # Location - PostGIS geography point (lat/lon)
-    location = Column(Geography(geometry_type='POINT', srid=4326), nullable=False,
-                     comment="Geographic location (WGS84)")
+    # Location - Decimal coordinates (no PostGIS required)
+    latitude = Column(Float, nullable=False,
+                     comment="Latitude in decimal degrees (-90 to 90)")
+    longitude = Column(Float, nullable=False,
+                      comment="Longitude in decimal degrees (-180 to 180)")
     
     # Eruption characteristics
     vei = Column(Integer, nullable=True, index=True,
@@ -253,10 +261,14 @@ class VolcanicActivity(Base):
                        name='ck_volcanic_vei_range'),
         CheckConstraint('plume_height_km IS NULL OR plume_height_km >= 0',
                        name='ck_volcanic_plume_nonnegative'),
+        CheckConstraint('latitude >= -90 AND latitude <= 90',
+                       name='ck_volcanic_latitude_range'),
+        CheckConstraint('longitude >= -180 AND longitude <= 180',
+                       name='ck_volcanic_longitude_range'),
         Index('idx_volcanic_name', 'volcano_name'),
         Index('idx_volcanic_start', 'eruption_start'),
         Index('idx_volcanic_vei', 'vei'),
-        Index('idx_volcanic_location', 'location', postgresql_using='gist'),
+        Index('idx_volcanic_coordinates', 'latitude', 'longitude'),
     )
     
     def __repr__(self):
@@ -292,9 +304,11 @@ class Hurricane(Base):
     dissipation_date = Column(DateTime, nullable=True,
                              comment="Storm dissipation timestamp (null if ongoing)")
     
-    # Location - PostGIS geography point (lat/lon)
-    peak_location = Column(Geography(geometry_type='POINT', srid=4326), nullable=False,
-                          comment="Location of peak intensity (WGS84)")
+    # Location - Decimal coordinates (no PostGIS required)
+    peak_latitude = Column(Float, nullable=False,
+                          comment="Latitude of peak intensity in decimal degrees (-90 to 90)")
+    peak_longitude = Column(Float, nullable=False,
+                           comment="Longitude of peak intensity in decimal degrees (-180 to 180)")
     
     # Intensity metrics
     max_sustained_winds_kph = Column(Float, nullable=True,
@@ -335,11 +349,15 @@ class Hurricane(Base):
                        name='ck_hurricane_category_range'),
         CheckConstraint('fatalities IS NULL OR fatalities >= 0',
                        name='ck_hurricane_fatalities_nonnegative'),
+        CheckConstraint('peak_latitude >= -90 AND peak_latitude <= 90',
+                       name='ck_hurricane_latitude_range'),
+        CheckConstraint('peak_longitude >= -180 AND peak_longitude <= 180',
+                       name='ck_hurricane_longitude_range'),
         Index('idx_hurricane_name', 'storm_name'),
         Index('idx_hurricane_formation', 'formation_date'),
         Index('idx_hurricane_category', 'category'),
         Index('idx_hurricane_season', 'season'),
-        Index('idx_hurricane_location', 'peak_location', postgresql_using='gist'),
+        Index('idx_hurricane_coordinates', 'peak_latitude', 'peak_longitude'),
     )
     
     def __repr__(self):
@@ -363,9 +381,11 @@ class Tsunami(Base):
     event_date = Column(DateTime, nullable=False, index=True,
                        comment="Tsunami event timestamp")
     
-    # Location - PostGIS geography point (lat/lon)
-    source_location = Column(Geography(geometry_type='POINT', srid=4326), nullable=False,
-                            comment="Tsunami source epicenter (WGS84)")
+    # Location - Decimal coordinates (no PostGIS required)
+    source_latitude = Column(Float, nullable=False,
+                            comment="Tsunami source latitude in decimal degrees (-90 to 90)")
+    source_longitude = Column(Float, nullable=False,
+                             comment="Tsunami source longitude in decimal degrees (-180 to 180)")
     
     # Source characteristics
     source_type = Column(String(100), nullable=False, index=True,
@@ -416,10 +436,14 @@ class Tsunami(Base):
                        name='ck_tsunami_fatalities_nonnegative'),
         CheckConstraint("source_type IN ('EARTHQUAKE', 'VOLCANIC', 'LANDSLIDE', 'METEORITE', 'UNKNOWN')",
                        name='ck_tsunami_source_type'),
+        CheckConstraint('source_latitude >= -90 AND source_latitude <= 90',
+                       name='ck_tsunami_latitude_range'),
+        CheckConstraint('source_longitude >= -180 AND source_longitude <= 180',
+                       name='ck_tsunami_longitude_range'),
         Index('idx_tsunami_date', 'event_date'),
         Index('idx_tsunami_source', 'source_type'),
         Index('idx_tsunami_intensity', 'intensity_scale'),
-        Index('idx_tsunami_location', 'source_location', postgresql_using='gist'),
+        Index('idx_tsunami_coordinates', 'source_latitude', 'source_longitude'),
     )
     
     def __repr__(self):
