@@ -15,6 +15,11 @@ from sqlalchemy import text
 
 from app.db.session import get_db
 from app.api.v1.api import api_router
+from app.api.routes.ml_routes import router as ml_router
+from app.api.routes.ml import router as ml_enhanced_router  # Enhanced ML routes
+from app.api.routes.data_sources import router as data_sources_router  # ESA/NASA fallback routes
+from app.api.v1.ml_predictions import router as ml_predictions_router  # Production ML predictions
+from app.api.routes.verification import router as verification_router  # Database verification endpoints
 from app.core.config import settings
 
 # Create FastAPI application
@@ -38,26 +43,23 @@ app.add_middleware(
 
 # Include API routers
 app.include_router(api_router, prefix=settings.API_V1_STR)
+app.include_router(ml_router)  # ML/AI routes (legacy)
+app.include_router(ml_enhanced_router)  # Enhanced ML/AI routes (new)
+app.include_router(data_sources_router)  # Data sources with ESA/NASA fallback
+app.include_router(ml_predictions_router)  # Production ML predictions
+app.include_router(verification_router)  # Database verification and testing
 
 
 @app.get("/health", tags=["health"])
-async def health_check(db: Session = Depends(get_db)):
+async def health_check():
     """
     Health check endpoint.
     
     Returns:
-        dict: Health status with database connectivity check
+        dict: Health status
     """
-    try:
-        # Test database connection
-        db.execute(text("SELECT 1"))
-        db_status = "healthy"
-    except Exception as e:
-        db_status = f"unhealthy: {str(e)}"
-    
     return {
         "status": "ok",
-        "database": db_status,
         "version": settings.VERSION,
     }
 

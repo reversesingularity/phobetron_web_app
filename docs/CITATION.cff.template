@@ -1,0 +1,85 @@
+cff-version: 1.2.0
+message: "If you use this software in your research, please cite it as below."
+type: software
+title: "Phobetron: Biblical Prophecy & Celestial Pattern Detection System"
+abstract: >-
+  Phobetron is the world's first integration of biblical prophecy analysis, 
+  NASA-grade astronomical precision tracking, and machine learning correlation 
+  models for seismos (σεισμός) natural disasters. The system combines real-time 
+  3D solar system visualization, Hebrew calendar integration, and four trained 
+  ML models achieving 75%+ accuracy in detecting patterns between celestial 
+  events and terrestrial disasters (earthquakes, volcanic eruptions, hurricanes, 
+  tsunamis) based on Greek biblical terminology.
+authors:
+  - family-names: "MODINA"
+    given-names: "CHRIS"
+    email: "cmodina70@kermangildpublishing.org"
+    affiliation: "Independent Research"
+repository-code: "https://github.com/reversesingularity/phobetron_web_app"
+url: "https://reversesingularity.github.io/phobetron_web_app/"
+keywords:
+  - biblical prophecy
+  - eschatology
+  - astronomical tracking
+  - machine learning
+  - natural disasters
+  - seismology
+  - celestial events
+  - pattern detection
+  - Hebrew calendar
+  - three-body problem
+  - hyperbolic orbits
+  - disaster correlation
+  - Greek biblical terminology
+license: MIT
+version: 1.0.0
+date-released: "2025-11-08"
+# NOTE: Add DOI after Zenodo assignment (uncomment and replace XXXXXXX):
+# identifiers:
+#   - type: doi
+#     value: "10.5281/zenodo.XXXXXXX"
+#     description: "Zenodo DOI for software citation"
+preferred-citation:
+  type: software
+  title: "Phobetron: A Machine Learning Approach to Celestial-Terrestrial Correlation Analysis Based on Biblical Eschatology"
+  authors:
+    - family-names: "MODINA"
+      given-names: "CHRIS"
+  year: 2025
+  url: "https://reversesingularity.github.io/phobetron_web_app/"
+  license: MIT
+  keywords:
+    - biblical prophecy
+    - machine learning
+    - astronomical tracking
+    - seismos disasters
+    - pattern detection
+references:
+  - type: article
+    title: "Machine Learning for Celestial Event Detection"
+    scope: "ML correlation models implemented in this software"
+  - type: book
+    title: "The Holy Bible, New International Version"
+    scope: "Biblical foundation for seismos interpretation (Matthew 24:7, Revelation 6:12, Luke 21:25)"
+    publisher: "Zondervan"
+    year: 2011
+  - type: database
+    title: "NASA JPL Horizons System"
+    scope: "Astronomical ephemeris data source"
+    url: "https://ssd.jpl.nasa.gov/horizons/"
+  - type: database
+    title: "USGS Earthquake Hazards Program"
+    scope: "Earthquake data source"
+    url: "https://earthquake.usgs.gov/"
+  - type: database
+    title: "Smithsonian Institution Global Volcanism Program"
+    scope: "Volcanic eruption data source"
+    url: "https://volcano.si.edu/"
+  - type: database
+    title: "NOAA National Hurricane Center"
+    scope: "Hurricane data source"
+    url: "https://www.nhc.noaa.gov/"
+  - type: database
+    title: "NOAA National Geophysical Data Center"
+    scope: "Tsunami data source"
+    url: "https://www.ngdc.noaa.gov/hazard/tsu_db.shtml"

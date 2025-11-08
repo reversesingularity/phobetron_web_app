@@ -18,17 +18,19 @@ interface MainLayoutProps {
 
 export default function MainLayout({ children, title, subtitle }: MainLayoutProps) {
   return (
-    <div className="min-h-screen bg-zinc-950">
+    <div className="min-h-screen bg-transparent">
       {/* Sidebar */}
       <Sidebar />
 
-      {/* Main Content Area */}
-      <div className="pl-64">
-        {/* Top Navigation */}
-        <TopNavbar title={title} subtitle={subtitle} />
+      {/* Main Content Area - Responsive padding */}
+      <div className="lg:pl-64">
+        {/* Top Navigation - Responsive padding for mobile menu button */}
+        <div className="pl-16 lg:pl-0">
+          <TopNavbar title={title} subtitle={subtitle} />
+        </div>
 
         {/* Page Content */}
-        <main className="min-h-[calc(100vh-4rem)]">
+        <main className="min-h-[calc(100vh-4rem)] bg-transparent">
           {children}
         </main>
       </div>

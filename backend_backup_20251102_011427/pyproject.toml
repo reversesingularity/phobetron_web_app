@@ -1,0 +1,28 @@
+[project]
+name = "celestial-signs-backend"
+version = "0.1.0"
+description = "Database schema and migrations for Celestial Signs project"
+requires-python = ">=3.11"
+dependencies = [
+    "alembic==1.13.0",
+    "sqlalchemy==2.0.23",
+    "psycopg[binary]==3.2.3",
+    "geoalchemy2==0.14.2",
+    "python-dotenv==1.0.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest==8.0.0",
+    "pytest-postgresql==5.0.0",
+    "pytest-alembic==0.11.0",
+]
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-v --tb=short"

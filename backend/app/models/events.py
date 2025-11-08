@@ -3,10 +3,10 @@
 from datetime import datetime
 from uuid import uuid4
 from sqlalchemy import (
-    Column, String, Float, DateTime, Integer,
+    Column, String, Float, DateTime, Integer, Boolean,
     CheckConstraint, Index, Text
 )
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, ARRAY
 from geoalchemy2 import Geography
 from app.db.base import Base
 
@@ -261,3 +261,166 @@ class VolcanicActivity(Base):
     
     def __repr__(self):
         return f"<VolcanicActivity(volcano={self.volcano_name}, start={self.eruption_start}, VEI={self.vei})>"
+
+
+class Hurricane(Base):
+    """
+    Hurricane/Cyclone/Typhoon records.
+    
+    Tracks tropical cyclones worldwide with categorization based on
+    Saffir-Simpson scale. Represents Greek σεισμός (seismos) - 
+    "commotion of the air" (Matthew 24:7).
+    """
+    __tablename__ = "hurricanes"
+    
+    # Primary Key
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    
+    # Storm identification
+    storm_name = Column(String(255), nullable=False, index=True,
+                       comment="Hurricane name (e.g., Katrina, Ian)")
+    basin = Column(String(50), nullable=False,
+                  comment="Ocean basin: Atlantic, East Pacific, West Pacific, Indian, etc.")
+    storm_type = Column(String(50), nullable=False,
+                       comment="Hurricane, Typhoon, Cyclone, Tropical Storm")
+    season = Column(Integer, nullable=False, index=True,
+                   comment="Hurricane season year")
+    
+    # Temporal data
+    formation_date = Column(DateTime, nullable=False, index=True,
+                           comment="Storm formation timestamp")
+    dissipation_date = Column(DateTime, nullable=True,
+                             comment="Storm dissipation timestamp (null if ongoing)")
+    
+    # Location - PostGIS geography point (lat/lon)
+    peak_location = Column(Geography(geometry_type='POINT', srid=4326), nullable=False,
+                          comment="Location of peak intensity (WGS84)")
+    
+    # Intensity metrics
+    max_sustained_winds_kph = Column(Float, nullable=True,
+                                    comment="Maximum sustained winds in km/h")
+    min_central_pressure_hpa = Column(Float, nullable=True,
+                                     comment="Minimum central pressure in hectopascals")
+    category = Column(Integer, nullable=True, index=True,
+                     comment="Saffir-Simpson scale (1-5) or equivalent")
+    ace_index = Column(Float, nullable=True,
+                      comment="Accumulated Cyclone Energy index")
+    
+    # Impact data
+    fatalities = Column(Integer, nullable=True,
+                       comment="Total number of fatalities")
+    damages_usd_millions = Column(Float, nullable=True,
+                                  comment="Economic damages in millions USD")
+    affected_regions = Column(ARRAY(String), nullable=True,
+                             comment="List of affected countries/regions")
+    landfall_locations = Column(ARRAY(String), nullable=True,
+                               comment="Cities/regions where landfall occurred")
+    
+    # Additional details
+    notes = Column(Text, nullable=True,
+                  comment="Additional storm details")
+    
+    # Metadata
+    data_source = Column(String(100), nullable=True,
+                        comment="Source: NOAA NHC, JTWC, JMA, etc.")
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    
+    # Constraints and Indexes
+    __table_args__ = (
+        CheckConstraint('max_sustained_winds_kph IS NULL OR max_sustained_winds_kph >= 0',
+                       name='ck_hurricane_winds_nonnegative'),
+        CheckConstraint('min_central_pressure_hpa IS NULL OR min_central_pressure_hpa > 0',
+                       name='ck_hurricane_pressure_positive'),
+        CheckConstraint('category IS NULL OR (category >= 1 AND category <= 5)',
+                       name='ck_hurricane_category_range'),
+        CheckConstraint('fatalities IS NULL OR fatalities >= 0',
+                       name='ck_hurricane_fatalities_nonnegative'),
+        Index('idx_hurricane_name', 'storm_name'),
+        Index('idx_hurricane_formation', 'formation_date'),
+        Index('idx_hurricane_category', 'category'),
+        Index('idx_hurricane_season', 'season'),
+        Index('idx_hurricane_location', 'peak_location', postgresql_using='gist'),
+    )
+    
+    def __repr__(self):
+        return f"<Hurricane(name={self.storm_name}, category={self.category}, season={self.season})>"
+
+
+class Tsunami(Base):
+    """
+    Tsunami event records.
+    
+    Tracks tsunami events caused by earthquakes, volcanic eruptions,
+    landslides, or meteorite impacts. Represents Greek σεισμός (seismos) - 
+    "commotion of the ground and sea" (Matthew 24:7, Revelation 6:12).
+    """
+    __tablename__ = "tsunamis"
+    
+    # Primary Key
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    
+    # Temporal data
+    event_date = Column(DateTime, nullable=False, index=True,
+                       comment="Tsunami event timestamp")
+    
+    # Location - PostGIS geography point (lat/lon)
+    source_location = Column(Geography(geometry_type='POINT', srid=4326), nullable=False,
+                            comment="Tsunami source epicenter (WGS84)")
+    
+    # Source characteristics
+    source_type = Column(String(100), nullable=False, index=True,
+                        comment="Earthquake, Volcanic, Landslide, Meteorite, Unknown")
+    earthquake_magnitude = Column(Float, nullable=True,
+                                 comment="Related earthquake magnitude (if applicable)")
+    
+    # Wave characteristics
+    max_wave_height_m = Column(Float, nullable=True,
+                              comment="Maximum recorded wave height in meters")
+    max_runup_m = Column(Float, nullable=True,
+                        comment="Maximum runup elevation in meters")
+    
+    # Impact data
+    affected_regions = Column(ARRAY(String), nullable=True,
+                             comment="List of affected coastlines/countries")
+    fatalities = Column(Integer, nullable=True,
+                       comment="Total number of fatalities")
+    damages_usd_millions = Column(Float, nullable=True,
+                                  comment="Economic damages in millions USD")
+    
+    # Intensity and warning
+    intensity_scale = Column(Integer, nullable=True, index=True,
+                            comment="Tsunami intensity (0-12 Soloviev-Imamura scale)")
+    travel_time_minutes = Column(Integer, nullable=True,
+                                comment="Time from source to first landfall (minutes)")
+    warning_issued = Column(Boolean, nullable=True,
+                           comment="Was a warning issued before impact?")
+    
+    # Additional details
+    notes = Column(Text, nullable=True,
+                  comment="Additional tsunami details")
+    
+    # Metadata
+    data_source = Column(String(100), nullable=True,
+                        comment="Source: NOAA NGDC, PTWC, JMA, etc.")
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    
+    # Constraints and Indexes
+    __table_args__ = (
+        CheckConstraint('max_wave_height_m IS NULL OR max_wave_height_m >= 0',
+                       name='ck_tsunami_wave_height_nonnegative'),
+        CheckConstraint('max_runup_m IS NULL OR max_runup_m >= 0',
+                       name='ck_tsunami_runup_nonnegative'),
+        CheckConstraint('intensity_scale IS NULL OR (intensity_scale >= 0 AND intensity_scale <= 12)',
+                       name='ck_tsunami_intensity_range'),
+        CheckConstraint('fatalities IS NULL OR fatalities >= 0',
+                       name='ck_tsunami_fatalities_nonnegative'),
+        CheckConstraint("source_type IN ('EARTHQUAKE', 'VOLCANIC', 'LANDSLIDE', 'METEORITE', 'UNKNOWN')",
+                       name='ck_tsunami_source_type'),
+        Index('idx_tsunami_date', 'event_date'),
+        Index('idx_tsunami_source', 'source_type'),
+        Index('idx_tsunami_intensity', 'intensity_scale'),
+        Index('idx_tsunami_location', 'source_location', postgresql_using='gist'),
+    )
+    
+    def __repr__(self):
+        return f"<Tsunami(date={self.event_date}, source={self.source_type}, intensity={self.intensity_scale})>"

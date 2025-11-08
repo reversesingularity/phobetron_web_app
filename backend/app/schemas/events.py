@@ -218,3 +218,144 @@ class PaginatedVolcanicActivityResponse(BaseModel):
     skip: int = Field(..., description="Number of records skipped")
     limit: int = Field(..., description="Maximum number of records returned")
     data: list[VolcanicActivityResponse] = Field(..., description="List of volcanic activity records")
+
+
+# ==================== Hurricanes Schemas ====================
+
+class HurricanesBase(BaseModel):
+    """
+    Base schema for hurricane/cyclone/typhoon data.
+    
+    Greek σεισμός (seismos) - 'commotion of the air' (Matthew 24:7)
+    """
+    storm_name: str = Field(..., description="Official storm name", max_length=255)
+    basin: Optional[str] = Field(None, description="Basin: Atlantic, Pacific, Indian Ocean, etc.", max_length=50)
+    storm_type: Optional[str] = Field(None, description="Type: hurricane, typhoon, cyclone, tropical storm", max_length=50)
+    season: Optional[int] = Field(None, description="Hurricane season year")
+    formation_date: datetime = Field(..., description="Date/time of formation")
+    dissipation_date: Optional[datetime] = Field(None, description="Date/time of dissipation")
+    max_sustained_winds_kph: Optional[float] = Field(None, ge=0, description="Maximum sustained wind speed in km/h")
+    min_central_pressure_hpa: Optional[float] = Field(None, gt=0, description="Minimum central pressure in hPa")
+    category: Optional[int] = Field(None, ge=1, le=5, description="Saffir-Simpson category (1-5)")
+    ace_index: Optional[float] = Field(None, ge=0, description="Accumulated Cyclone Energy index")
+    fatalities: Optional[int] = Field(None, ge=0, description="Estimated fatalities")
+    damages_usd_millions: Optional[float] = Field(None, ge=0, description="Economic damages in USD millions")
+    affected_regions: Optional[list[str]] = Field(None, description="List of affected countries/regions")
+    landfall_locations: Optional[list[str]] = Field(None, description="Landfall locations (if any)")
+    notes: Optional[str] = Field(None, description="Additional storm details")
+    data_source: Optional[str] = Field(None, description="Source: NHC, JTWC, etc.", max_length=100)
+
+
+class HurricanesCreate(HurricanesBase):
+    """Schema for creating new hurricane record."""
+    peak_latitude: float = Field(..., ge=-90, le=90, description="Latitude of peak intensity")
+    peak_longitude: float = Field(..., ge=-180, le=180, description="Longitude of peak intensity")
+
+
+class HurricanesUpdate(BaseModel):
+    """Schema for updating hurricane (all fields optional)."""
+    storm_name: Optional[str] = Field(None, max_length=255)
+    basin: Optional[str] = Field(None, max_length=50)
+    storm_type: Optional[str] = Field(None, max_length=50)
+    season: Optional[int] = None
+    formation_date: Optional[datetime] = None
+    dissipation_date: Optional[datetime] = None
+    peak_latitude: Optional[float] = Field(None, ge=-90, le=90)
+    peak_longitude: Optional[float] = Field(None, ge=-180, le=180)
+    max_sustained_winds_kph: Optional[float] = Field(None, ge=0)
+    min_central_pressure_hpa: Optional[float] = Field(None, gt=0)
+    category: Optional[int] = Field(None, ge=1, le=5)
+    ace_index: Optional[float] = Field(None, ge=0)
+    fatalities: Optional[int] = Field(None, ge=0)
+    damages_usd_millions: Optional[float] = Field(None, ge=0)
+    affected_regions: Optional[list[str]] = None
+    landfall_locations: Optional[list[str]] = None
+    notes: Optional[str] = None
+    data_source: Optional[str] = Field(None, max_length=100)
+
+
+class HurricanesResponse(HurricanesBase):
+    """Schema for hurricane responses."""
+    id: UUID
+    peak_latitude: float = Field(..., description="Latitude of peak intensity")
+    peak_longitude: float = Field(..., description="Longitude of peak intensity")
+    created_at: datetime
+    
+    model_config = ConfigDict(from_attributes=True)
+
+
+# ==================== Tsunamis Schemas ====================
+
+class TsunamisBase(BaseModel):
+    """
+    Base schema for tsunami event data.
+    
+    Greek σεισμός (seismos) - 'commotion of ground and sea' (Matthew 24:7, Revelation 6:12)
+    """
+    event_date: datetime = Field(..., description="Date/time of tsunami occurrence")
+    source_type: str = Field(..., description="Source: EARTHQUAKE, VOLCANIC, LANDSLIDE, METEORITE, UNKNOWN", max_length=50)
+    earthquake_magnitude: Optional[float] = Field(None, description="Magnitude of triggering earthquake (if applicable)")
+    max_wave_height_m: Optional[float] = Field(None, ge=0, description="Maximum wave height in meters")
+    max_runup_m: Optional[float] = Field(None, ge=0, description="Maximum runup elevation in meters")
+    affected_regions: Optional[list[str]] = Field(None, description="List of affected countries/regions")
+    fatalities: Optional[int] = Field(None, ge=0, description="Estimated fatalities")
+    damages_usd_millions: Optional[float] = Field(None, ge=0, description="Economic damages in USD millions")
+    intensity_scale: Optional[int] = Field(None, ge=0, le=12, description="Soloviev-Imamura intensity (0-12)")
+    travel_time_minutes: Optional[int] = Field(None, ge=0, description="Travel time to nearest coast")
+    warning_issued: Optional[bool] = Field(None, description="Whether tsunami warning was issued")
+    notes: Optional[str] = Field(None, description="Additional event details")
+    data_source: Optional[str] = Field(None, description="Source: NOAA NGDC, PTWC, etc.", max_length=100)
+
+
+class TsunamisCreate(TsunamisBase):
+    """Schema for creating new tsunami record."""
+    source_latitude: float = Field(..., ge=-90, le=90, description="Latitude of tsunami source")
+    source_longitude: float = Field(..., ge=-180, le=180, description="Longitude of tsunami source")
+
+
+class TsunamisUpdate(BaseModel):
+    """Schema for updating tsunami (all fields optional)."""
+    event_date: Optional[datetime] = None
+    source_latitude: Optional[float] = Field(None, ge=-90, le=90)
+    source_longitude: Optional[float] = Field(None, ge=-180, le=180)
+    source_type: Optional[str] = Field(None, max_length=50)
+    earthquake_magnitude: Optional[float] = None
+    max_wave_height_m: Optional[float] = Field(None, ge=0)
+    max_runup_m: Optional[float] = Field(None, ge=0)
+    affected_regions: Optional[list[str]] = None
+    fatalities: Optional[int] = Field(None, ge=0)
+    damages_usd_millions: Optional[float] = Field(None, ge=0)
+    intensity_scale: Optional[int] = Field(None, ge=0, le=12)
+    travel_time_minutes: Optional[int] = Field(None, ge=0)
+    warning_issued: Optional[bool] = None
+    notes: Optional[str] = None
+    data_source: Optional[str] = Field(None, max_length=100)
+
+
+class TsunamisResponse(TsunamisBase):
+    """Schema for tsunami responses."""
+    id: UUID
+    source_latitude: float = Field(..., description="Latitude of tsunami source")
+    source_longitude: float = Field(..., description="Longitude of tsunami source")
+    created_at: datetime
+    
+    model_config = ConfigDict(from_attributes=True)
+
+
+# ==================== Updated Paginated Response Schemas ====================
+
+class PaginatedHurricanesResponse(BaseModel):
+    """Paginated response for hurricanes."""
+    total: int = Field(..., description="Total number of records")
+    skip: int = Field(..., description="Number of records skipped")
+    limit: int = Field(..., description="Maximum number of records returned")
+    data: list[HurricanesResponse] = Field(..., description="List of hurricane records")
+
+
+class PaginatedTsunamisResponse(BaseModel):
+    """Paginated response for tsunamis."""
+    total: int = Field(..., description="Total number of records")
+    skip: int = Field(..., description="Number of records skipped")
+    limit: int = Field(..., description="Maximum number of records returned")
+    data: list[TsunamisResponse] = Field(..., description="List of tsunami records")
+

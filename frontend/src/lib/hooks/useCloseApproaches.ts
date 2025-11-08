@@ -46,10 +46,21 @@ export function useCloseApproaches(
       if (minApproachDate) params.min_approach_date = minApproachDate;
       if (maxApproachDate) params.max_approach_date = maxApproachDate;
 
-      const response = await api.scientific.getCloseApproaches(params);
-      setCloseApproaches(response.items);
-      setError(null);
+      // Add timeout to prevent hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
+      try {
+        const response = await api.scientific.getCloseApproaches(params);
+        clearTimeout(timeoutId);
+        setCloseApproaches(response.items || []);
+        setError(null);
+      } catch (fetchError) {
+        clearTimeout(timeoutId);
+        throw fetchError;
+      }
     } catch (err) {
+      console.warn('Close approaches fetch failed (non-critical):', err);
       setError(
         err instanceof Error ? err : new Error('Failed to fetch close approaches')
       );

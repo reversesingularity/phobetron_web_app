@@ -1,0 +1,152 @@
+# Phobetron Automated Data Collection Schedule
+# 
+# Windows Task Scheduler XML configuration
+# Import this file using: schtasks /create /xml phobetron_tasks.xml /tn "Phobetron Data Collection"
+#
+# Or set up manually using the commands below:
+
+# ============================================================================
+# OPTION 1: Windows Task Scheduler (Recommended for Windows)
+# ============================================================================
+
+# 1. NEO Data Collection - Daily at 2:00 AM
+# ----------------------------------------
+schtasks /create /tn "Phobetron NEO Collection" /tr "python f:\Projects\phobetron_web_app\backend\scripts\collect_neo_data.py" /sc daily /st 02:00 /ru SYSTEM
+
+# 2. Volcanic Data Collection - Daily at 3:00 AM
+# ---------------------------------------------
+schtasks /create /tn "Phobetron Volcanic Collection" /tr "python f:\Projects\phobetron_web_app\backend\scripts\fetch_volcanic_data.py" /sc daily /st 03:00 /ru SYSTEM
+
+# 3. Hurricane Data Collection - Daily at 3:30 AM
+# ----------------------------------------------
+schtasks /create /tn "Phobetron Hurricane Collection" /tr "python f:\Projects\phobetron_web_app\backend\scripts\fetch_hurricane_data.py" /sc daily /st 03:30 /ru SYSTEM
+
+# 4. Tsunami Data Collection - Daily at 4:00 AM
+# --------------------------------------------
+schtasks /create /tn "Phobetron Tsunami Collection" /tr "python f:\Projects\phobetron_web_app\backend\scripts\fetch_tsunami_data.py" /sc daily /st 04:00 /ru SYSTEM
+
+# 5. ML Model Retraining - Weekly on Sunday at 5:00 AM
+# --------------------------------------------------
+schtasks /create /tn "Phobetron ML Training" /tr "python f:\Projects\phobetron_web_app\backend\scripts\train_ml_models.py" /sc weekly /d SUN /st 05:00 /ru SYSTEM
+
+# 6. Database Backup - Daily at 1:00 AM
+# ------------------------------------
+schtasks /create /tn "Phobetron Database Backup" /tr "powershell.exe -File f:\Projects\phobetron_web_app\backend\scripts\backup_database.ps1" /sc daily /st 01:00 /ru SYSTEM
+
+
+# ============================================================================
+# OPTION 2: PowerShell Scheduled Jobs (Alternative)
+# ============================================================================
+
+# Create a PowerShell script to run all tasks
+# Save as: backend/scripts/run_scheduled_tasks.ps1
+
+<#
+# NEO Collection - Daily at 2 AM
+$neoTrigger = New-JobTrigger -Daily -At "2:00AM"
+Register-ScheduledJob -Name "Phobetron_NEO" -FilePath "f:\Projects\phobetron_web_app\backend\scripts\collect_neo_data.py" -Trigger $neoTrigger
+
+# Volcanic Collection - Daily at 3 AM
+$volcanicTrigger = New-JobTrigger -Daily -At "3:00AM"
+Register-ScheduledJob -Name "Phobetron_Volcanic" -FilePath "f:\Projects\phobetron_web_app\backend\scripts\fetch_volcanic_data.py" -Trigger $volcanicTrigger
+
+# Hurricane Collection - Daily at 3:30 AM
+$hurricaneTrigger = New-JobTrigger -Daily -At "3:30AM"
+Register-ScheduledJob -Name "Phobetron_Hurricane" -FilePath "f:\Projects\phobetron_web_app\backend\scripts\fetch_hurricane_data.py" -Trigger $hurricaneTrigger
+
+# Tsunami Collection - Daily at 4 AM
+$tsunamiTrigger = New-JobTrigger -Daily -At "4:00AM"
+Register-ScheduledJob -Name "Phobetron_Tsunami" -FilePath "f:\Projects\phobetron_web_app\backend\scripts\fetch_tsunami_data.py" -Trigger $tsunamiTrigger
+
+# ML Training - Weekly on Sunday at 5 AM
+$mlTrigger = New-JobTrigger -Weekly -DaysOfWeek Sunday -At "5:00AM"
+Register-ScheduledJob -Name "Phobetron_ML" -FilePath "f:\Projects\phobetron_web_app\backend\scripts\train_ml_models.py" -Trigger $mlTrigger
+#>
+
+
+# ============================================================================
+# OPTION 3: Linux/WSL Cron Jobs (If using WSL)
+# ============================================================================
+
+# Edit crontab: crontab -e
+# Add these lines:
+
+# # Phobetron Data Collection Jobs
+# # NEO data - Daily at 2 AM
+# 0 2 * * * cd /mnt/f/Projects/phobetron_web_app/backend && python scripts/collect_neo_data.py
+# 
+# # Volcanic data - Daily at 3 AM
+# 0 3 * * * cd /mnt/f/Projects/phobetron_web_app/backend && python scripts/fetch_volcanic_data.py
+# 
+# # Hurricane data - Daily at 3:30 AM
+# 30 3 * * * cd /mnt/f/Projects/phobetron_web_app/backend && python scripts/fetch_hurricane_data.py
+# 
+# # Tsunami data - Daily at 4 AM
+# 0 4 * * * cd /mnt/f/Projects/phobetron_web_app/backend && python scripts/fetch_tsunami_data.py
+# 
+# # ML model training - Weekly on Sunday at 5 AM
+# 0 5 * * 0 cd /mnt/f/Projects/phobetron_web_app/backend && python scripts/train_ml_models.py
+
+
+# ============================================================================
+# OPTION 4: FastAPI Background Tasks (Application-Level)
+# ============================================================================
+
+# Add to backend/app/main.py:
+
+"""
+from fastapi_utils.tasks import repeat_every
+
+@app.on_event("startup")
+@repeat_every(seconds=60 * 60 * 24)  # Every 24 hours
+async def update_neo_data():
+    '''Background task to update NEO data daily'''
+    import subprocess
+    subprocess.run([
+        "python", 
+        "f:/Projects/phobetron_web_app/backend/scripts/collect_neo_data.py"
+    ])
+
+@app.on_event("startup")
+@repeat_every(seconds=60 * 60 * 24)  # Every 24 hours
+async def update_seismos_data():
+    '''Background task to update seismos data daily'''
+    subprocess.run([
+        "python", 
+        "f:/Projects/phobetron_web_app/backend/scripts/fetch_volcanic_data.py"
+    ])
+    subprocess.run([
+        "python", 
+        "f:/Projects/phobetron_web_app/backend/scripts/fetch_hurricane_data.py"
+    ])
+    subprocess.run([
+        "python", 
+        "f:/Projects/phobetron_web_app/backend/scripts/fetch_tsunami_data.py"
+    ])
+
+@app.on_event("startup")
+@repeat_every(seconds=60 * 60 * 24 * 7)  # Every 7 days
+async def retrain_ml_models():
+    '''Background task to retrain ML models weekly'''
+    subprocess.run([
+        "python", 
+        "f:/Projects/phobetron_web_app/backend/scripts/train_ml_models.py"
+    ])
+"""
+
+
+# ============================================================================
+# Verification Commands
+# ============================================================================
+
+# List all scheduled tasks
+schtasks /query /fo LIST /v | Select-String -Pattern "Phobetron"
+
+# Run a task manually
+schtasks /run /tn "Phobetron NEO Collection"
+
+# Delete a task
+schtasks /delete /tn "Phobetron NEO Collection" /f
+
+# View task logs
+Get-EventLog -LogName Application -Source "Task Scheduler" -Newest 50 | Where-Object { $_.Message -like "*Phobetron*" }

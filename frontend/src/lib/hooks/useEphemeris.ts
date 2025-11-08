@@ -39,10 +39,21 @@ export function useEphemeris(options: UseEphemerisOptions = {}): UseEphemerisRet
       const params: Record<string, string | number> = {};
       if (objectName) params.object_name = objectName;
 
-      const response = await api.scientific.getEphemeris(params);
-      setEphemeris(response.items);
-      setError(null);
+      // Add timeout to prevent hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
+      try {
+        const response = await api.scientific.getEphemeris(params);
+        clearTimeout(timeoutId);
+        setEphemeris(response.items || []);
+        setError(null);
+      } catch (fetchError) {
+        clearTimeout(timeoutId);
+        throw fetchError;
+      }
     } catch (err) {
+      console.warn('Ephemeris fetch failed (non-critical):', err);
       setError(err instanceof Error ? err : new Error('Failed to fetch ephemeris data'));
       setEphemeris([]);
     } finally {

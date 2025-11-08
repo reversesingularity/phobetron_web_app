@@ -2,14 +2,16 @@
  * Sidebar Navigation Component
  * 
  * Main navigation menu with links to all major modules.
- * Features active route highlighting and alert badge.
+ * Features active route highlighting, alert badge, and mobile responsiveness.
  */
 
 'use client';
 
+import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { useAlerts } from '@/lib/hooks/useAlerts';
+import { XMarkIcon } from '@heroicons/react/24/outline';
+// import { useAlerts } from '@/lib/hooks/useAlerts';
 
 interface NavItem {
   name: string;
@@ -20,7 +22,9 @@ interface NavItem {
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { activeAlerts } = useAlerts({ status: 'ACTIVE' });
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  // const { activeAlerts } = useAlerts({ status: 'ACTIVE' });
+  const activeAlerts = 0; // Temporary: disable alerts fetching
 
   const navigation: NavItem[] = [
     {
@@ -43,10 +47,20 @@ export default function Sidebar() {
     },
     {
       name: "Watchman's View",
-      href: '/dashboard',
+      href: '/watchmans-view',
       icon: (
         <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      ),
+    },
+    {
+      name: "Seismos Events",
+      href: '/earth-dashboard',
+      icon: (
+        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       ),
     },
@@ -70,6 +84,24 @@ export default function Sidebar() {
       badge: activeAlerts,
     },
     {
+      name: 'Timeline',
+      href: '/timeline',
+      icon: (
+        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+        </svg>
+      ),
+    },
+    {
+      name: 'Patterns',
+      href: '/patterns',
+      icon: (
+        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+        </svg>
+      ),
+    },
+    {
       name: 'Settings',
       href: '/settings',
       icon: (
@@ -81,8 +113,44 @@ export default function Sidebar() {
     },
   ];
 
+  // Close mobile menu when clicking a link
+  const handleLinkClick = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
-    <aside className="fixed inset-y-0 left-0 z-50 w-64 border-r border-zinc-800 bg-zinc-900">
+    <>
+      {/* Mobile Menu Button - Fixed top-left, visible only on mobile */}
+      <button
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        className="fixed top-4 left-4 z-50 flex items-center justify-center h-10 w-10 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-400 hover:text-zinc-50 hover:border-zinc-500 transition-all lg:hidden"
+        aria-label="Toggle menu"
+      >
+        {isMobileMenuOpen ? (
+          <XMarkIcon className="h-6 w-6" />
+        ) : (
+          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        )}
+      </button>
+
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Sidebar - Slides in on mobile, always visible on desktop */}
+      <aside
+        className={`
+          fixed inset-y-0 left-0 z-50 w-64 border-r border-zinc-800 bg-zinc-900 transition-transform duration-300 ease-in-out
+          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
+          lg:translate-x-0
+        `}
+      >
       {/* Logo */}
       <div className="flex h-16 items-center border-b border-zinc-800 px-6">
         <div className="flex items-center gap-3">
@@ -106,6 +174,7 @@ export default function Sidebar() {
             <Link
               key={item.name}
               href={item.href}
+              onClick={handleLinkClick}
               className={`
                 group flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors
                 ${isActive
@@ -143,5 +212,6 @@ export default function Sidebar() {
         </div>
       </div>
     </aside>
+    </>
   );
 }

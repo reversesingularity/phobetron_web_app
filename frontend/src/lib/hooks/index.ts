@@ -9,3 +9,5 @@ export { useProphecies } from './useProphecies';
 export { useCorrelations } from './useCorrelations';
 export { useOrbitalElements } from './useOrbitalElements';
 export { useCloseApproaches } from './useCloseApproaches';
+export { useImpactRisks } from './useImpactRisks';
+export { useSeismos } from './useSeismos';

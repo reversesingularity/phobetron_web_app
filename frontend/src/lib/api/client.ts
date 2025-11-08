@@ -5,7 +5,7 @@
  * Handles authentication, error handling, and response parsing.
  */
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8020';
 const API_BASE_PATH = process.env.NEXT_PUBLIC_API_BASE_PATH || '/api/v1';
 
 export class APIError extends Error {
@@ -39,27 +39,48 @@ async function request<T>(
     });
   }
 
-  // Make request
-  const response = await fetch(url.toString(), {
-    ...fetchOptions,
-    headers: {
-      'Content-Type': 'application/json',
-      ...fetchOptions.headers,
-    },
-  });
+  try {
+    // Make request
+    const response = await fetch(url.toString(), {
+      ...fetchOptions,
+      headers: {
+        'Content-Type': 'application/json',
+        ...fetchOptions.headers,
+      },
+    });
 
-  // Handle errors
-  if (!response.ok) {
-    const errorText = await response.text();
+    // Handle errors
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new APIError(
+        response.status,
+        response.statusText,
+        errorText || 'An error occurred while fetching data'
+      );
+    }
+
+    // Parse JSON response
+    return response.json();
+  } catch (error) {
+    // Handle network errors (connection refused, timeout, etc.)
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new APIError(
+        0,
+        'Network Error',
+        `Unable to connect to API server at ${API_URL}. Please ensure the backend server is running.`
+      );
+    }
+    // Re-throw API errors
+    if (error instanceof APIError) {
+      throw error;
+    }
+    // Handle other unexpected errors
     throw new APIError(
-      response.status,
-      response.statusText,
-      errorText || 'An error occurred while fetching data'
+      500,
+      'Unknown Error',
+      `An unexpected error occurred: ${error instanceof Error ? error.message : 'Unknown error'}`
     );
   }
-
-  // Parse JSON response
-  return response.json();
 }
 
 // ============================================================================
@@ -109,6 +130,44 @@ export const scientific = {
     limit?: number;
   }) =>
     request<any>('/scientific/close-approaches', { params }),
+
+  /**
+   * Get volcanic activity data
+   */
+  getVolcanicActivity: (params?: {
+    volcano_name?: string;
+    min_vei?: number;
+    max_vei?: number;
+    country?: string;
+    skip?: number;
+    limit?: number;
+  }) =>
+    request<any>('/scientific/volcanic', { params }),
+
+  /**
+   * Get hurricane data
+   */
+  getHurricanes: (params?: {
+    name?: string;
+    min_category?: number;
+    start_time?: string;
+    end_time?: string;
+    skip?: number;
+    limit?: number;
+  }) =>
+    request<any>('/scientific/hurricanes', { params }),
+
+  /**
+   * Get tsunami data
+   */
+  getTsunamis: (params?: {
+    min_intensity?: number;
+    start_time?: string;
+    end_time?: string;
+    skip?: number;
+    limit?: number;
+  }) =>
+    request<any>('/scientific/tsunamis', { params }),
 };
 
 // ============================================================================
@@ -119,7 +178,7 @@ export const events = {
   /**
    * Get earthquake data (PostGIS spatial queries)
    */
-  getEarthquakes: (params?: {
+  getEarthquakes: async (params?: {
     min_magnitude?: number;
     max_magnitude?: number;
     start_time?: string;
@@ -130,8 +189,22 @@ export const events = {
     max_longitude?: number;
     skip?: number;
     limit?: number;
-  }) =>
-    request<any>('/events/earthquakes', { params }),
+  }) => {
+    const response = await request<any>('/events/earthquakes', { params });
+    // Map API response to frontend format
+    return {
+      ...response,
+      items: response.data?.map((eq: any) => ({
+        ...eq,
+        place_name: eq.region || `${eq.latitude.toFixed(1)}°, ${eq.longitude.toFixed(1)}°`,
+        location: {
+          type: 'Point',
+          coordinates: [eq.longitude, eq.latitude]
+        },
+        event_source: eq.data_source || 'Unknown'
+      })) || []
+    };
+  },
 
   /**
    * Get volcanic activity data
@@ -278,8 +351,26 @@ export const correlations = {
 export const health = {
   /**
    * Check API health status
+   * Note: Health endpoint is at root level (/health), not under /api/v1
    */
-  check: () => request<{ status: string; timestamp: string }>('/health'),
+  check: async () => {
+    const url = `${API_URL}/health`;
+    const response = await fetch(url, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      throw new APIError(
+        response.status,
+        response.statusText,
+        'Health check failed'
+      );
+    }
+    
+    return response.json() as Promise<{ status: string; version: string }>;
+  },
 };
 
 // Default export with all namespaced endpoints
