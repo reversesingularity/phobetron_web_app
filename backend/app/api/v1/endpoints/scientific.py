@@ -283,19 +283,12 @@ def get_volcanic_activity(
     total = query.count()
     records = query.offset(skip).limit(limit).all()
     
-    # Convert PostGIS to lat/lon for response
+    # Build response with direct lat/lon from database
     response_data = []
     for record in records:
-        # Extract lat/lon from PostGIS geometry
-        lat = lon = None
-        if record.location:
-            try:
-                from geoalchemy2.shape import to_shape
-                point = to_shape(record.location)
-                lon = point.x
-                lat = point.y
-            except:
-                pass
+        # Use direct lat/lon columns from database
+        lat = record.latitude
+        lon = record.longitude
         
         # Create response object
         data_dict = {
@@ -364,19 +357,12 @@ def get_hurricanes(
     total = query.count()
     records = query.offset(skip).limit(limit).all()
     
-    # Convert PostGIS to lat/lon for response
+    # Build response with direct lat/lon from database
     response_data = []
     for record in records:
-        # Extract lat/lon from PostGIS geometry
-        lat = lon = None
-        if record.peak_location:
-            try:
-                from geoalchemy2.shape import to_shape
-                point = to_shape(record.peak_location)
-                lon = point.x
-                lat = point.y
-            except:
-                pass
+        # Use direct lat/lon columns from database
+        lat = record.peak_latitude
+        lon = record.peak_longitude
         
         # Create response object
         data_dict = {
@@ -448,19 +434,12 @@ def get_tsunamis(
     total = query.count()
     records = query.offset(skip).limit(limit).all()
     
-    # Convert PostGIS to lat/lon for response
+    # Build response with direct lat/lon from database
     response_data = []
     for record in records:
-        # Extract lat/lon from PostGIS geometry
-        lat = lon = None
-        if record.source_location:
-            try:
-                from geoalchemy2.shape import to_shape
-                point = to_shape(record.source_location)
-                lon = point.x
-                lat = point.y
-            except:
-                pass
+        # Use direct lat/lon columns from database
+        lat = record.source_latitude
+        lon = record.source_longitude
         
         # Create response object
         data_dict = {
@@ -478,8 +457,8 @@ def get_tsunamis(
             "warning_issued": record.warning_issued,
             "notes": record.notes,
             "data_source": record.data_source,
-            "source_latitude": lat or 0.0,
-            "source_longitude": lon or 0.0,
+            "source_latitude": lat,
+            "source_longitude": lon,
             "created_at": record.created_at
         }
         response_data.append(TsunamisResponse(**data_dict))

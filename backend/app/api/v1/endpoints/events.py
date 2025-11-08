@@ -4,8 +4,7 @@ Geophysical events endpoints (earthquakes, solar events, meteor showers, volcani
 from typing import Optional
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from geoalchemy2.shape import to_shape
-from shapely.geometry import Point
+# Removed geoalchemy2 and shapely - using direct lat/lon columns now
 
 from app.db.session import get_db
 from app.models.events import Earthquakes, SolarEvents, MeteorShowers, VolcanicActivity
@@ -47,18 +46,17 @@ def get_earthquakes(
     total = query.count()
     records = query.order_by(Earthquakes.event_time.desc()).offset(skip).limit(limit).all()
     
-    # Convert PostGIS location to lat/lon for response
+    # Build response with direct lat/lon from database
     response_data = []
     for r in records:
-        point = to_shape(r.location)
         response_data.append(EarthquakesResponse(
             id=r.id,
             event_id=r.event_id,
             event_time=r.event_time,
             magnitude=r.magnitude,
             magnitude_type=r.magnitude_type,
-            latitude=point.y,
-            longitude=point.x,
+            latitude=r.latitude,
+            longitude=r.longitude,
             depth_km=r.depth_km,
             region=r.region,
             data_source=r.data_source,
@@ -159,18 +157,17 @@ def get_volcanic_activity(
     total = query.count()
     records = query.order_by(VolcanicActivity.eruption_start.desc()).offset(skip).limit(limit).all()
     
-    # Convert PostGIS location to lat/lon for response
+    # Build response with direct lat/lon from database
     response_data = []
     for r in records:
-        point = to_shape(r.location)
         response_data.append(VolcanicActivityResponse(
             id=r.id,
             volcano_name=r.volcano_name,
             country=r.country,
             eruption_start=r.eruption_start,
             eruption_end=r.eruption_end,
-            latitude=point.y,
-            longitude=point.x,
+            latitude=r.latitude,
+            longitude=r.longitude,
             vei=r.vei,
             eruption_type=r.eruption_type,
             plume_height_km=r.plume_height_km,
