@@ -34,11 +34,10 @@ keywords:
 license: MIT
 version: 1.0.0
 date-released: "2025-11-08"
-# NOTE: Add DOI after Zenodo assignment (uncomment and replace with real DOI):
-# identifiers:
-#   - type: doi
-#     value: "10.5281/zenodo.XXXXXXX"
-#     description: "Zenodo DOI for software citation"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.17558316"
+    description: "Zenodo DOI for software citation"
 preferred-citation:
   type: software
   title: "Phobetron: A Machine Learning Approach to Celestial-Terrestrial Correlation Analysis Based on Biblical Eschatology"
