@@ -1,7 +1,7 @@
 # Core Dependencies
 alembic>=1.13.0
 sqlalchemy>=2.0.35
-psycopg[binary]>=3.2.3
+psycopg2-binary>=2.9.9
 geoalchemy2>=0.14.2
 python-dotenv>=1.0.0
 
