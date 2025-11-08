@@ -14,7 +14,7 @@ import geoalchemy2
 
 # revision identifiers, used by Alembic.
 revision: str = '5fa859e69904'
-down_revision: Union[str, Sequence[str], None] = None
+down_revision: Union[str, Sequence[str], None] = '000_enable_postgis'  # Requires PostGIS extension
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
