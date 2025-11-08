@@ -9,12 +9,12 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
-import geoalchemy2
+# Removed geoalchemy2 - not available on Railway PostgreSQL
 
 
 # revision identifiers, used by Alembic.
 revision: str = '5fa859e69904'
-down_revision: Union[str, Sequence[str], None] = '000_enable_postgis'  # Requires PostGIS extension
+down_revision: Union[str, Sequence[str], None] = None  # Requires PostGIS extension
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -28,16 +28,19 @@ def upgrade() -> None:
     sa.Column('event_time', sa.DateTime(), nullable=False, comment='Time of earthquake occurrence'),
     sa.Column('magnitude', sa.Float(), nullable=False, comment='Earthquake magnitude'),
     sa.Column('magnitude_type', sa.String(length=10), nullable=True, comment='Type: Mw, ML, Ms, etc.'),
-    sa.Column('location', geoalchemy2.types.Geography(geometry_type='POINT', srid=4326, dimension=2, from_text='ST_GeogFromText', name='geography', nullable=False), nullable=False, comment='Geographic location (WGS84)'),
+    sa.Column('latitude', sa.Float(), nullable=False, comment='Latitude in decimal degrees (-90 to 90)'),
+    sa.Column('longitude', sa.Float(), nullable=False, comment='Longitude in decimal degrees (-180 to 180)'),
     sa.Column('depth_km', sa.Float(), nullable=True, comment='Depth below surface in kilometers'),
     sa.Column('region', sa.String(length=255), nullable=True, comment='Geographic region description'),
     sa.Column('data_source', sa.String(length=100), nullable=True, comment='Source: USGS, EMSC, etc.'),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.CheckConstraint('depth_km IS NULL OR depth_km >= 0', name='ck_earthquake_depth_nonnegative'),
     sa.CheckConstraint('magnitude > 0', name='ck_earthquake_magnitude_positive'),
+    sa.CheckConstraint('latitude >= -90 AND latitude <= 90', name='ck_earthquake_latitude_range'),
+    sa.CheckConstraint('longitude >= -180 AND longitude <= 180', name='ck_earthquake_longitude_range'),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index('idx_earthquake_location', 'earthquakes', ['location'], unique=False, postgresql_using='gist')
+    op.create_index('idx_earthquake_coordinates', 'earthquakes', ['latitude', 'longitude'], unique=False)
     op.create_index('idx_earthquake_magnitude', 'earthquakes', ['magnitude'], unique=False)
     op.create_index('idx_earthquake_time', 'earthquakes', ['event_time'], unique=False)
     op.create_index(op.f('ix_earthquakes_event_id'), 'earthquakes', ['event_id'], unique=True)
@@ -178,18 +181,21 @@ def upgrade() -> None:
     sa.Column('country', sa.String(length=100), nullable=True, comment='Country or region'),
     sa.Column('eruption_start', sa.DateTime(), nullable=False, comment='Start time of eruption'),
     sa.Column('eruption_end', sa.DateTime(), nullable=True, comment='End time of eruption (null if ongoing)'),
-    sa.Column('location', geoalchemy2.types.Geography(geometry_type='POINT', srid=4326, dimension=2, from_text='ST_GeogFromText', name='geography', nullable=False), nullable=False, comment='Geographic location (WGS84)'),
+    sa.Column('latitude', sa.Float(), nullable=False, comment='Latitude in decimal degrees (-90 to 90)'),
+    sa.Column('longitude', sa.Float(), nullable=False, comment='Longitude in decimal degrees (-180 to 180)'),
     sa.Column('vei', sa.Integer(), nullable=True, comment='Volcanic Explosivity Index (0-8)'),
     sa.Column('eruption_type', sa.String(length=50), nullable=True, comment='Type: explosive, effusive, phreatic, etc.'),
     sa.Column('plume_height_km', sa.Float(), nullable=True, comment='Maximum plume height in kilometers'),
     sa.Column('notes', sa.Text(), nullable=True, comment='Additional eruption details'),
     sa.Column('data_source', sa.String(length=100), nullable=True, comment='Source: Smithsonian GVP, VAAC, etc.'),
     sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.CheckConstraint('latitude >= -90 AND latitude <= 90', name='ck_volcanic_latitude_range'),
+    sa.CheckConstraint('longitude >= -180 AND longitude <= 180', name='ck_volcanic_longitude_range'),
     sa.CheckConstraint('plume_height_km IS NULL OR plume_height_km >= 0', name='ck_volcanic_plume_nonnegative'),
     sa.CheckConstraint('vei IS NULL OR (vei >= 0 AND vei <= 8)', name='ck_volcanic_vei_range'),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index('idx_volcanic_location', 'volcanic_activity', ['location'], unique=False, postgresql_using='gist')
+    op.create_index('idx_volcanic_coordinates', 'volcanic_activity', ['latitude', 'longitude'], unique=False)
     op.create_index('idx_volcanic_name', 'volcanic_activity', ['volcano_name'], unique=False)
     op.create_index('idx_volcanic_start', 'volcanic_activity', ['eruption_start'], unique=False)
     op.create_index('idx_volcanic_vei', 'volcanic_activity', ['vei'], unique=False)
@@ -220,8 +226,7 @@ def downgrade() -> None:
     op.drop_index('idx_volcanic_vei', table_name='volcanic_activity')
     op.drop_index('idx_volcanic_start', table_name='volcanic_activity')
     op.drop_index('idx_volcanic_name', table_name='volcanic_activity')
-    op.drop_index('idx_volcanic_location', table_name='volcanic_activity', postgresql_using='gist')
-    op.drop_index('idx_volcanic_activity_location', table_name='volcanic_activity', postgresql_using='gist')
+    op.drop_index('idx_volcanic_coordinates', table_name='volcanic_activity')
     op.drop_table('volcanic_activity')
     op.drop_index(op.f('ix_solar_events_event_type'), table_name='solar_events')
     op.drop_index(op.f('ix_solar_events_event_start'), table_name='solar_events')
@@ -256,9 +261,8 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_earthquakes_magnitude'), table_name='earthquakes')
     op.drop_index(op.f('ix_earthquakes_event_time'), table_name='earthquakes')
     op.drop_index(op.f('ix_earthquakes_event_id'), table_name='earthquakes')
-    op.drop_index('idx_earthquakes_location', table_name='earthquakes', postgresql_using='gist')
     op.drop_index('idx_earthquake_time', table_name='earthquakes')
     op.drop_index('idx_earthquake_magnitude', table_name='earthquakes')
-    op.drop_index('idx_earthquake_location', table_name='earthquakes', postgresql_using='gist')
+    op.drop_index('idx_earthquake_coordinates', table_name='earthquakes')
     op.drop_table('earthquakes')
     # ### end Alembic commands ###

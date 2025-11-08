@@ -12,7 +12,7 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
-import geoalchemy2
+# Removed geoalchemy2 - not available on Railway PostgreSQL
 
 
 # revision identifiers, used by Alembic.
@@ -35,7 +35,8 @@ def upgrade() -> None:
     sa.Column('season', sa.Integer(), nullable=False, comment='Hurricane season year'),
     sa.Column('formation_date', sa.DateTime(), nullable=False, comment='Storm formation timestamp'),
     sa.Column('dissipation_date', sa.DateTime(), nullable=True, comment='Storm dissipation timestamp (null if ongoing)'),
-    sa.Column('peak_location', geoalchemy2.types.Geography(geometry_type='POINT', srid=4326, dimension=2, from_text='ST_GeogFromText', name='geography', nullable=False), nullable=False, comment='Location of peak intensity (WGS84)'),
+    sa.Column('peak_latitude', sa.Float(), nullable=False, comment='Latitude of peak intensity in decimal degrees (-90 to 90)'),
+    sa.Column('peak_longitude', sa.Float(), nullable=False, comment='Longitude of peak intensity in decimal degrees (-180 to 180)'),
     sa.Column('max_sustained_winds_kph', sa.Float(), nullable=True, comment='Maximum sustained winds in km/h'),
     sa.Column('min_central_pressure_hpa', sa.Float(), nullable=True, comment='Minimum central pressure in hectopascals'),
     sa.Column('category', sa.Integer(), nullable=True, comment='Saffir-Simpson scale (1-5) or equivalent'),
@@ -47,13 +48,15 @@ def upgrade() -> None:
     sa.Column('notes', sa.Text(), nullable=True, comment='Additional storm details'),
     sa.Column('data_source', sa.String(length=100), nullable=True, comment='Source: NOAA NHC, JTWC, JMA, etc.'),
     sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.CheckConstraint('peak_latitude >= -90 AND peak_latitude <= 90', name='ck_hurricane_latitude_range'),
+    sa.CheckConstraint('peak_longitude >= -180 AND peak_longitude <= 180', name='ck_hurricane_longitude_range'),
     sa.CheckConstraint('max_sustained_winds_kph IS NULL OR max_sustained_winds_kph >= 0', name='ck_hurricane_winds_nonnegative'),
     sa.CheckConstraint('min_central_pressure_hpa IS NULL OR min_central_pressure_hpa > 0', name='ck_hurricane_pressure_positive'),
     sa.CheckConstraint('category IS NULL OR (category >= 1 AND category <= 5)', name='ck_hurricane_category_range'),
     sa.CheckConstraint('fatalities IS NULL OR fatalities >= 0', name='ck_hurricane_fatalities_nonnegative'),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index('idx_hurricane_location', 'hurricanes', ['peak_location'], unique=False, postgresql_using='gist')
+    op.create_index('idx_hurricane_coordinates', 'hurricanes', ['peak_latitude', 'peak_longitude'], unique=False)
     op.create_index('idx_hurricane_name', 'hurricanes', ['storm_name'], unique=False)
     op.create_index('idx_hurricane_formation', 'hurricanes', ['formation_date'], unique=False)
     op.create_index('idx_hurricane_category', 'hurricanes', ['category'], unique=False)
@@ -65,7 +68,8 @@ def upgrade() -> None:
     op.create_table('tsunamis',
     sa.Column('id', sa.UUID(), nullable=False),
     sa.Column('event_date', sa.DateTime(), nullable=False, comment='Tsunami event timestamp'),
-    sa.Column('source_location', geoalchemy2.types.Geography(geometry_type='POINT', srid=4326, dimension=2, from_text='ST_GeogFromText', name='geography', nullable=False), nullable=False, comment='Tsunami source epicenter (WGS84)'),
+    sa.Column('source_latitude', sa.Float(), nullable=False, comment='Tsunami source latitude in decimal degrees (-90 to 90)'),
+    sa.Column('source_longitude', sa.Float(), nullable=False, comment='Tsunami source longitude in decimal degrees (-180 to 180)'),
     sa.Column('source_type', sa.String(length=100), nullable=False, comment='Earthquake, Volcanic, Landslide, Meteorite, Unknown'),
     sa.Column('earthquake_magnitude', sa.Float(), nullable=True, comment='Related earthquake magnitude (if applicable)'),
     sa.Column('max_wave_height_m', sa.Float(), nullable=True, comment='Maximum recorded wave height in meters'),
@@ -79,6 +83,8 @@ def upgrade() -> None:
     sa.Column('notes', sa.Text(), nullable=True, comment='Additional tsunami details'),
     sa.Column('data_source', sa.String(length=100), nullable=True, comment='Source: NOAA NGDC, PTWC, JMA, etc.'),
     sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.CheckConstraint('source_latitude >= -90 AND source_latitude <= 90', name='ck_tsunami_latitude_range'),
+    sa.CheckConstraint('source_longitude >= -180 AND source_longitude <= 180', name='ck_tsunami_longitude_range'),
     sa.CheckConstraint('max_wave_height_m IS NULL OR max_wave_height_m >= 0', name='ck_tsunami_wave_height_nonnegative'),
     sa.CheckConstraint('max_runup_m IS NULL OR max_runup_m >= 0', name='ck_tsunami_runup_nonnegative'),
     sa.CheckConstraint('intensity_scale IS NULL OR (intensity_scale >= 0 AND intensity_scale <= 12)', name='ck_tsunami_intensity_range'),
@@ -86,7 +92,7 @@ def upgrade() -> None:
     sa.CheckConstraint("source_type IN ('EARTHQUAKE', 'VOLCANIC', 'LANDSLIDE', 'METEORITE', 'UNKNOWN')", name='ck_tsunami_source_type'),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index('idx_tsunami_location', 'tsunamis', ['source_location'], unique=False, postgresql_using='gist')
+    op.create_index('idx_tsunami_coordinates', 'tsunamis', ['source_latitude', 'source_longitude'], unique=False)
     op.create_index('idx_tsunami_date', 'tsunamis', ['event_date'], unique=False)
     op.create_index('idx_tsunami_source', 'tsunamis', ['source_type'], unique=False)
     op.create_index('idx_tsunami_intensity', 'tsunamis', ['intensity_scale'], unique=False)
@@ -102,7 +108,7 @@ def downgrade() -> None:
     op.drop_index('idx_tsunami_intensity', table_name='tsunamis')
     op.drop_index('idx_tsunami_source', table_name='tsunamis')
     op.drop_index('idx_tsunami_date', table_name='tsunamis')
-    op.drop_index('idx_tsunami_location', table_name='tsunamis', postgresql_using='gist')
+    op.drop_index('idx_tsunami_coordinates', table_name='tsunamis')
     op.drop_table('tsunamis')
     
     op.drop_index(op.f('ix_hurricanes_storm_name'), table_name='hurricanes')
@@ -111,6 +117,6 @@ def downgrade() -> None:
     op.drop_index('idx_hurricane_category', table_name='hurricanes')
     op.drop_index('idx_hurricane_formation', table_name='hurricanes')
     op.drop_index('idx_hurricane_name', table_name='hurricanes')
-    op.drop_index('idx_hurricane_location', table_name='hurricanes', postgresql_using='gist')
+    op.drop_index('idx_hurricane_coordinates', table_name='hurricanes')
     op.drop_table('hurricanes')
     # ### end Alembic commands ###
