@@ -1,10 +1,10 @@
-"""004_seismos_natural_disasters
+"""005_seismos_natural_disasters
 
 Add hurricanes and tsunamis tables for comprehensive seismos (σεισμός) tracking.
 Greek seismos = "commotion of air and ground" (Matthew 24:7, Revelation 6:12)
 
 Revision ID: 7b8c9d0e1f23
-Revises: 2367184435ac
+Revises: 6cdf0b06a3e9
 Create Date: 2025-11-08 00:00:00.000000
 
 """
@@ -17,7 +17,7 @@ import geoalchemy2
 
 # revision identifiers, used by Alembic.
 revision: str = '7b8c9d0e1f23'
-down_revision: Union[str, None] = '2367184435ac'
+down_revision: Union[str, None] = '6cdf0b06a3e9'  # Changed from 2367184435ac to fix branched migrations
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
