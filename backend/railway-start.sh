@@ -132,11 +132,15 @@ done
 echo "Starting FastAPI application..."
 
 # Set default PORT if not provided by Railway
+# Railway domain is configured for port 8000
 if [ -z "$PORT" ]; then
     echo "WARNING: PORT environment variable not set, defaulting to 8000"
     PORT=8000
 else
-    echo "Using PORT from environment: $PORT"
+    echo "PORT from environment: $PORT"
+    # Override to 8000 to match Railway domain configuration
+    echo "Overriding PORT to 8000 to match Railway domain configuration"
+    PORT=8000
 fi
 
 echo "Starting uvicorn on 0.0.0.0:$PORT..."
