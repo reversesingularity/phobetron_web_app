@@ -6,12 +6,8 @@ set -e
 
 echo "Starting Phobetron Backend on Railway..."
 
-# Reduce database wait time - Railway database is usually ready faster
-echo "Waiting 30 seconds for database to initialize..."
-sleep 30
-
-# Enhanced database connectivity testing with increased retry logic
-echo "Testing database connectivity with enhanced retry logic..."
+# Skip initial wait - test database connectivity immediately
+echo "Testing database connectivity..."
 python3 -c "
 import os
 import time
@@ -70,8 +66,8 @@ if not all(db_config.get(k) for k in ['host', 'user', 'password', 'database']):
     sys.exit(1)
 
 print(f'Connecting to database at {db_config[\"host\"]}:{db_config[\"port\"]}')
-max_retries = 30
-retry_delay = 10
+max_retries = 15
+retry_delay = 5
 
 for attempt in range(max_retries):
     try:
@@ -92,11 +88,11 @@ for attempt in range(max_retries):
 print('Database is ready!')
 "
 
-# Enhanced migration logic with increased retry
+# Enhanced migration logic with retry
 echo "Running database migrations with retry logic..."
 cd /app
-max_migration_retries=10
-migration_retry_delay=30
+max_migration_retries=5
+migration_retry_delay=15
 
 for migration_attempt in $(seq 1 $max_migration_retries); do
     echo "Migration attempt $migration_attempt/$max_migration_retries..."
