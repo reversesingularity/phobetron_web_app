@@ -100,16 +100,30 @@ migration_retry_delay=30
 
 for migration_attempt in $(seq 1 $max_migration_retries); do
     echo "Migration attempt $migration_attempt/$max_migration_retries..."
-    if alembic upgrade head; then
+    
+    # Run migrations and capture output
+    migration_output=$(alembic upgrade head 2>&1)
+    migration_exit_code=$?
+    
+    # Check if migrations succeeded or if tables already exist (which is OK)
+    if [ $migration_exit_code -eq 0 ]; then
         echo "Database migrations completed successfully!"
+        echo "$migration_output"
+        break
+    elif echo "$migration_output" | grep -q "already exists"; then
+        echo "Tables already exist - migrations previously completed"
+        echo "Database schema is up to date!"
         break
     else
         echo "Migration attempt $migration_attempt failed"
+        echo "$migration_output"
         if [ $migration_attempt -lt $max_migration_retries ]; then
             echo "Retrying migrations in $migration_retry_delay seconds..."
             sleep $migration_retry_delay
         else
             echo "All migration attempts failed!"
+            echo "Final error output:"
+            echo "$migration_output"
             exit 1
         fi
     fi
