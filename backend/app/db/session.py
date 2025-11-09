@@ -14,7 +14,8 @@ def get_engine():
     global _engine
     if _engine is None:
         # Get DATABASE_URL with correct dialect (postgresql+psycopg2://)
-        database_url = settings.DATABASE_URL
+        database_url = settings.SQLALCHEMY_DATABASE_URL
+        print(f"Connecting to database: {database_url.split('@')[1] if '@' in database_url else 'localhost'}")  # Log host only, not credentials
         _engine = create_engine(
             database_url,
             pool_pre_ping=True,  # Verify connections before using

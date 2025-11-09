@@ -5,7 +5,8 @@ Loads configuration from environment variables with sensible defaults.
 """
 import os
 import json
-from typing import List
+from typing import List, Optional
+from pydantic import computed_field
 from pydantic_settings import BaseSettings
 
 
@@ -17,20 +18,20 @@ class Settings(BaseSettings):
     VERSION: str = "1.0.0"
     API_V1_STR: str = "/api/v1"
     
-    # Database configuration
-    _raw_database_url: str = os.getenv(
-        "DATABASE_URL",
-        "postgresql+psycopg://celestial_app:Hx3$oTc8Ja9^tL2w@localhost:5432/celestial_signs"
-    )
+    # Database configuration - Railway provides DATABASE_URL
+    # Default for local development
+    DATABASE_URL: str = "postgresql+psycopg2://celestial_app:Hx3$oTc8Ja9^tL2w@localhost:5432/celestial_signs"
     
-    # Railway provides DATABASE_URL as postgresql://..., but SQLAlchemy 2.0 needs postgresql+psycopg2://...
-    # Convert if necessary
+    @computed_field
     @property
-    def DATABASE_URL(self) -> str:
-        """Get database URL with correct dialect for SQLAlchemy 2.0+"""
-        url = self._raw_database_url
+    def SQLALCHEMY_DATABASE_URL(self) -> str:
+        """
+        Get database URL with correct SQLAlchemy 2.0 dialect.
+        Railway provides postgresql://, but we need postgresql+psycopg2://
+        """
+        url = self.DATABASE_URL
         if url.startswith("postgresql://") and not url.startswith("postgresql+"):
-            # Replace postgresql:// with postgresql+psycopg2://
+            # Convert to SQLAlchemy 2.0 compatible format
             url = url.replace("postgresql://", "postgresql+psycopg2://", 1)
         return url
     

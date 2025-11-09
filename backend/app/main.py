@@ -12,8 +12,9 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import text
+from contextlib import asynccontextmanager
 
-from app.db.session import get_db
+from app.db.session import get_db, get_engine
 from app.api.v1.api import api_router
 from app.api.routes.ml_routes import router as ml_router
 from app.api.routes.ml import router as ml_enhanced_router  # Enhanced ML routes
@@ -22,7 +23,33 @@ from app.api.v1.ml_predictions import router as ml_predictions_router  # Product
 from app.api.routes.verification import router as verification_router  # Database verification endpoints
 from app.core.config import settings
 
-# Create FastAPI application
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifespan events - startup and shutdown"""
+    # Startup
+    print("=" * 60)
+    print("Starting Phobetron API...")
+    print(f"Version: {settings.VERSION}")
+    
+    # Test database connection
+    try:
+        engine = get_engine()
+        with engine.connect() as conn:
+            result = conn.execute(text("SELECT 1"))
+            print("✓ Database connection successful!")
+            print(f"✓ Using database: {settings.SQLALCHEMY_DATABASE_URL.split('@')[1].split('/')[0] if '@' in settings.SQLALCHEMY_DATABASE_URL else 'localhost'}")
+    except Exception as e:
+        print(f"✗ Database connection failed: {e}")
+        print("Application will start but database operations may fail")
+    
+    print("=" * 60)
+    yield
+    # Shutdown
+    print("Shutting down Phobetron API...")
+
+
+# Create FastAPI application with lifespan
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description="API for tracking celestial signs and correlating them with astronomical and geophysical events",
@@ -30,6 +57,7 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
     docs_url="/docs",
     redoc_url="/redoc",
+    lifespan=lifespan,
 )
 
 # Configure CORS
