@@ -19,9 +19,22 @@ import psycopg2
 from urllib.parse import urlparse
 import sys
 
-# Try to use individual PG variables first (more reliable in Railway)
+# Try to use DATABASE_PRIVATE_URL first for direct connection (bypasses proxy)
 db_config = {}
-if os.getenv('PGHOST'):
+database_private_url = os.getenv('DATABASE_PRIVATE_URL')
+if database_private_url:
+    parsed = urlparse(database_private_url)
+    db_config = {
+        'host': parsed.hostname,
+        'port': parsed.port or 5432,
+        'user': parsed.username,
+        'password': parsed.password,
+        'database': parsed.path.lstrip('/'),
+        'sslmode': 'require',
+        'connect_timeout': 30
+    }
+elif os.getenv('PGHOST'):
+    # Fallback to individual PG variables (may still be proxy)
     db_config = {
         'host': os.getenv('PGHOST'),
         'port': int(os.getenv('PGPORT', 5432)),
@@ -32,10 +45,10 @@ if os.getenv('PGHOST'):
         'connect_timeout': 30
     }
 else:
-    # Fallback to parsing DATABASE_URL
+    # Final fallback to parsing DATABASE_URL (proxy)
     database_url = os.getenv('DATABASE_URL')
     if not database_url:
-        print('ERROR: Neither PGHOST nor DATABASE_URL is set')
+        print('ERROR: No database connection variables found')
         sys.exit(1)
     
     parsed = urlparse(database_url)
