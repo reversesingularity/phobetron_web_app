@@ -19,21 +19,39 @@ import psycopg2
 from urllib.parse import urlparse
 import sys
 
-database_url = os.getenv('DATABASE_URL')
-if not database_url:
-    print('ERROR: DATABASE_URL not set')
-    sys.exit(1)
+# Try to use individual PG variables first (more reliable in Railway)
+db_config = {}
+if os.getenv('PGHOST'):
+    db_config = {
+        'host': os.getenv('PGHOST'),
+        'port': int(os.getenv('PGPORT', 5432)),
+        'user': os.getenv('PGUSER'),
+        'password': os.getenv('PGPASSWORD'),
+        'database': os.getenv('PGDATABASE'),
+        'sslmode': 'require',
+        'connect_timeout': 30
+    }
+else:
+    # Fallback to parsing DATABASE_URL
+    database_url = os.getenv('DATABASE_URL')
+    if not database_url:
+        print('ERROR: Neither PGHOST nor DATABASE_URL is set')
+        sys.exit(1)
+    
+    parsed = urlparse(database_url)
+    db_config = {
+        'host': parsed.hostname,
+        'port': parsed.port or 5432,
+        'user': parsed.username,
+        'password': parsed.password,
+        'database': parsed.path.lstrip('/'),
+        'sslmode': 'require',
+        'connect_timeout': 30
+    }
 
-parsed = urlparse(database_url)
-db_config = {
-    'host': parsed.hostname,
-    'port': parsed.port or 5432,
-    'user': parsed.username,
-    'password': parsed.password,
-    'database': parsed.path.lstrip('/'),
-    'sslmode': 'require',
-    'connect_timeout': 30
-}
+if not all(db_config.get(k) for k in ['host', 'user', 'password', 'database']):
+    print('ERROR: Incomplete database configuration')
+    sys.exit(1)
 
 print(f'Connecting to database at {db_config[\"host\"]}:{db_config[\"port\"]}')
 max_retries = 30
