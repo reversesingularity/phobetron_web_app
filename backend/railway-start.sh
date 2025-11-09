@@ -4,7 +4,16 @@
 
 set -e
 
-echo "Starting Phobetron Backend on Railway..."
+echo "========================================"
+echo "Starting Phobetron Backend on Railway"
+echo "========================================"
+echo "Current directory: $(pwd)"
+echo "Python version: $(python3 --version)"
+echo "Available environment variables:"
+echo "  DATABASE_URL: ${DATABASE_URL:0:30}..."
+echo "  PGHOST: ${PGHOST:-not set}"
+echo "  PORT: ${PORT:-not set}"
+echo ""
 
 # Skip initial wait - test database connectivity immediately
 echo "Testing database connectivity..."
@@ -128,15 +137,11 @@ done
 echo "Starting FastAPI application..."
 
 # Set default PORT if not provided by Railway
-# Railway domain is configured for port 8000
 if [ -z "$PORT" ]; then
-    echo "WARNING: PORT environment variable not set, defaulting to 8000"
-    PORT=8000
+    echo "WARNING: PORT environment variable not set, defaulting to 8080"
+    PORT=8080
 else
-    echo "PORT from environment: $PORT"
-    # Override to 8000 to match Railway domain configuration
-    echo "Overriding PORT to 8000 to match Railway domain configuration"
-    PORT=8000
+    echo "Using PORT from environment: $PORT"
 fi
 
 echo "Starting uvicorn on 0.0.0.0:$PORT..."
