@@ -84,15 +84,22 @@ app.include_router(verification_router)  # Database verification and testing
 @app.get("/health", tags=["health"])
 async def health_check():
     """
-    Health check endpoint.
+    Health check endpoint - simple status without database dependency.
     
     Returns:
         dict: Health status
     """
-    return {
-        "status": "ok",
-        "version": settings.VERSION,
-    }
+    try:
+        return {
+            "status": "healthy",
+            "version": settings.VERSION,
+            "service": "phobetron-api",
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": str(e),
+        }
 
 
 @app.get("/", tags=["root"])
@@ -103,12 +110,16 @@ async def root():
     Returns:
         dict: Welcome message and API documentation link
     """
-    return {
-        "message": "Celestial Signs API",
-        "version": settings.VERSION,
-        "docs": "/docs",
-        "health": "/health",
-    }
+    try:
+        return {
+            "message": "Celestial Signs API",
+            "version": settings.VERSION,
+            "docs": "/docs",
+            "health": "/health",
+            "status": "running",
+        }
+    except Exception as e:
+        return {"error": str(e)}
 
 
 if __name__ == "__main__":
