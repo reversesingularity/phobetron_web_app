@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\" --names \"NEXT,API\" --prefix-colors \"cyan,magenta\" --kill-others-on-fail",
-    "dev:frontend": "next dev",
+    "dev:frontend": "next dev -p 3000",
     "dev:backend": "cd ../backend && .\\venv\\Scripts\\python.exe -m uvicorn app.main:app --reload --port 8020",
     "dev:both": "pwsh -File ../start-dev.ps1",
     "build": "next build",
