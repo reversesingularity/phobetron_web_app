@@ -140,4 +140,13 @@ else
 fi
 
 echo "Starting uvicorn on 0.0.0.0:$PORT..."
-exec uvicorn app.main:app --host 0.0.0.0 --port $PORT
+echo "Environment variables:"
+echo "  PORT=$PORT"
+echo "  DATABASE_URL=${DATABASE_URL:0:20}... (truncated)"
+echo "  RAILWAY_ENVIRONMENT=${RAILWAY_ENVIRONMENT:-not set}"
+echo ""
+exec uvicorn app.main:app \
+    --host 0.0.0.0 \
+    --port $PORT \
+    --log-level info \
+    --access-log
