@@ -65,12 +65,12 @@ class VolcanicActivityPopulator:
                 'country': 'United States',
                 'latitude': 19.4069,
                 'longitude': -155.2834,
-                'elevation_m': 1222,
-                'event_type': 'Eruption',
-                'activity_level': 'Major',
+                'eruption_type': 'effusive',
                 'vei': 3,
-                'event_time': datetime.utcnow() - timedelta(days=5),
-                'description': 'Ongoing eruption with lava fountaining and flows',
+                'eruption_start': datetime.utcnow() - timedelta(days=5),
+                'eruption_end': None,  # Ongoing
+                'plume_height_km': 1.5,
+                'notes': 'Ongoing eruption with lava fountaining and flows',
                 'data_source': 'USGS HVO',
             },
             {
@@ -78,12 +78,12 @@ class VolcanicActivityPopulator:
                 'country': 'Mexico',
                 'latitude': 19.0225,
                 'longitude': -98.6278,
-                'elevation_m': 5426,
-                'event_type': 'Eruption',
-                'activity_level': 'Moderate',
+                'eruption_type': 'explosive',
                 'vei': 2,
-                'event_time': datetime.utcnow() - timedelta(days=7),
-                'description': 'Ash emissions and minor explosions',
+                'eruption_start': datetime.utcnow() - timedelta(days=7),
+                'eruption_end': datetime.utcnow() - timedelta(days=6, hours=12),
+                'plume_height_km': 4.0,
+                'notes': 'Ash emissions and minor explosions',
                 'data_source': 'CENAPRED',
             },
             {
@@ -91,12 +91,12 @@ class VolcanicActivityPopulator:
                 'country': 'Japan',
                 'latitude': 31.5858,
                 'longitude': 130.6572,
-                'elevation_m': 1117,
-                'event_type': 'Eruption',
-                'activity_level': 'Moderate',
+                'eruption_type': 'explosive',
                 'vei': 2,
-                'event_time': datetime.utcnow() - timedelta(days=10),
-                'description': 'Explosive eruption with ash plume to 3km',
+                'eruption_start': datetime.utcnow() - timedelta(days=10),
+                'eruption_end': datetime.utcnow() - timedelta(days=10, hours=2),
+                'plume_height_km': 3.0,
+                'notes': 'Explosive eruption with ash plume to 3km',
                 'data_source': 'JMA',
             },
             {
@@ -104,12 +104,12 @@ class VolcanicActivityPopulator:
                 'country': 'Italy',
                 'latitude': 37.7510,
                 'longitude': 14.9934,
-                'elevation_m': 3350,
-                'event_type': 'Eruption',
-                'activity_level': 'Minor',
+                'eruption_type': 'effusive',
                 'vei': 1,
-                'event_time': datetime.utcnow() - timedelta(days=12),
-                'description': 'Strombolian activity with lava flows',
+                'eruption_start': datetime.utcnow() - timedelta(days=12),
+                'eruption_end': None,  # Ongoing
+                'plume_height_km': 0.5,
+                'notes': 'Strombolian activity with lava flows',
                 'data_source': 'INGV',
             },
             {
@@ -117,12 +117,12 @@ class VolcanicActivityPopulator:
                 'country': 'Indonesia',
                 'latitude': -8.1082,
                 'longitude': 112.9222,
-                'elevation_m': 3676,
-                'event_type': 'Eruption',
-                'activity_level': 'Major',
+                'eruption_type': 'explosive',
                 'vei': 3,
-                'event_time': datetime.utcnow() - timedelta(days=14),
-                'description': 'Pyroclastic flows and ash emissions',
+                'eruption_start': datetime.utcnow() - timedelta(days=14),
+                'eruption_end': datetime.utcnow() - timedelta(days=14, hours=8),
+                'plume_height_km': 5.0,
+                'notes': 'Pyroclastic flows and ash emissions',
                 'data_source': 'PVMBG',
             },
             {
@@ -130,12 +130,12 @@ class VolcanicActivityPopulator:
                 'country': 'Italy',
                 'latitude': 38.7891,
                 'longitude': 15.2130,
-                'elevation_m': 926,
-                'event_type': 'Eruption',
-                'activity_level': 'Minor',
+                'eruption_type': 'effusive',
                 'vei': 1,
-                'event_time': datetime.utcnow() - timedelta(days=16),
-                'description': 'Persistent Strombolian activity',
+                'eruption_start': datetime.utcnow() - timedelta(days=16),
+                'eruption_end': None,  # Ongoing persistent activity
+                'plume_height_km': 0.3,
+                'notes': 'Persistent Strombolian activity',
                 'data_source': 'LGS',
             },
             {
@@ -143,12 +143,12 @@ class VolcanicActivityPopulator:
                 'country': 'Guatemala',
                 'latitude': 14.4730,
                 'longitude': -90.8806,
-                'elevation_m': 3763,
-                'event_type': 'Eruption',
-                'activity_level': 'Moderate',
+                'eruption_type': 'explosive',
                 'vei': 2,
-                'event_time': datetime.utcnow() - timedelta(days=18),
-                'description': 'Explosive eruptions with ash plumes',
+                'eruption_start': datetime.utcnow() - timedelta(days=18),
+                'eruption_end': datetime.utcnow() - timedelta(days=17, hours=18),
+                'plume_height_km': 4.5,
+                'notes': 'Explosive eruptions with ash plumes',
                 'data_source': 'INSIVUMEH',
             },
             {
@@ -156,12 +156,12 @@ class VolcanicActivityPopulator:
                 'country': 'Ecuador',
                 'latitude': -0.0772,
                 'longitude': -77.6565,
-                'elevation_m': 3562,
-                'event_type': 'Eruption',
-                'activity_level': 'Moderate',
+                'eruption_type': 'effusive',
                 'vei': 2,
-                'event_time': datetime.utcnow() - timedelta(days=20),
-                'description': 'Lava flows and pyroclastic flows',
+                'eruption_start': datetime.utcnow() - timedelta(days=20),
+                'eruption_end': None,  # Ongoing
+                'plume_height_km': 2.0,
+                'notes': 'Lava flows and pyroclastic flows',
                 'data_source': 'IG',
             },
             {
@@ -169,12 +169,12 @@ class VolcanicActivityPopulator:
                 'country': 'Russia',
                 'latitude': 56.6536,
                 'longitude': 161.3601,
-                'elevation_m': 3283,
-                'event_type': 'Eruption',
-                'activity_level': 'Major',
+                'eruption_type': 'explosive',
                 'vei': 3,
-                'event_time': datetime.utcnow() - timedelta(days=22),
-                'description': 'Explosive eruption with pyroclastic flows',
+                'eruption_start': datetime.utcnow() - timedelta(days=22),
+                'eruption_end': datetime.utcnow() - timedelta(days=22, hours=4),
+                'plume_height_km': 8.0,
+                'notes': 'Explosive eruption with pyroclastic flows',
                 'data_source': 'KVERT',
             },
             {
@@ -182,12 +182,12 @@ class VolcanicActivityPopulator:
                 'country': 'Ecuador',
                 'latitude': -2.0053,
                 'longitude': -78.3409,
-                'elevation_m': 5230,
-                'event_type': 'Eruption',
-                'activity_level': 'Moderate',
+                'eruption_type': 'explosive',
                 'vei': 2,
-                'event_time': datetime.utcnow() - timedelta(days=24),
-                'description': 'Ongoing eruptive activity with ash emissions',
+                'eruption_start': datetime.utcnow() - timedelta(days=24),
+                'eruption_end': None,  # Ongoing
+                'plume_height_km': 3.0,
+                'notes': 'Ongoing eruptive activity with ash emissions',
                 'data_source': 'IG',
             },
         ]
@@ -196,7 +196,7 @@ class VolcanicActivityPopulator:
         cutoff_date = datetime.utcnow() - timedelta(weeks=weeks_back)
         filtered_events = [
             event for event in sample_events 
-            if event['event_time'] >= cutoff_date
+            if event['eruption_start'] >= cutoff_date
         ]
         
         print(f"✓ Generated {len(filtered_events)} sample volcanic events")
@@ -227,11 +227,11 @@ class VolcanicActivityPopulator:
             print(f"\nPopulating database with {len(volcanic_events)} volcanic events...")
             
             for i, event_data in enumerate(volcanic_events):
-                # Check for duplicates (same volcano + time)
+                # Check for duplicates (same volcano + eruption start time)
                 if skip_duplicates:
                     existing = db.query(VolcanicActivity).filter(
                         VolcanicActivity.volcano_name == event_data['volcano_name'],
-                        VolcanicActivity.event_time == event_data['event_time']
+                        VolcanicActivity.eruption_start == event_data['eruption_start']
                     ).first()
                     
                     if existing:

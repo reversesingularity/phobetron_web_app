@@ -140,57 +140,47 @@ class NASANEOPopulator:
             if not close_approach_date_str:
                 return None
             
-            close_approach_date = datetime.strptime(
+            approach_date = datetime.strptime(
                 close_approach_date_str,
                 '%Y-%b-%d %H:%M'
             )
             
-            # Distance data (kilometers)
-            miss_distance_km = float(
-                approach.get('miss_distance', {}).get('kilometers', 0)
-            )
+            # Distance data
+            miss_distance = approach.get('miss_distance', {})
+            miss_distance_au = float(miss_distance.get('astronomical', 0))
+            miss_distance_lunar = float(miss_distance.get('lunar', 0))
             
-            # Velocity data (km/h)
+            # Velocity data (convert from km/h to km/s)
             relative_velocity_kmh = float(
                 approach.get('relative_velocity', {}).get('kilometers_per_hour', 0)
             )
+            relative_velocity_km_s = relative_velocity_kmh / 3600.0 if relative_velocity_kmh else None
             
-            # Size estimates (meters)
+            # Size estimates (meters) - use average of min and max
+            estimated_diameter_m = None
             estimated_diameter = neo_data.get('estimated_diameter', {})
-            diameter_min_m = None
-            diameter_max_m = None
             
             if 'meters' in estimated_diameter:
-                diameter_min_m = float(
+                diameter_min = float(
                     estimated_diameter['meters'].get('estimated_diameter_min', 0)
                 )
-                diameter_max_m = float(
+                diameter_max = float(
                     estimated_diameter['meters'].get('estimated_diameter_max', 0)
                 )
-            
-            # Hazard assessment
-            is_potentially_hazardous = neo_data.get(
-                'is_potentially_hazardous_asteroid',
-                False
-            )
-            
-            # Orbiting body (usually Earth)
-            orbiting_body = approach.get('orbiting_body', 'Earth')
+                if diameter_min > 0 and diameter_max > 0:
+                    estimated_diameter_m = (diameter_min + diameter_max) / 2.0
             
             # Absolute magnitude
-            absolute_magnitude_h = neo_data.get('absolute_magnitude_h')
+            absolute_magnitude = neo_data.get('absolute_magnitude_h')
             
             return {
-                'neo_id': neo_id,
-                'name': name,
-                'close_approach_date': close_approach_date,
-                'miss_distance_km': miss_distance_km,
-                'relative_velocity_kmh': relative_velocity_kmh,
-                'diameter_min_m': diameter_min_m,
-                'diameter_max_m': diameter_max_m,
-                'is_potentially_hazardous': is_potentially_hazardous,
-                'orbiting_body': orbiting_body,
-                'absolute_magnitude_h': absolute_magnitude_h,
+                'object_name': f"{name} ({neo_id})",  # Combine name and ID
+                'approach_date': approach_date,
+                'miss_distance_au': miss_distance_au,
+                'miss_distance_lunar': miss_distance_lunar,
+                'relative_velocity_km_s': relative_velocity_km_s,
+                'estimated_diameter_m': estimated_diameter_m,
+                'absolute_magnitude': absolute_magnitude,
                 'data_source': 'NASA/JPL',
             }
             
@@ -229,11 +219,11 @@ class NASANEOPopulator:
                     skipped_count += 1
                     continue
                 
-                # Check for duplicates (same NEO + approach date)
+                # Check for duplicates (same object + approach date)
                 if skip_duplicates:
                     existing = db.query(NeoCloseApproaches).filter(
-                        NeoCloseApproaches.neo_id == neo_parsed['neo_id'],
-                        NeoCloseApproaches.close_approach_date == neo_parsed['close_approach_date']
+                        NeoCloseApproaches.object_name == neo_parsed['object_name'],
+                        NeoCloseApproaches.approach_date == neo_parsed['approach_date']
                     ).first()
                     
                     if existing:

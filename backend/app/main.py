@@ -34,18 +34,19 @@ async def lifespan(app: FastAPI):
     print("Starting Phobetron API...", flush=True)
     print(f"Version: {settings.VERSION}", flush=True)
     
-    # Test database connection
+    # Test database connection - but don't fail if it doesn't work immediately
     try:
+        print("Testing database connection...", flush=True)
         engine = get_engine()
         with engine.connect() as conn:
             result = conn.execute(text("SELECT 1"))
             print("✓ Database connection successful!", flush=True)
     except Exception as e:
-        print(f"✗ Database connection failed: {e}", flush=True)
-        import traceback
-        traceback.print_exc()
+        print(f"⚠ Database connection failed at startup: {e}", flush=True)
+        print("Application will continue - database may become available later", flush=True)
     
     print("=" * 60, flush=True)
+    print("Application startup complete!", flush=True)
     sys.stdout.flush()
     yield
     # Shutdown
