@@ -7,8 +7,8 @@ set -e
 echo "Starting Phobetron Backend on Railway..."
 
 # Wait for database to be fully ready (Railway databases may take time to spin up)
-echo "Waiting 60 seconds for database to initialize..."
-sleep 60
+echo "Waiting 120 seconds for database to initialize..."
+sleep 120
 
 # Enhanced database connectivity testing with increased retry logic
 echo "Testing database connectivity with enhanced retry logic..."
