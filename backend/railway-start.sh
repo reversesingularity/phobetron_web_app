@@ -23,6 +23,7 @@ import sys
 db_config = {}
 database_private_url = os.getenv('DATABASE_PRIVATE_URL')
 if database_private_url:
+    print('Using DATABASE_PRIVATE_URL for direct database connection')
     parsed = urlparse(database_private_url)
     db_config = {
         'host': parsed.hostname,
@@ -34,6 +35,7 @@ if database_private_url:
         'connect_timeout': 30
     }
 elif os.getenv('PGHOST'):
+    print('Using individual PG environment variables for database connection')
     # Fallback to individual PG variables (may still be proxy)
     db_config = {
         'host': os.getenv('PGHOST'),
@@ -45,6 +47,7 @@ elif os.getenv('PGHOST'):
         'connect_timeout': 30
     }
 else:
+    print('Using DATABASE_URL for database connection (proxy)')
     # Final fallback to parsing DATABASE_URL (proxy)
     database_url = os.getenv('DATABASE_URL')
     if not database_url:
