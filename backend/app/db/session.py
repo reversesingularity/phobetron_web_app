@@ -6,29 +6,19 @@ from sqlalchemy.orm import sessionmaker, Session
 
 from app.core.config import settings
 
-# Get database URL from settings
-DATABASE_URL = settings.DATABASE_URL
-
-"""Database session factory and engine configuration."""
-
-from typing import Generator
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
-
-from app.core.config import settings
-
-# Get database URL from settings
-DATABASE_URL = settings.DATABASE_URL
-
-# Create SQLAlchemy engine lazily
+# Create SQLAlchemy engine lazily with Railway-compatible connection
 _engine = None
 
 def get_engine():
+    """Get or create SQLAlchemy engine with Railway-compatible DATABASE_URL"""
     global _engine
     if _engine is None:
+        # Get DATABASE_URL with correct dialect (postgresql+psycopg2://)
+        database_url = settings.DATABASE_URL
         _engine = create_engine(
-            DATABASE_URL,
-            pool_pre_ping=True,
+            database_url,
+            pool_pre_ping=True,  # Verify connections before using
+            pool_recycle=300,    # Recycle connections after 5 minutes
             echo=False
         )
     return _engine
@@ -40,7 +30,7 @@ engine = get_engine()
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
-    bind=get_engine()
+    bind=engine
 )
 
 

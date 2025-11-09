@@ -18,10 +18,21 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     
     # Database configuration
-    DATABASE_URL: str = os.getenv(
+    _raw_database_url: str = os.getenv(
         "DATABASE_URL",
         "postgresql+psycopg://celestial_app:Hx3$oTc8Ja9^tL2w@localhost:5432/celestial_signs"
     )
+    
+    # Railway provides DATABASE_URL as postgresql://..., but SQLAlchemy 2.0 needs postgresql+psycopg2://...
+    # Convert if necessary
+    @property
+    def DATABASE_URL(self) -> str:
+        """Get database URL with correct dialect for SQLAlchemy 2.0+"""
+        url = self._raw_database_url
+        if url.startswith("postgresql://") and not url.startswith("postgresql+"):
+            # Replace postgresql:// with postgresql+psycopg2://
+            url = url.replace("postgresql://", "postgresql+psycopg2://", 1)
+        return url
     
     # CORS origins - will be loaded from environment or use defaults
     BACKEND_CORS_ORIGINS: List[str] = [
