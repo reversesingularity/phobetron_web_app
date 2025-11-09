@@ -130,4 +130,14 @@ for migration_attempt in $(seq 1 $max_migration_retries); do
 done
 
 echo "Starting FastAPI application..."
+
+# Set default PORT if not provided by Railway
+if [ -z "$PORT" ]; then
+    echo "WARNING: PORT environment variable not set, defaulting to 8000"
+    PORT=8000
+else
+    echo "Using PORT from environment: $PORT"
+fi
+
+echo "Starting uvicorn on 0.0.0.0:$PORT..."
 exec uvicorn app.main:app --host 0.0.0.0 --port $PORT

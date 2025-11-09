@@ -28,25 +28,28 @@ from app.core.config import settings
 async def lifespan(app: FastAPI):
     """Application lifespan events - startup and shutdown"""
     # Startup
-    print("=" * 60)
-    print("Starting Phobetron API...")
-    print(f"Version: {settings.VERSION}")
+    import sys
+    sys.stdout.flush()
+    print("=" * 60, flush=True)
+    print("Starting Phobetron API...", flush=True)
+    print(f"Version: {settings.VERSION}", flush=True)
     
     # Test database connection
     try:
         engine = get_engine()
         with engine.connect() as conn:
             result = conn.execute(text("SELECT 1"))
-            print("✓ Database connection successful!")
-            print(f"✓ Using database: {settings.SQLALCHEMY_DATABASE_URL.split('@')[1].split('/')[0] if '@' in settings.SQLALCHEMY_DATABASE_URL else 'localhost'}")
+            print("✓ Database connection successful!", flush=True)
     except Exception as e:
-        print(f"✗ Database connection failed: {e}")
-        print("Application will start but database operations may fail")
+        print(f"✗ Database connection failed: {e}", flush=True)
+        import traceback
+        traceback.print_exc()
     
-    print("=" * 60)
+    print("=" * 60, flush=True)
+    sys.stdout.flush()
     yield
     # Shutdown
-    print("Shutting down Phobetron API...")
+    print("Shutting down Phobetron API...", flush=True)
 
 
 # Create FastAPI application with lifespan
