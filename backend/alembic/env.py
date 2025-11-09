@@ -26,7 +26,22 @@ if config.config_file_name is not None:
 # Import database URL from environment if available
 from dotenv import load_dotenv
 load_dotenv()
-database_url = os.getenv("DATABASE_URL")
+
+# Construct database URL from individual PG environment variables (preferred)
+# or fall back to DATABASE_URL
+pghost = os.getenv("PGHOST")
+pgport = os.getenv("PGPORT")
+pguser = os.getenv("PGUSER")
+pgpassword = os.getenv("PGPASSWORD")
+pgdatabase = os.getenv("PGDATABASE")
+
+if all([pghost, pgport, pguser, pgpassword, pgdatabase]):
+    # Use individual PG environment variables
+    database_url = f"postgresql://{pguser}:{pgpassword}@{pghost}:{pgport}/{pgdatabase}"
+else:
+    # Fall back to DATABASE_URL
+    database_url = os.getenv("DATABASE_URL")
+
 if database_url:
     config.set_main_option("sqlalchemy.url", database_url)
 
