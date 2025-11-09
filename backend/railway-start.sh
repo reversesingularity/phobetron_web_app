@@ -24,7 +24,8 @@ db_config = {
     'port': parsed.port or 5432,
     'user': parsed.username,
     'password': parsed.password,
-    'database': parsed.path.lstrip('/')
+    'database': parsed.path.lstrip('/'),
+    'sslmode': 'require'
 }
 
 for i in range(30):  # Try for 60 seconds (30 * 2s)
