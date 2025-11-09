@@ -27,12 +27,9 @@ RUN useradd --create-home --shell /bin/bash app \
     && chown -R app:app /app
 USER app
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:$PORT/health || exit 1
+# Expose common Railway ports
+EXPOSE 8080
+EXPOSE 8000
 
-# Railway provides $PORT environment variable
-EXPOSE $PORT
-
-# Run the application
-CMD uvicorn app.main:app --host 0.0.0.0 --port $PORT
+# Run the Railway startup script
+CMD ["./railway-start.sh"]
