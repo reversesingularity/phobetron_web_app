@@ -7,7 +7,7 @@ from sqlalchemy import text
 import subprocess
 import os
 
-router = APIRouter(prefix="/api/v1/admin", tags=["admin"])
+router = APIRouter(tags=["admin"])
 
 
 @router.post("/run-migrations")

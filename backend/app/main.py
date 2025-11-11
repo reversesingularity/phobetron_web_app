@@ -72,7 +72,7 @@ app.include_router(ml_enhanced_router)  # Enhanced ML/AI routes (new)
 app.include_router(data_sources_router)  # Data sources with ESA/NASA fallback
 app.include_router(ml_predictions_router)  # Production ML predictions
 app.include_router(verification_router)  # Database verification and testing
-app.include_router(admin_router)  # Admin and migration endpoints
+app.include_router(admin_router, prefix=f"{settings.API_V1_STR}/admin")  # Admin and migration endpoints
 
 
 @app.get("/health", tags=["health"])
