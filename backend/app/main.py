@@ -21,6 +21,7 @@ from app.api.routes.ml import router as ml_enhanced_router  # Enhanced ML routes
 from app.api.routes.data_sources import router as data_sources_router  # ESA/NASA fallback routes
 from app.api.v1.ml_predictions import router as ml_predictions_router  # Production ML predictions
 from app.api.routes.verification import router as verification_router  # Database verification endpoints
+from app.api.routes.admin import router as admin_router  # Admin/migration endpoints
 from app.core.config import settings
 
 
@@ -71,6 +72,7 @@ app.include_router(ml_enhanced_router)  # Enhanced ML/AI routes (new)
 app.include_router(data_sources_router)  # Data sources with ESA/NASA fallback
 app.include_router(ml_predictions_router)  # Production ML predictions
 app.include_router(verification_router)  # Database verification and testing
+app.include_router(admin_router)  # Admin and migration endpoints
 
 
 @app.get("/health", tags=["health"])
@@ -89,6 +91,18 @@ async def health_check():
         }
     except Exception as e:
         return {
+
+
+@app.get("/test", tags=["health"])
+async def test_endpoint():
+    """
+    Simple test endpoint to verify API is responding.
+    """
+    return {
+        "message": "API is working!",
+        "timestamp": "2025-11-12T00:00:00Z",
+        "cors_origins": settings.BACKEND_CORS_ORIGINS,
+    }
             "status": "error",
             "error": str(e),
         }
