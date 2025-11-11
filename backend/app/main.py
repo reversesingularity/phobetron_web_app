@@ -91,6 +91,9 @@ async def health_check():
         }
     except Exception as e:
         return {
+            "status": "error",
+            "error": str(e),
+        }
 
 
 @app.get("/test", tags=["health"])
@@ -103,9 +106,6 @@ async def test_endpoint():
         "timestamp": "2025-11-12T00:00:00Z",
         "cors_origins": settings.BACKEND_CORS_ORIGINS,
     }
-            "status": "error",
-            "error": str(e),
-        }
 
 
 @app.get("/", tags=["root"])
