@@ -10,6 +10,16 @@ import os
 router = APIRouter(tags=["admin"])
 
 
+@router.get("/ping")
+async def admin_ping():
+    """Simple ping endpoint to verify admin routes are accessible."""
+    return {
+        "status": "ok",
+        "message": "Admin endpoints are accessible",
+        "timestamp": "2025-11-12T00:00:00Z"
+    }
+
+
 @router.post("/run-migrations")
 async def run_migrations():
     """
@@ -40,25 +50,27 @@ async def check_tables():
     """
     Check if database tables exist.
     """
-    from app.db.session import get_engine
-    
     try:
-        engine = get_engine()
-        with engine.connect() as conn:
-            # Query to list all tables
-            result = conn.execute(text("""
-                SELECT table_name 
-                FROM information_schema.tables 
-                WHERE table_schema = 'public'
-                ORDER BY table_name
-            """))
-            
-            tables = [row[0] for row in result]
+        from app.db.session import SessionLocal
+        from sqlalchemy import inspect
+        
+        # Use a session to get the engine
+        db = SessionLocal()
+        try:
+            inspector = inspect(db.bind)
+            tables = inspector.get_table_names()
             
             return {
                 "status": "success",
                 "table_count": len(tables),
-                "tables": tables,
+                "tables": sorted(tables),
             }
+        finally:
+            db.close()
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return {
+            "status": "error",
+            "error": str(e),
+            "table_count": 0,
+            "tables": []
+        }
