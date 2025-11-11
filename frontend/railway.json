@@ -1,23 +1,7 @@
 {
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
-    "builder": "NIXPACKS",
-    "nixpacksPlan": {
-      "phases": {
-        "setup": {
-          "nixPkgs": ["nodejs-20_x"]
-        },
-        "install": {
-          "cmds": ["npm install"]
-        },
-        "build": {
-          "cmds": ["npm run build"]
-        }
-      },
-      "start": {
-        "cmd": "npm run preview -- --host 0.0.0.0 --port $PORT"
-      }
-    }
+    "builder": "NIXPACKS"
   },
   "deploy": {
     "startCommand": "npm run preview -- --host 0.0.0.0 --port $PORT",
