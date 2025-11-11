@@ -1,11 +1,13 @@
 """
 Machine Learning API Routes for Enhanced Predictions
 Includes: NEO risk assessment, Watchman alerts, pattern detection, interstellar anomaly detection
+Phase 2: LSTM deep learning, Seismos correlation models
 """
 from fastapi import APIRouter, HTTPException, Query
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from datetime import datetime, date
 from pydantic import BaseModel, Field
+import numpy as np
 
 # Import ML models
 import sys
@@ -15,6 +17,8 @@ sys.path.append(str(Path(__file__).parent.parent.parent))
 from app.ml.neo_trajectory_predictor import NEOTrajectoryPredictor, NEOPrediction
 from app.ml.watchman_enhanced_alerts import WatchmanEnhancedAlertSystem, EnhancedAlert
 from app.ml.pattern_detection import pattern_detection_service
+from app.ml.lstm_deep_learning import ProphecyLSTMModel
+from app.ml.seismos_correlations import SeismosCorrelationTrainer
 
 # Initialize ML models
 neo_predictor = NEOTrajectoryPredictor()
@@ -103,6 +107,47 @@ class DetectedPatternResponse(BaseModel):
     feast_alignments: Optional[List[str]] = Field(None, description="Aligned biblical feasts")
     biblical_references: List[str] = Field(default_factory=list)
     historical_note: Optional[str] = Field(None, description="Historical parallel")
+
+
+# ===== Phase 2 Models =====
+
+class ProphecyLSTMRequest(BaseModel):
+    """Request model for LSTM prophetic prediction"""
+    events: List[Dict[str, Any]] = Field(..., description="Sequence of events (30 timesteps recommended)")
+    sequence_length: Optional[int] = Field(30, description="Number of timesteps for LSTM")
+    features: Optional[List[str]] = Field(
+        default=[
+            'blood_moon', 'tetrad_member', 'jerusalem_visible',
+            'magnitude', 'feast_day', 'historical_significance',
+            'temporal_proximity', 'spatial_clustering'
+        ],
+        description="Features to extract from events"
+    )
+
+
+class ProphecyLSTMResponse(BaseModel):
+    """Response model for LSTM prophetic prediction"""
+    prophetic_probability: float = Field(..., description="Probability of prophetic significance (0-1)")
+    confidence: float = Field(..., description="Model confidence (0-1)")
+    features_analyzed: int = Field(..., description="Number of features used")
+    model: str = Field(..., description="Model architecture")
+    sequence_info: Dict[str, Any] = Field(..., description="Information about the input sequence")
+
+
+class SeismosCorrelationRequest(BaseModel):
+    """Request model for Seismos correlation prediction"""
+    celestial_data: Optional[Dict[str, Any]] = Field(None, description="Celestial event data")
+    solar_data: Optional[Dict[str, Any]] = Field(None, description="Solar activity data")
+    planetary_data: Optional[Dict[str, Any]] = Field(None, description="Planetary alignment data")
+    lunar_data: Optional[Dict[str, Any]] = Field(None, description="Lunar cycle data")
+
+
+class SeismosCorrelationResponse(BaseModel):
+    """Response model for Seismos correlation prediction"""
+    earthquake_risk: Dict[str, Any] = Field(..., description="Earthquake cluster prediction")
+    volcanic_risk: Dict[str, Any] = Field(..., description="Volcanic eruption prediction")
+    hurricane_risk: Dict[str, Any] = Field(..., description="Hurricane formation prediction")
+    tsunami_risk: Dict[str, Any] = Field(..., description="Tsunami risk prediction")
 
 
 # ===== Endpoints =====
@@ -411,7 +456,7 @@ async def comprehensive_pattern_detection(
         raise HTTPException(status_code=500, detail=f"Comprehensive pattern detection failed: {str(e)}")
 
 
-@router.get("/health")
+@router.get("/health", tags=["Health"])
 async def ml_health_check():
     """Health check for ML services"""
     return {
@@ -419,7 +464,344 @@ async def ml_health_check():
         "models": {
             "neo_predictor": "loaded",
             "watchman_system": "loaded",
-            "pattern_detection": "loaded"
+            "pattern_detection": "loaded",
+            "prophecy_lstm": "loaded",
+            "seismos_correlation": "loaded"
         },
-        "version": "1.0.0"
+        "version": "2.0.0"
     }
+
+
+# ===== Phase 2: LSTM Deep Learning & Seismos Correlation =====
+
+@router.post("/prophecy-lstm-prediction", response_model=ProphecyLSTMResponse, tags=["Phase 2"])
+async def prophecy_lstm_prediction(request: ProphecyLSTMRequest):
+    """
+    TensorFlow LSTM Deep Learning for Prophetic Prediction
+    
+    Uses a 2-layer LSTM (128→64 units) trained on 100+ historical events.
+    Predicts prophetic significance based on 8 celestial features over 30 timesteps.
+    
+    Biblical Foundation:
+    - Genesis 1:14: "Let there be lights in the vault of the sky to separate the day 
+      from the night, and let them serve as signs to mark sacred times, and days and years"
+    - Luke 21:25-26: "There will be signs in the sun, moon and stars"
+    
+    Features Analyzed:
+    - Blood moon occurrence, Tetrad membership, Jerusalem visibility
+    - Magnitude, Feast day alignment, Historical significance
+    - Temporal proximity, Spatial clustering
+    
+    Returns:
+    - Prophetic probability (0-1)
+    - Model confidence (0-1)
+    - Feature analysis count
+    - Sequence information
+    """
+    try:
+        # Load LSTM model
+        lstm_model = ProphecyLSTMModel()
+        model_path = "app/models/prophecy_lstm_model.h5"
+        
+        if not lstm_model.load_model(model_path):
+            raise HTTPException(
+                status_code=503,
+                detail=f"LSTM model not found at {model_path}. Run 'python app/ml/train_all_models.py' first."
+            )
+        
+        # Extract features from events
+        features = extract_features(request.events, request.features)
+        
+        # Ensure sequence length
+        if len(features) < request.sequence_length:
+            # Pad with zeros
+            padding = np.zeros((request.sequence_length - len(features), features.shape[1]))
+            features = np.vstack([padding, features])
+        elif len(features) > request.sequence_length:
+            # Take most recent events
+            features = features[-request.sequence_length:]
+        
+        # Reshape for LSTM: (1, timesteps, features)
+        features = features.reshape(1, request.sequence_length, features.shape[1])
+        
+        # Predict
+        prediction = lstm_model.predict(features)
+        probability = float(prediction[0][0])
+        
+        # Calculate confidence based on distance from 0.5
+        confidence = abs(probability - 0.5) * 2
+        
+        return ProphecyLSTMResponse(
+            prophetic_probability=probability,
+            confidence=confidence,
+            features_analyzed=features.shape[2],
+            model="LSTM-2Layer-128-64",
+            sequence_info={
+                "timesteps": request.sequence_length,
+                "events_provided": len(request.events),
+                "features_per_event": features.shape[2]
+            }
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"LSTM prediction failed: {str(e)}")
+
+
+@router.post("/seismos-correlation", response_model=SeismosCorrelationResponse, tags=["Phase 2"])
+async def seismos_correlation(request: SeismosCorrelationRequest):
+    """
+    4 Seismos Correlation Models: Celestial → Earth Events
+    
+    Trained on 100+ historical events with Random Forest & Gradient Boosting.
+    Predicts correlation between celestial signs and earth catastrophes.
+    
+    Biblical Foundation:
+    - Luke 21:11: "There will be great earthquakes, famines and pestilences in various 
+      places, and fearful events and great signs from heaven"
+    - Revelation 6:12-14: Earthquake, sun, moon, stars, sky receded, mountains moved
+    
+    Models:
+    1. Celestial → Earthquake Clusters (Random Forest)
+    2. Solar Flares → Volcanic Eruptions (Gradient Boosting)
+    3. Planetary Alignments → Hurricane Formation (Random Forest)
+    4. Lunar Cycles → Tsunami Risk (Gradient Boosting)
+    
+    Returns:
+    - Risk scores (0-1) for each earth event type
+    - Confidence intervals
+    - Feature importance rankings
+    """
+    try:
+        trainer = SeismosCorrelationTrainer()
+        results = {}
+        
+        # 1. Earthquake correlation
+        if request.celestial_data:
+            features = prepare_celestial_features(request.celestial_data)
+            earthquake_pred = trainer.predict_earthquake(features)
+            results["earthquake_risk"] = {
+                "risk_score": float(earthquake_pred["risk"]),
+                "confidence": float(earthquake_pred["confidence"]),
+                "top_features": earthquake_pred["important_features"][:3],
+                "biblical_ref": "Matthew 24:7 - 'There will be famines and earthquakes in various places'"
+            }
+        else:
+            results["earthquake_risk"] = {"risk_score": 0.0, "confidence": 0.0, "message": "No celestial data provided"}
+        
+        # 2. Volcanic correlation
+        if request.solar_data:
+            features = prepare_solar_features(request.solar_data)
+            volcanic_pred = trainer.predict_volcanic(features)
+            results["volcanic_risk"] = {
+                "risk_score": float(volcanic_pred["risk"]),
+                "confidence": float(volcanic_pred["confidence"]),
+                "top_features": volcanic_pred["important_features"][:3],
+                "biblical_ref": "Revelation 8:8 - 'Something like a huge mountain, all ablaze, was thrown into the sea'"
+            }
+        else:
+            results["volcanic_risk"] = {"risk_score": 0.0, "confidence": 0.0, "message": "No solar data provided"}
+        
+        # 3. Hurricane correlation
+        if request.planetary_data:
+            features = prepare_planetary_features(request.planetary_data)
+            hurricane_pred = trainer.predict_hurricane(features)
+            results["hurricane_risk"] = {
+                "risk_score": float(hurricane_pred["risk"]),
+                "confidence": float(hurricane_pred["confidence"]),
+                "top_features": hurricane_pred["important_features"][:3],
+                "biblical_ref": "Mark 4:39 - 'The wind died down and it was completely calm'"
+            }
+        else:
+            results["hurricane_risk"] = {"risk_score": 0.0, "confidence": 0.0, "message": "No planetary data provided"}
+        
+        # 4. Tsunami correlation
+        if request.lunar_data:
+            features = prepare_lunar_features(request.lunar_data)
+            tsunami_pred = trainer.predict_tsunami(features)
+            results["tsunami_risk"] = {
+                "risk_score": float(tsunami_pred["risk"]),
+                "confidence": float(tsunami_pred["confidence"]),
+                "top_features": tsunami_pred["important_features"][:3],
+                "biblical_ref": "Revelation 21:1 - 'There was no longer any sea'"
+            }
+        else:
+            results["tsunami_risk"] = {"risk_score": 0.0, "confidence": 0.0, "message": "No lunar data provided"}
+        
+        return SeismosCorrelationResponse(**results)
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Seismos correlation failed: {str(e)}")
+
+
+# ===== Helper Functions =====
+
+def extract_features(events: List[Dict[str, Any]], feature_names: List[str]) -> np.ndarray:
+    """
+    Extract numeric features from event dictionaries for LSTM input.
+    
+    Args:
+        events: List of event dictionaries with various attributes
+        feature_names: List of feature names to extract
+    
+    Returns:
+        NumPy array of shape (num_events, num_features)
+    """
+    feature_matrix = []
+    
+    for event in events:
+        feature_vector = []
+        
+        for fname in feature_names:
+            if fname == 'blood_moon':
+                feature_vector.append(1.0 if event.get('is_blood_moon', False) else 0.0)
+            elif fname == 'tetrad_member':
+                feature_vector.append(1.0 if event.get('is_tetrad_member', False) else 0.0)
+            elif fname == 'jerusalem_visible':
+                feature_vector.append(1.0 if event.get('jerusalem_visible', False) else 0.0)
+            elif fname == 'magnitude':
+                feature_vector.append(float(event.get('magnitude', 0.0)))
+            elif fname == 'feast_day':
+                feature_vector.append(1.0 if event.get('feast_day', False) else 0.0)
+            elif fname == 'historical_significance':
+                feature_vector.append(float(event.get('historical_significance', 0.0)))
+            elif fname == 'temporal_proximity':
+                feature_vector.append(float(event.get('temporal_proximity', 0.0)))
+            elif fname == 'spatial_clustering':
+                feature_vector.append(float(event.get('spatial_clustering', 0.0)))
+            else:
+                feature_vector.append(0.0)  # Default for unknown features
+        
+        feature_matrix.append(feature_vector)
+    
+    return np.array(feature_matrix)
+
+
+def prepare_celestial_features(data: Dict[str, Any]) -> np.ndarray:
+    """
+    Prepare 10 celestial event features for earthquake correlation model.
+    
+    Features:
+    - Eclipse type (0=solar, 1=lunar, 2=transit)
+    - Blood moon indicator
+    - Magnitude
+    - Tetrad membership
+    - Jerusalem visibility
+    - Feast alignment
+    - Historical significance
+    - Days since last eclipse
+    - Spatial cluster size
+    - Temporal cluster density
+    """
+    eclipse_type_map = {'solar': 0, 'lunar': 1, 'transit': 2}
+    
+    features = [
+        eclipse_type_map.get(data.get('eclipse_type', ''), 0),
+        1.0 if data.get('is_blood_moon', False) else 0.0,
+        float(data.get('magnitude', 0.0)),
+        1.0 if data.get('is_tetrad_member', False) else 0.0,
+        1.0 if data.get('jerusalem_visible', False) else 0.0,
+        1.0 if data.get('feast_alignment', False) else 0.0,
+        float(data.get('historical_significance', 0.0)),
+        float(data.get('days_since_last', 0.0)),
+        float(data.get('spatial_cluster_size', 0.0)),
+        float(data.get('temporal_density', 0.0))
+    ]
+    
+    return np.array(features).reshape(1, -1)
+
+
+def prepare_solar_features(data: Dict[str, Any]) -> np.ndarray:
+    """
+    Prepare 8 solar activity features for volcanic correlation model.
+    
+    Features:
+    - Solar flare class (X=3, M=2, C=1, B=0)
+    - Sunspot count
+    - Solar wind speed (km/s)
+    - Geomagnetic storm level (0-9)
+    - Coronal mass ejection indicator
+    - Solar cycle phase (0-1)
+    - Days since last major flare
+    - Solar radiation intensity
+    """
+    flare_class_map = {'X': 3, 'M': 2, 'C': 1, 'B': 0}
+    
+    features = [
+        flare_class_map.get(data.get('flare_class', 'B'), 0),
+        float(data.get('sunspot_count', 0.0)),
+        float(data.get('solar_wind_speed', 400.0)),
+        float(data.get('geomagnetic_storm_level', 0.0)),
+        1.0 if data.get('cme_detected', False) else 0.0,
+        float(data.get('solar_cycle_phase', 0.5)),
+        float(data.get('days_since_last_flare', 0.0)),
+        float(data.get('radiation_intensity', 0.0))
+    ]
+    
+    return np.array(features).reshape(1, -1)
+
+
+def prepare_planetary_features(data: Dict[str, Any]) -> np.ndarray:
+    """
+    Prepare 8 planetary alignment features for hurricane correlation model.
+    
+    Features:
+    - Number of aligned planets
+    - Conjunction tightness (degrees)
+    - Jupiter involvement
+    - Saturn involvement
+    - Mars involvement
+    - Grand conjunction indicator
+    - Days until peak alignment
+    - Historical alignment similarity
+    """
+    features = [
+        float(data.get('aligned_planet_count', 0.0)),
+        float(data.get('conjunction_tightness', 180.0)),
+        1.0 if data.get('jupiter_involved', False) else 0.0,
+        1.0 if data.get('saturn_involved', False) else 0.0,
+        1.0 if data.get('mars_involved', False) else 0.0,
+        1.0 if data.get('is_grand_conjunction', False) else 0.0,
+        float(data.get('days_to_peak', 0.0)),
+        float(data.get('historical_similarity', 0.0))
+    ]
+    
+    return np.array(features).reshape(1, -1)
+
+
+def prepare_lunar_features(data: Dict[str, Any]) -> np.ndarray:
+    """
+    Prepare 8 lunar cycle features for tsunami correlation model.
+    
+    Features:
+    - Lunar phase (0=new, 0.25=first quarter, 0.5=full, 0.75=last quarter)
+    - Perigee proximity (0=apogee, 1=perigee)
+    - Tidal force intensity
+    - Eclipse proximity (days)
+    - Supermoon indicator
+    - Blood moon indicator
+    - Days since last full moon
+    - Syzygy alignment strength
+    """
+    phase_map = {
+        'new': 0.0,
+        'waxing_crescent': 0.125,
+        'first_quarter': 0.25,
+        'waxing_gibbous': 0.375,
+        'full': 0.5,
+        'waning_gibbous': 0.625,
+        'last_quarter': 0.75,
+        'waning_crescent': 0.875
+    }
+    
+    features = [
+        phase_map.get(data.get('phase', 'new'), 0.0),
+        float(data.get('perigee_proximity', 0.5)),
+        float(data.get('tidal_force', 0.0)),
+        float(data.get('eclipse_proximity_days', 999.0)),
+        1.0 if data.get('is_supermoon', False) else 0.0,
+        1.0 if data.get('is_blood_moon', False) else 0.0,
+        float(data.get('days_since_full_moon', 15.0)),
+        float(data.get('syzygy_strength', 0.0))
+    ]
+    
+    return np.array(features).reshape(1, -1)

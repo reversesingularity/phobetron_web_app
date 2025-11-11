@@ -16,7 +16,7 @@ authors:
     email: "cmodina70@kermangildpublishing.org"
     affiliation: "Independent Research"
 repository-code: "https://github.com/reversesingularity/phobetron_web_app"
-url: "https://reversesingularity.github.io/phobetron_web_app/"
+url: "https://phobetron-frontend-production.up.railway.app"
 keywords:
   - biblical prophecy
   - eschatology
@@ -46,7 +46,7 @@ preferred-citation:
     - family-names: "MODINA"
       given-names: "CHRIS"
   year: 2025
-  url: "https://reversesingularity.github.io/phobetron_web_app/"
+  url: "https://phobetron-frontend-production.up.railway.app"
   license: MIT
   keywords:
     - biblical prophecy

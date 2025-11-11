@@ -3,7 +3,9 @@
 
 **Status**: Pre-submission preparation  
 **Target**: Version 1.0.0 release  
-**Date**: To be determined when release-ready (bug-free)
+**Date**: To be determined when release-ready (bug-free)  
+**Live Demo**: https://phobetron-frontend-production.up.railway.app (after Railway deployment)  
+**API**: https://phobetronwebapp-production.up.railway.app/docs
 
 ---
 
@@ -16,6 +18,14 @@
   - [ ] Frontend displays all data correctly
   - [ ] Database migrations complete
   - [ ] No console errors in production build
+
+- [ ] **Deployment complete**
+  - [ ] Backend deployed to Railway ✅
+  - [ ] Frontend deployed to Railway (see RAILWAY_FRONTEND_DEPLOY_CHECKLIST.md)
+  - [ ] Database operational on Railway ✅
+  - [ ] All services publicly accessible
+  - [ ] CORS configured correctly
+  - [ ] SSL/HTTPS working
 
 - [ ] **Code documentation complete**
   - [ ] All major functions have docstrings
@@ -35,9 +45,12 @@
   - [ ] Installation instructions
   - [ ] Usage examples
   - [ ] Screenshots/demo
+  - [ ] **Live demo link**: https://phobetron-frontend-production.up.railway.app
+  - [ ] **API documentation link**: https://phobetronwebapp-production.up.railway.app/docs
   - [ ] Citation information
   - [ ] License badge
   - [ ] DOI badge (add after Zenodo submission)
+  - [ ] Railway deployment badge
 
 - [ ] **LICENSE file**
   - [x] MIT License present

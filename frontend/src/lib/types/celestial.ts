@@ -1,180 +1,189 @@
-// Shared types for celestial events and prophecies
+/**
+ * Celestial Event Types and Interfaces
+ * Supporting AI Predictive Analytics and Hebrew Feast Correlation
+ */
 
-import type { FeastProximity } from '@/lib/utils/hebrewCalendar';
+export interface HebrewFeast {
+  name: string
+  hebrewName: string
+  date: Date
+  endDate?: Date
+  significance: 'high' | 'medium' | 'low'
+  biblicalReference: string
+  propheticImportance: string
+  hebrewMonth: string
+  hebrewDay: number
+}
 
-export type EventType = 
-  | 'eclipse' 
-  | 'conjunction' 
-  | 'blood_moon' 
-  | 'neo_approach' 
-  | 'comet_perihelion'
-  | 'planetary_alignment'
-  | 'meteor_shower';
-
-export type SignificanceLevel = 'low' | 'medium' | 'high' | 'critical';
-
-export type FulfillmentStatus = 'unfulfilled' | 'partially_fulfilled' | 'fulfilled';
-
-export type EventCategory = 'celestial_sign' | 'terrestrial_event' | 'spiritual_event';
+export interface FeastProximity {
+  feast: HebrewFeast
+  daysAway: number
+  isExactMatch: boolean
+  isWithinTolerance: boolean
+}
 
 export interface CelestialEvent {
-  id: string;
-  title: string;
-  eventType: EventType;
-  eventDate: Date;
-  durationMinutes?: number;
-  description: string;
-  celestialObjects: string[];
-  magnitude?: number;
-  visibilityRegions: string[];
-  isBloodMoon?: boolean;
-  tetradCycleNumber?: number;
-  propheticSignificance: SignificanceLevel;
-  linkedProphecies: string[]; // Scripture references
-  calculationMethod?: string;
-  accuracy?: 'approximate' | 'precise';
-  observationRequirements?: string;
-  
-  // Hebrew Calendar Feast Correlation Fields
-  feastProximity?: FeastProximity;
-  feastCorrelationScore?: number; // 0-100
-  coincidesWithFeastName?: string;
-  hebrewDate?: string;
+  id: string
+  type: 'blood_moon' | 'solar_eclipse' | 'lunar_eclipse' | 'conjunction' | 'alignment' | 'tetrad' | 'meteor' | 'neo'
+  date: Date
+  name: string
+  description: string
+  magnitude?: number
+  duration?: number
+  visibility: {
+    jerusalem: boolean
+    global: boolean
+    regions: string[]
+  }
+  coordinates?: {
+    ra: number
+    dec: number
+    alt?: number
+    az?: number
+  }
+  // Feast Correlation Fields
+  feastProximity?: FeastProximity
+  feastCorrelationScore?: number
+  coincidesWithFeastName?: string
+  hebrewDate?: string
+  // AI Prediction Fields
+  predictedSignificance?: 'low' | 'medium' | 'high' | 'critical'
+  confidenceScore?: number
+  propheticSignificance?: 'low' | 'medium' | 'high' | 'critical'
 }
 
-export interface Prophecy {
-  id: string;
-  title: string;
-  scriptureReference: string;
-  book: string;
-  chapter: number;
-  verseStart: number;
-  verseEnd?: number;
-  fullText: string;
-  category: EventCategory;
-  propheticContext?: string;
-  interpretation?: string;
-  fulfillmentStatus: FulfillmentStatus;
-  significanceLevel: SignificanceLevel;
-  tags?: string[];
-  eschatologicalContext?: string;
-  linkedEvents: string[]; // Event IDs
-  dateRange?: {
-    start?: Date;
-    end?: Date;
-  };
+export interface EarthEvent {
+  id: string
+  type: 'earthquake' | 'volcanic' | 'geomagnetic' | 'solar_flare' | 'meteor' | 'aurora' | 'tsunami'
+  date: Date
+  location: string
+  coordinates?: {
+    latitude: number
+    longitude: number
+  }
+  magnitude: number
+  severity: 'critical' | 'high' | 'medium' | 'low'
+  description: string
+  propheticSignificance?: 'critical' | 'high' | 'medium' | 'low'
+  // Feast Correlation
+  feastProximity?: FeastProximity
+  feastCorrelationScore?: number
+  // Seismos Correlation
+  seismosScore?: number
+  celestialCorrelations?: CelestialEvent[]
 }
 
-export interface EventProphecyCorrelation {
-  id: string;
-  eventId: string;
-  prophecyId: string;
-  correlationStrength: number; // 0-1
-  correlationType: 'direct' | 'symbolic' | 'temporal' | 'typological';
-  notes?: string;
-  verifiedBy?: string;
-  dateCorrelated: Date;
+export interface FeastCorrelation {
+  event: CelestialEvent | EarthEvent
+  feast: HebrewFeast
+  correlationScore: number
+  significance: 'critical' | 'high' | 'medium' | 'low'
+  proximityDays: number
+  reasoning: string[]
 }
 
-export interface TimelineEvent {
-  id: string;
-  date: Date;
-  type: 'celestial' | 'prophecy' | 'correlation';
-  title: string;
-  description: string;
-  significance: SignificanceLevel;
-  relatedEventIds: string[];
-  relatedProphecyIds: string[];
+export interface PropheticPattern {
+  id: string
+  type: 'tetrad' | 'triple_conjunction' | 'cluster'
+  name?: string // Optional for backward compatibility
+  description: string
+  events: (CelestialEvent | EarthEvent)[]
+  startDate: Date
+  endDate: Date
+  significance: number // 0-1 score
+  correlationStrength?: number // Optional for backward compatibility
+  biblicalReferences: string[]
+  feastAlignments?: string[]
+  historicalParallels?: string[]
+  detectedAt?: Date // Optional for backward compatibility
+  confidence?: number // Optional for backward compatibility
+  propheticTheme?: string // Optional for backward compatibility
+  periodicity?: number
 }
 
-export interface UserAlert {
-  id: string;
-  userId: string;
-  eventId?: string;
-  prophecyId?: string;
-  alertType: 'event_approaching' | 'prophecy_fulfilled' | 'correlation_found' | 'custom';
-  title: string;
-  message: string;
-  severity: 'info' | 'warning' | 'critical';
-  triggerDate: Date;
-  notificationSent: boolean;
-  dismissed: boolean;
-  createdAt: Date;
+export interface EventPrediction {
+  eventId: string
+  confidence: number // ML model confidence (0-1)
+  significance: number // Prophetic significance score (0-1)
+  category: 'low' | 'medium' | 'high' | 'critical'
+  predictedSignificance?: 'low' | 'medium' | 'high' | 'critical' // Deprecated - use category
+  confidenceScore?: number // Deprecated - use confidence
+  factors: Array<{
+    name: string
+    weight: number
+    value: number
+  }>
+  recommendations: string[]
+  relatedPatterns?: string[]
+  modelInfo?: {
+    name: string
+    version: string
+    accuracy: number
+  }
+  reasoning?: string[] // Optional for backward compatibility
+  historicalPrecedents?: Array<{
+    event: CelestialEvent | EarthEvent
+    similarity: number
+    outcome: string
+  }>
+  prophecyCorrelations?: Array<{
+    prophecy: BiblicalProphecy
+    correlationProbability: number
+    reasoning: string
+  }>
+  anomalyScore?: number
+  isAnomaly?: boolean
+  recommendedActions?: string[] // Deprecated - use recommendations
 }
 
-// Helper type for event calculations
-export interface EventCalculation {
-  eventType: EventType;
-  date: Date;
-  celestialObjects: string[];
-  parameters: Record<string, number | string | boolean>;
-  confidence: number; // 0-1
-  source: 'nasa_horizons' | 'skyfield' | 'manual' | 'estimated';
+export interface BiblicalProphecy {
+  id: string
+  reference: string
+  text: string
+  category: 'celestial' | 'seismic' | 'judgment' | 'deliverance' | 'end_times' | 'restoration'
+  keywords: string[]
+  hebrewWords?: Array<{
+    word: string
+    transliteration: string
+    strongsNumber: string
+    meaning: string
+  }>
+  greekWords?: Array<{
+    word: string
+    transliteration: string
+    strongsNumber: string
+    meaning: string
+  }>
+  eschatologicalContext: string
+  fulfillmentStatus: 'fulfilled' | 'partial' | 'future' | 'ongoing'
+  relatedProphecies: string[]
 }
 
-// Eclipse-specific types
-export interface EclipseData {
-  eclipseType: 'solar_total' | 'solar_partial' | 'solar_annular' | 'lunar_total' | 'lunar_partial' | 'lunar_penumbral';
-  sarosCycle?: number;
-  magnitude: number; // 0-1 for solar, can be >1 for lunar
-  obscuration?: number; // percentage of Sun covered
-  pathOfTotality?: {
-    centerline: [number, number][]; // lat, lon pairs
-    width: number; // km
-  };
-  contacts: {
-    P1?: Date; // Penumbral eclipse begins
-    U1?: Date; // Partial eclipse begins
-    U2?: Date; // Total eclipse begins
-    Greatest?: Date; // Maximum eclipse
-    U3?: Date; // Total eclipse ends
-    U4?: Date; // Partial eclipse ends
-    P4?: Date; // Penumbral eclipse ends
-  };
-  visibleFrom: string[];
+export interface Alert {
+  id: string
+  type: 'prediction_change' | 'pattern_detected' | 'feast_alignment' | 'anomaly_detected' | 'confidence_increase' | 'critical_event'
+  severity: 'info' | 'warning' | 'critical'
+  title: string
+  message: string
+  timestamp: Date
+  relatedEvents: Array<{ id: string; type: 'celestial' | 'earth' }>
+  biblicalReferences?: string[]
+  prophecyReferences?: string[] // Deprecated - use biblicalReferences
+  actionRequired: boolean
+  confidence?: number // ML confidence score (0-1)
+  userRating?: 1 | 2 | 3 | 4 | 5
 }
 
-// Conjunction-specific types
-export interface ConjunctionData {
-  body1: string;
-  body2: string;
-  body3?: string; // for triple conjunctions
-  angularSeparation: number; // degrees
-  closestApproachDate: Date;
-  constellation?: string;
-  visualMagnitude1: number;
-  visualMagnitude2: number;
-  isGreatConjunction?: boolean; // Jupiter-Saturn
-}
-
-// NEO-specific types
-export interface NEOApproachData {
-  neoName: string;
-  neoId?: string; // JPL SPK-ID
-  approachDate: Date;
-  minimumDistance: number; // km
-  relativeVelocity: number; // km/s
-  estimatedDiameter: {
-    min: number; // meters
-    max: number;
-  };
-  isPotentiallyHazardous: boolean;
-  missDistance: {
-    astronomical: number; // AU
-    lunar: number; // LD (lunar distance)
-    kilometers: number;
-  };
-  orbitingBody: string;
-}
-
-// Blood Moon (Tetrad) specific data
-export interface BloodMoonData {
-  tetradNumber?: number;
-  tetradSequence?: 1 | 2 | 3 | 4; // which eclipse in the tetrad
-  tetradYear?: number;
-  visibleFromJerusalem: boolean;
-  biblicalSignificance?: string;
-  umbralMagnitude: number;
-  totalityDuration?: number; // minutes
-  moonColor: 'light_orange' | 'orange' | 'deep_orange' | 'blood_red' | 'dark_red';
+export interface SeismosCorrelation {
+  celestialEvent: CelestialEvent
+  earthEvents: EarthEvent[]
+  correlationScore: number
+  timeWindow: number
+  biblicalFoundation: {
+    matthew_24_7: string
+    revelation_6_12: string
+    luke_21_25: string
+  }
+  predictedProbability: number
+  confidence: number
 }

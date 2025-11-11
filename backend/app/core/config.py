@@ -41,7 +41,9 @@ class Settings(BaseSettings):
         "http://localhost:8000",  # FastAPI dev server
         "http://127.0.0.1:3000",
         "http://127.0.0.1:8000",
-        "https://phobetronwebapp-production.up.railway.app",  # Railway production
+        "https://phobetronwebapp-production.up.railway.app",  # Railway backend
+        "https://phobetron-frontend-production.up.railway.app",  # Railway frontend
+        "https://*.up.railway.app",  # Allow all Railway subdomains
         "https://phobetron-web-app.vercel.app",  # Vercel production (if used)
     ]
     

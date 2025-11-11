@@ -19,27 +19,23 @@
  * - Magnitude-based object visibility
  */
 
-'use client';
-
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 
 // Import constellation data
-import { constellationBoundaries, constellationConnections, celestialToCartesian, constellationNames } from '../../lib/constellations';
+import { constellationBoundaries, constellationConnections, celestialToCartesian } from '../../lib/constellations';
 
 // Import planet data and info panel
 import { getPlanetInfo, type PlanetInfo } from '../../lib/planetData';
 import PlanetInfoPanel from './PlanetInfoPanel';
-import NEORiskTooltip from './NEORiskTooltip';
-import { mlAPI, type NEORiskAssessment } from '../../lib/api/mlClient';
 
 // Scale factor: Convert AU to THREE.js units (10 units = 1 AU for better visibility)
 const AU_SCALE = 10;
 
 // API base URL - Updated to match backend server port
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8020';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8020';
 
 // Orbital element data structure from API
 interface OrbitalElementData {
@@ -111,15 +107,11 @@ const ASTEROID_COLORS = {
 const COMET_COLORS = {
   "Halley's Comet": 0xE6E6FA,   // Lavender (icy blue-white)
   "Hale-Bopp": 0xF0F8FF, // Alice blue
-  "Swift-Tuttle": 0xDDA0DD, // Plum (purple-pink, Perseid meteor parent)
-  "Encke": 0xFFFACD, // Lemon chiffon (yellowish)
-  "12P/Pons-Brooks": 0xB0E0E6, // Powder blue (icy appearance)
   "1I/'Oumuamua": 0xFFD700, // Gold (metallic)
   "2I/Borisov": 0xFFE4B5,  // Moccasin
   "3I/ATLAS": 0xFF6B35,    // Red-orange (distinct interstellar color)
   "C/2025 A6 (Lemmon)": 0x87CEEB,   // Sky blue (bright comet)
   "C/2025 R2 (SWAN)": 0x98FB98,     // Pale green (bright comet)
-  "C/2025 V1 (Borisov)": 0xFFF8DC,  // Cornsilk (subtle tail-less appearance, Nov 2025 discovery)
   default: 0xE6E6FA   // Default comet color
 };
 
@@ -137,6 +129,7 @@ const INTERSTELLAR_COLORS = {
 };
 
 // Planet texture URLs (NASA/Solar System Scope - public domain)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const PLANET_TEXTURES = {
   Mercury: 'https://www.solarsystemscope.com/textures/download/2k_mercury.jpg',
   Venus: 'https://www.solarsystemscope.com/textures/download/2k_venus_surface.jpg',
@@ -154,6 +147,18 @@ const ORBIT_COLORS = {
   ...COMET_COLORS,
   ...NEO_COLORS,
   ...INTERSTELLAR_COLORS
+};
+
+// Enhanced planet size scaling - more accurate relative sizes
+const ACCURATE_PLANET_SIZES: { [key: string]: number } = {
+  Mercury: 0.383,  // Actual: 0.383 Earth radii
+  Venus: 0.949,    // Actual: 0.949 Earth radii  
+  Earth: 1.000,    // Reference size
+  Mars: 0.532,     // Actual: 0.532 Earth radii
+  Jupiter: 3.5,    // Actual: 11.21 Earth radii (scaled down for visibility)
+  Saturn: 3.0,     // Actual: 9.45 Earth radii (scaled down for visibility)
+  Uranus: 1.8,     // Actual: 4.01 Earth radii (scaled down for visibility)
+  Neptune: 1.7     // Actual: 3.88 Earth radii (scaled down for visibility)
 };
 
 // Fetch orbital elements from API
@@ -180,16 +185,13 @@ async function fetchOrbitalElements(): Promise<CelestialObject[]> {
         
         // Determine object type
         let objectType: CelestialObject['type'] = 'asteroid';
-        const objectName = apiObj.object_name || '';
-        const objectNameLower = objectName.toLowerCase();
-        
         if (apiObj.is_interstellar) {
           objectType = 'interstellar';
-        } else if (objectNameLower.includes('comet') || objectName.startsWith('C/') || objectName.startsWith('P/')) {
+        } else if (apiObj.object_name.toLowerCase().includes('comet') || apiObj.object_name.startsWith('C/') || apiObj.object_name.startsWith('P/')) {
           objectType = 'comet';
-        } else if (['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'].includes(objectNameLower)) {
+        } else if (['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'].includes(apiObj.object_name.toLowerCase())) {
           objectType = 'planet';
-        } else if (objectNameLower.includes('neo') || objectName.match(/^\d+$/)) {
+        } else if (apiObj.object_name.toLowerCase().includes('neo') || apiObj.object_name.match(/^\d+$/)) {
           objectType = 'neo';
         }
         
@@ -356,23 +358,7 @@ function getFallbackOrbitalData(): CelestialObject[] {
       name: "Hale-Bopp", a0: 186.0, e0: 0.9951, i0: 89.43,
       ml0: 130.59, lp0: 282.47, o0: 130.59,
       ad: 0.0, ed: 0.0, id: 0.0, 
-      mld: 4.2, // ~2500 year orbital period: 360°/2500y * 36525d/100y ≈ 4.2°/century
-      lpd: 0.0, od: 0.0,
-      type: 'comet'
-    },
-    {
-      name: "Swift-Tuttle", a0: 26.092, e0: 0.9632, i0: 113.45,
-      ml0: 153.48, lp0: 152.98, o0: 139.38,
-      ad: 0.0, ed: 0.0, id: 0.0, 
-      mld: 108.6, // ~133 year orbital period: 360°/133y * 36525d/100y ≈ 108.6°/century
-      lpd: 0.0, od: 0.0,
-      type: 'comet'
-    },
-    {
-      name: "Encke", a0: 2.2175, e0: 0.8472, i0: 11.78,
-      ml0: 334.57, lp0: 186.54, o0: 334.57,
-      ad: 0.0, ed: 0.0, id: 0.0, 
-      mld: 1092.5, // ~3.3 year orbital period: 360°/3.3y * 36525d/100y ≈ 1092.5°/century
+      mld: 0.0, // Static position - 2500 year orbit moves imperceptibly on human timescales
       lpd: 0.0, od: 0.0,
       type: 'comet'
     },
@@ -389,22 +375,6 @@ function getFallbackOrbitalData(): CelestialObject[] {
       ml0: 150.0, lp0: 225.0, o0: 315.0,
       ad: 0.0, ed: 0.0, id: 0.0, 
       mld: 20.0, // ~350 year estimated period: 360°/350y * 36525d/100y ≈ 20°/century
-      lpd: 0.0, od: 0.0,
-      type: 'comet'
-    },
-    {
-      name: "C/2025 V1 (Borisov)", a0: -1043.5, e0: 1.00958273, i0: 112.7,
-      ml0: 0.0, lp0: 0.0, o0: 0.0,
-      ad: 0.0, ed: 0.0, id: 0.0, 
-      mld: 0.001, // Hyperbolic orbit (e > 1), single pass through solar system from Oort Cloud
-      lpd: 0.0, od: 0.0,
-      type: 'comet', hyperbolic: true, hasAnomalousTail: false // No prominent tail despite being active, discovered Nov 2025 by Gennadiy Borisov
-    },
-    {
-      name: "12P/Pons-Brooks", a0: 17.2, e0: 0.955, i0: 74.18,
-      ml0: 198.78, lp0: 199.03, o0: 255.89,
-      ad: 0.0, ed: 0.0, id: 0.0, 
-      mld: 145.7, // ~71 year orbital period: 360°/71y * 36525d/100y ≈ 145.7°/century
       lpd: 0.0, od: 0.0,
       type: 'comet'
     },
@@ -470,6 +440,7 @@ function getPlanetMeanMotion(planetName: string): number {
 }
 
 // Test data from API for development
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function getTestOrbitalData(): CelestialObject[] {
   // This represents the actual API response data
   const apiData = [
@@ -597,38 +568,19 @@ interface CelestialCanvasProps {
   isPaused?: boolean;
   onPlanetSelect?: (planetName: string) => void;
   onTimeUpdate?: (time: number) => void;
-  onPlanetsReady?: (planetsRef: React.MutableRefObject<Map<string, THREE.Mesh>>) => void;
-  onDataRefreshReady?: (refreshFn: () => Promise<void>) => void; // NEW: Expose refresh function
-  onNewObjectsDetected?: (count: number, totalObjects: number) => void; // NEW: New object notification
   onCameraControlsReady?: (controls: {
-    // Basic preset views
     setTopView: () => void;
     setSideView: () => void;
     setEarthFocus: () => void;
     resetView: () => void;
-    // Time controls
     jumpTime: (milliseconds: number) => void;
     resetToToday: () => void;
-    // Recording
     startRecording: () => void;
     stopRecording: () => void;
-    // Advanced cinematographic controls
-    pan: (x: number, y: number) => void;
-    zoom: (delta: number) => void;
-    rotate: (angle: number) => void;
-    orbit: (azimuth: number, polar: number) => void;
-    dolly: (distance: number) => void;
-    track: (x: number, y: number) => void;
-    crane: (height: number) => void;
-    tilt: (angle: number) => void;
-    roll: (angle: number) => void;
-    focusObject: (position: THREE.Vector3, distance?: number) => void;
-    setPreset: (position: [number, number, number], target: [number, number, number], fov?: number) => void;
+    focusObject: (objectName: string) => void;
+    getAvailableObjects: () => string[];
   }) => void;
 }
-
-// Global map to store NEO risk assessments (workaround for state issues)
-const globalNEORiskAssessments = new Map<string, NEORiskAssessment>();
 
 // Main Celestial Canvas component
 export default function CelestialCanvas({
@@ -642,9 +594,6 @@ export default function CelestialCanvas({
   isPaused = false,
   onPlanetSelect,
   onTimeUpdate,
-  onPlanetsReady,
-  onDataRefreshReady,
-  onNewObjectsDetected,
   onCameraControlsReady
 }: CelestialCanvasProps = {}) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -656,7 +605,6 @@ export default function CelestialCanvas({
   const planetsRef = useRef<Map<string, THREE.Mesh>>(new Map()); // Changed to Mesh for 3D spheres
   const orbitsRef = useRef<Map<string, THREE.LineSegments>>(new Map());
   const labelsRef = useRef<Map<string, CSS2DObject>>(new Map());
-  const moonLabelsRef = useRef<Map<string, CSS2DObject>>(new Map()); // Labels for moons
   const gridRef = useRef<THREE.GridHelper | null>(null);
   const constellationsRef = useRef<Map<string, THREE.Group>>(new Map());
   const asteroidBeltRef = useRef<THREE.Points | null>(null);
@@ -666,186 +614,38 @@ export default function CelestialCanvas({
   const recordingFrames = useRef<string[]>([]);
   const isRecording = useRef<boolean>(false);
   const [hoveredPlanet, setHoveredPlanet] = useState<string | null>(null);
-  
-  // IMMEDIATE DIAGNOSTIC - First hook in component
-  useEffect(() => {
-    console.log('🔴🔴🔴 FIRST USEFFECT IN COMPONENT - EXECUTED IMMEDIATELY AFTER REFS');
-    document.title = '🔴 USEEFFECT EXECUTED!';
-    return () => console.log('🔴 First useEffect cleanup');
-  }, []);
-  
-  console.log('🚨🚨🚨 CELESTIALCANVAS COMPONENT RENDERING - FILE LOADED - VERSION 2.0');
-  console.log('🚨 About to declare state variables...');
-
   const [selectedPlanet, setSelectedPlanet] = useState<PlanetInfo | null>(null);
   const [orbitalData, setOrbitalData] = useState<CelestialObject[]>([]);
-  const [lastDataFetch, setLastDataFetch] = useState<number>(0);
-  const [newObjectsDetected, setNewObjectsDetected] = useState<number>(0);
-  const previousObjectCount = useRef<number>(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isAnimatingCamera, setIsAnimatingCamera] = useState(false);
-  const [showObjectFinder, setShowObjectFinder] = useState(false);
-  const [neoRiskAssessments, setNeoRiskAssessments] = useState<Map<string, NEORiskAssessment>>(new Map());
-  const [hoveredNEO, setHoveredNEO] = useState<{ name: string; position: { x: number; y: number } } | null>(null);
-  const neoRingRefs = useRef<Map<string, THREE.Mesh>>(new Map());
 
-  console.log('🚨 State variables declared, about to register useEffects...');
-
-  // DIAGNOSTIC: Check if component mounts/unmounts
+  // Fetch orbital data on component mount
   useEffect(() => {
-    console.log('✅✅✅ COMPONENT MOUNTED - useEffect IS WORKING!');
-    return () => {
-      console.log('❌❌❌ COMPONENT UNMOUNTING');
-    };
-  }, []);
-
-  // Load orbital data function (exposed via callback for manual refresh)
-  const loadOrbitalData = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      
-      // Enable API with fallback to hard-coded data
+    const loadOrbitalData = async () => {
       try {
+        setIsLoading(true);
+        setError(null);
         const data = await fetchOrbitalElements();
-        
-        // Detect new objects
-        if (previousObjectCount.current > 0 && data.length > previousObjectCount.current) {
-          const newCount = data.length - previousObjectCount.current;
-          setNewObjectsDetected(newCount);
-          
-          // Notify parent component
-          if (onNewObjectsDetected) {
-            onNewObjectsDetected(newCount, data.length);
-          }
-          
-          console.log(`🌟 NEW OBJECTS DETECTED: ${newCount} new celestial objects!`);
-        }
-        
-        previousObjectCount.current = data.length;
         setOrbitalData(data);
-        setLastDataFetch(Date.now());
         console.log(`✅ Loaded ${data.length} celestial objects from API`);
-      } catch (apiError) {
-        console.warn('API unavailable, using corrected fallback data:', apiError);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMessage);
+        console.error('Failed to load orbital data:', err);
+        // Fallback data will be used
         const fallbackData = getFallbackOrbitalData();
-        
-        // Still check for new objects in fallback data
-        if (previousObjectCount.current > 0 && fallbackData.length > previousObjectCount.current) {
-          const newCount = fallbackData.length - previousObjectCount.current;
-          setNewObjectsDetected(newCount);
-          if (onNewObjectsDetected) {
-            onNewObjectsDetected(newCount, fallbackData.length);
-          }
-        }
-        
-        previousObjectCount.current = fallbackData.length;
         setOrbitalData(fallbackData);
-        setLastDataFetch(Date.now());
-        console.log(`✅ Using corrected fallback data: ${fallbackData.length} celestial objects`);
+        console.log(`⚠️ Using fallback data: ${fallbackData.length} celestial objects`);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMessage);
-      console.error('Failed to load orbital data:', err);
-      // Fallback data will be used
-      const fallbackData = getFallbackOrbitalData();
-      setOrbitalData(fallbackData);
-      setLastDataFetch(Date.now());
-      console.log(`⚠️ Using fallback data: ${fallbackData.length} celestial objects`);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [onNewObjectsDetected]);
-
-  // Expose refresh function to parent
-  useEffect(() => {
-    if (onDataRefreshReady) {
-      onDataRefreshReady(loadOrbitalData);
-    }
-  }, [loadOrbitalData, onDataRefreshReady]);
-
-  // Fetch orbital data on component mount and setup polling
-  useEffect(() => {
-    console.log('🟡🟡🟡 ORBITAL DATA FETCH USEEFFECT TRIGGERED');
+    };
 
     loadOrbitalData();
-    
-    // Poll for new celestial objects every 30 minutes
-    const pollingInterval = setInterval(() => {
-      console.log('🔄 Polling for new celestial objects...');
-      loadOrbitalData();
-    }, 30 * 60 * 1000); // 30 minutes
-    
-    return () => clearInterval(pollingInterval);
-  }, [loadOrbitalData]);
-
-  // Fetch NEO risk assessments after orbital data is loaded
-  useEffect(() => {
-    console.log('🔥🔥🔥 NEO RISK USEEFFECT TRIGGERED');
-    console.log('📊 orbitalData.length:', orbitalData.length);
-    console.log('📋 First 5 objects:', orbitalData.slice(0, 5).map(o => ({ name: o.name, type: o.type })));
-    
-    if (orbitalData.length === 0) {
-      console.log('⏳ Waiting for orbital data to load...');
-      return;
-    }
-
-    const fetchNEORiskAssessments = async () => {
-      const assessments = new Map<string, NEORiskAssessment>();
-      const neos = orbitalData.filter(obj => obj.type === 'neo');
-
-      console.log(`🎯 Found ${neos.length} NEOs in orbital data:`, neos.map(n => n.name));
-      console.log(`📊 Total orbital objects: ${orbitalData.length}`);
-      console.log(`🔍 Object types:`, [...new Set(orbitalData.map(o => o.type))]);
-
-      if (neos.length === 0) {
-        console.warn('⚠️ No NEOs found in orbital data');
-        return;
-      }
-
-      console.log(`🚀 Fetching ML risk assessments for ${neos.length} NEOs...`);
-
-      for (const neo of neos) {
-        try {
-          // Calculate orbital parameters
-          const perihelion = neo.a0 * (1 - neo.e0);
-          const period = Math.sqrt(Math.pow(neo.a0, 3)); // Kepler's 3rd law (simplified, in years)
-
-          const assessment = await mlAPI.predictNEOCollisionRisk({
-            object_name: neo.name,
-            semi_major_axis_au: neo.a0,
-            eccentricity: neo.e0,
-            inclination_deg: neo.i0,
-            perihelion_distance_au: perihelion,
-            orbital_period_years: period,
-          });
-
-          assessments.set(neo.name, assessment);
-          console.log(`✅ Risk assessment for ${neo.name}: Torino ${assessment.torino_scale}, ${assessment.risk_level}`);
-        } catch (err) {
-          console.error(`Failed to fetch risk assessment for ${neo.name}:`, err);
-        }
-      }
-
-      setNeoRiskAssessments(assessments);
-    };
-
-    fetchNEORiskAssessments();
-  }, [orbitalData]);
+  }, []);
 
   useEffect(() => {
-    console.log('🔵🔵🔵 MAIN SCENE SETUP USEEFFECT TRIGGERED');
-    console.log('🔵 containerRef.current:', !!containerRef.current);
-    console.log('🔵 orbitalData.length:', orbitalData.length);
-    
-    if (!containerRef.current || orbitalData.length === 0) {
-      console.log('⚠️ EARLY RETURN: containerRef or orbitalData not ready');
-      return;
-    }
-
-    console.log('✅ Proceeding with scene setup...');
+    if (!containerRef.current || orbitalData.length === 0) return;
 
     // Initialize time ref
     timeRef.current = Date.now();
@@ -889,6 +689,8 @@ export default function CelestialCanvas({
     controls.minDistance = 5;
     controls.maxDistance = 500;
     controls.enablePan = true;
+    controls.autoRotate = false; // Disable auto-rotation to keep stars stable
+    controls.autoRotateSpeed = 0; // Ensure no auto-rotation speed
     controlsRef.current = controls;
 
     // Initialize texture loader
@@ -902,16 +704,10 @@ export default function CelestialCanvas({
     addSun(scene);
 
     // Add planets with orbits and labels (use synchronized time)
-    addPlanets(scene, showLabels, timeRef.current, planetsRef, orbitsRef, labelsRef, orbitalData, textureLoaderRef.current, neoRingRefs);
-
-    // Notify parent that planets are ready for focus operations
-    if (onPlanetsReady) {
-      onPlanetsReady(planetsRef);
-      console.log(`📹 Exposed planetsRef with ${planetsRef.current.size} objects to parent`);
-    }
+    addPlanets(scene, showLabels, timeRef.current, planetsRef, orbitsRef, labelsRef, orbitalData, textureLoaderRef.current);
 
     // Add moon systems for major planets
-    addMoonSystems(scene, showMoons, moonsRef, planetsRef, timeRef.current, showLabels, moonLabelsRef);
+    addMoonSystems(scene, showMoons, moonsRef, planetsRef, timeRef.current);
 
     // Add asteroid belt between Mars and Jupiter
     addAsteroidBelt(scene, showAsteroidBelt, asteroidBeltRef);
@@ -984,20 +780,8 @@ export default function CelestialCanvas({
         const planetName = planetMesh.name;
         setHoveredPlanet(planetName);
         container.style.cursor = 'pointer';
-        
-        // Check if this is a NEO with a risk assessment
-        const assessment = globalNEORiskAssessments.get(planetName);
-        if (assessment) {
-          setHoveredNEO({
-            name: planetName,
-            position: { x: event.clientX, y: event.clientY }
-          });
-        } else {
-          setHoveredNEO(null);
-        }
       } else {
         setHoveredPlanet(null);
-        setHoveredNEO(null);
         container.style.cursor = 'default';
       }
     };
@@ -1039,9 +823,6 @@ export default function CelestialCanvas({
 
       // Update planet positions
       updatePlanetPositions(timeRef.current, planetsRef, orbitalData);
-      
-      // Update NEO risk indicator rings
-      updateNEORiskRings(neoRingRefs, neoRiskAssessments);
       
       // Apply planetary perturbations (N-body effects)
       // Only apply every 10th frame to reduce computational cost
@@ -1095,37 +876,42 @@ export default function CelestialCanvas({
 
     // Camera control functions
     const cameraControls = {
-      // Basic preset views
       setTopView: () => {
-        camera.position.set(0, 100, 0);
+        console.log('📷 setTopView called');
+        // View from directly above the ecliptic plane (looking down at solar system)
+        camera.position.set(0, 150, 0);
         camera.lookAt(0, 0, 0);
         controls.target.set(0, 0, 0);
         controls.update();
+        console.log('✅ setTopView complete - camera at:', camera.position);
       },
       setSideView: () => {
-        camera.position.set(100, 0, 0);
+        console.log('📷 setSideView called');
+        // View from the side of the solar system (edge-on view of orbits)
+        camera.position.set(0, 0, 150);
         camera.lookAt(0, 0, 0);
         controls.target.set(0, 0, 0);
         controls.update();
+        console.log('✅ setSideView complete - camera at:', camera.position);
       },
       setEarthFocus: () => {
-        const earthPlanet = planetsRef.current.get('earth');
-        if (earthPlanet) {
-          const earthPos = earthPlanet.position;
-          camera.position.set(earthPos.x + 5, earthPos.y + 3, earthPos.z + 5);
-          camera.lookAt(earthPos.x, earthPos.y, earthPos.z);
-          controls.target.set(earthPos.x, earthPos.y, earthPos.z);
-          controls.update();
-        }
+        console.log('📷 setEarthFocus called (Oblique View)');
+        // Oblique angle view - good default perspective
+        camera.position.set(50, 35, 50);
+        camera.lookAt(0, 0, 0);
+        controls.target.set(0, 0, 0);
+        controls.update();
+        console.log('✅ setEarthFocus complete - camera at:', camera.position);
       },
       resetView: () => {
+        console.log('📷 resetView called');
+        // Reset to default oblique view - same as initial camera position
         camera.position.set(0, 15, 30);
         camera.lookAt(0, 0, 0);
         controls.target.set(0, 0, 0);
-        camera.rotation.z = 0; // Reset roll
         controls.update();
+        console.log('✅ resetView complete - camera at:', camera.position);
       },
-      // Time controls
       jumpTime: (milliseconds: number) => {
         timeRef.current += milliseconds;
         updatePlanetPositions(timeRef.current, planetsRef, orbitalData);
@@ -1140,7 +926,6 @@ export default function CelestialCanvas({
           onTimeUpdate(timeRef.current);
         }
       },
-      // Recording
       startRecording: () => {
         isRecording.current = true;
         recordingFrames.current = [];
@@ -1151,134 +936,149 @@ export default function CelestialCanvas({
         console.log(`🎬 Stopped recording - captured ${recordingFrames.current.length} frames`);
         // TODO: Compile frames into video/GIF
       },
-      // Advanced cinematographic controls - Direct implementations
-      pan: (x: number, y: number) => {
-        const offset = new THREE.Vector3();
-        offset.copy(controls.target).sub(camera.position);
-        const targetDistance = offset.length();
-        const panSpeed = 0.001 * targetDistance;
-
-        const panLeft = new THREE.Vector3();
-        panLeft.setFromMatrixColumn(camera.matrix, 0);
-        panLeft.multiplyScalar(-x * panSpeed);
-
-        const panUp = new THREE.Vector3();
-        panUp.setFromMatrixColumn(camera.matrix, 1);
-        panUp.multiplyScalar(y * panSpeed);
-
-        camera.position.add(panLeft).add(panUp);
-        controls.target.add(panLeft).add(panUp);
-        controls.update();
-      },
-      zoom: (delta: number) => {
-        const newFov = THREE.MathUtils.clamp(camera.fov + delta, 15, 90);
-        camera.fov = newFov;
-        camera.updateProjectionMatrix();
-        controls.update();
-      },
-      rotate: (angle: number) => {
-        const offset = new THREE.Vector3();
-        offset.copy(camera.position).sub(controls.target);
-
-        const spherical = new THREE.Spherical();
-        spherical.setFromVector3(offset);
-        spherical.theta += THREE.MathUtils.degToRad(angle);
-
-        offset.setFromSpherical(spherical);
-        camera.position.copy(controls.target).add(offset);
-        controls.update();
-      },
-      orbit: (azimuth: number, polar: number) => {
-        const offset = new THREE.Vector3();
-        offset.copy(camera.position).sub(controls.target);
-
-        const spherical = new THREE.Spherical();
-        spherical.setFromVector3(offset);
-
-        spherical.theta += THREE.MathUtils.degToRad(azimuth);
-        spherical.phi += THREE.MathUtils.degToRad(polar);
-        spherical.phi = Math.max(0, Math.min(Math.PI, spherical.phi));
-
-        offset.setFromSpherical(spherical);
-        camera.position.copy(controls.target).add(offset);
-        controls.update();
-      },
-      dolly: (distance: number) => {
-        const direction = new THREE.Vector3();
-        camera.getWorldDirection(direction);
-        direction.multiplyScalar(distance);
-
-        const newPosition = camera.position.clone().add(direction);
-        const distanceToTarget = newPosition.distanceTo(controls.target);
-
-        if (distanceToTarget >= 5 && distanceToTarget <= 500) {
-          camera.position.copy(newPosition);
-          controls.update();
-        }
-      },
-      track: (x: number, y: number) => {
-        const right = new THREE.Vector3();
-        right.setFromMatrixColumn(camera.matrix, 0);
-        right.multiplyScalar(x * 0.1);
-
-        const up = new THREE.Vector3();
-        up.setFromMatrixColumn(camera.matrix, 1);
-        up.multiplyScalar(y * 0.1);
-
-        camera.position.add(right).add(up);
-        controls.target.add(right).add(up);
-        controls.update();
-      },
-      crane: (height: number) => {
-        const worldUp = new THREE.Vector3(0, 1, 0);
-        worldUp.multiplyScalar(height * 0.1);
-
-        camera.position.add(worldUp);
-        controls.target.add(worldUp);
-        controls.update();
-      },
-      tilt: (angle: number) => {
-        const offset = new THREE.Vector3();
-        offset.copy(camera.position).sub(controls.target);
-
-        const spherical = new THREE.Spherical();
-        spherical.setFromVector3(offset);
-
-        spherical.phi += THREE.MathUtils.degToRad(angle);
-        spherical.phi = Math.max(0, Math.min(Math.PI, spherical.phi));
-
-        offset.setFromSpherical(spherical);
-        camera.position.copy(controls.target).add(offset);
-        controls.update();
-      },
-      roll: (angle: number) => {
-        camera.rotation.z += THREE.MathUtils.degToRad(angle);
-        controls.update();
-      },
-      focusObject: (position: THREE.Vector3, distance: number = 50) => {
-        const direction = new THREE.Vector3();
-        direction.subVectors(camera.position, controls.target).normalize();
-
-        const newPosition = position.clone().add(direction.multiplyScalar(distance));
+      focusObject: (objectName: string) => {
+        console.log('📷 focusObject called with:', objectName);
+        const targetObject = planetsRef.current.get(objectName);
+        console.log('🎯 Target object found:', targetObject ? 'YES' : 'NO');
         
-        camera.position.copy(newPosition);
-        controls.target.copy(position);
-        controls.update();
-      },
-      setPreset: (position: [number, number, number], target: [number, number, number], fov?: number) => {
-        camera.position.set(...position);
-        controls.target.set(...target);
-        if (fov !== undefined) {
-          camera.fov = fov;
-          camera.updateProjectionMatrix();
+        if (targetObject) {
+          const targetPos = targetObject.position.clone();
+          console.log('🎯 Target position:', targetPos);
+          
+          // Determine distance and camera offset based on object
+          // Using close-up distances: 4-6× planet radius for intimate views
+          let distance = 3; // Default distance for small objects
+          let cameraOffset = new THREE.Vector3(1, 0.5, 1).normalize(); // Default viewing angle
+          const objName = objectName.toLowerCase();
+          
+          // Planet-specific close-up distances (based on actual sizes)
+          // Mercury: 0.15, Venus: 0.35, Earth: 0.38, Mars: 0.20
+          // Jupiter: 1.19, Saturn: 0.99, Uranus: 1.49, Neptune: 1.39
+          if (objName === 'sun') {
+            // Sun close-up - 8× solar radius for dramatic view
+            distance = 25;
+            cameraOffset = new THREE.Vector3(1, 0.7, 1).normalize();
+          } else if (objName === 'jupiter') {
+            // Jupiter close-up - 5× radius to see atmospheric bands
+            distance = 6.0; // 1.19 × 5 ≈ 6
+            cameraOffset = new THREE.Vector3(1, 0.3, 1).normalize();
+          } else if (objName === 'neptune') {
+            // Neptune close-up - 5× radius
+            distance = 7.0; // 1.39 × 5 ≈ 7
+            cameraOffset = new THREE.Vector3(1, 0.4, 1).normalize();
+          } else if (objName === 'saturn') {
+            // Saturn close-up - 6× radius to showcase rings
+            distance = 6.0; // 0.99 × 6 ≈ 6
+            cameraOffset = new THREE.Vector3(1, 0.2, 1).normalize(); // Lower angle to see rings
+          } else if (objName === 'earth') {
+            // Earth close-up - 4× radius for detailed view
+            distance = 1.5; // 0.38 × 4 ≈ 1.5
+            cameraOffset = new THREE.Vector3(1, 0.5, 1).normalize();
+          } else if (objName === 'venus') {
+            // Venus close-up - 4× radius
+            distance = 1.4; // 0.35 × 4 ≈ 1.4
+            cameraOffset = new THREE.Vector3(1, 0.5, 1).normalize();
+          } else if (objName === 'mars') {
+            // Mars close-up - 5× radius
+            distance = 1.0; // 0.20 × 5 = 1.0
+            cameraOffset = new THREE.Vector3(1, 0.5, 1).normalize();
+          } else if (objName === 'mercury') {
+            // Mercury close-up - 5× radius
+            distance = 0.75; // 0.15 × 5 = 0.75
+            cameraOffset = new THREE.Vector3(1, 0.5, 1).normalize();
+          } else if (objName === 'uranus') {
+            // Uranus close-up - 5× radius
+            distance = 7.5; // 1.49 × 5 ≈ 7.5
+            cameraOffset = new THREE.Vector3(1, 0.4, 1).normalize();
+          } else if (objName.includes('moon') || objName === 'luna' || objName === 'phobos' || 
+                     objName === 'deimos' || objName === 'io' || objName === 'europa' || 
+                     objName === 'ganymede' || objName === 'callisto' || objName === 'titan' || 
+                     objName === 'enceladus' || objName === 'triton') {
+            // Moons - close-up for small objects
+            distance = 0.5; // Very close for moons (they're tiny!)
+            cameraOffset = new THREE.Vector3(1, 0.6, 1).normalize();
+          } else if (objName.includes('asteroid') || objName === 'ceres' || objName === 'vesta' || 
+                     objName === 'pallas' || objName === 'hygiea' || objName === 'eunomia' || 
+                     objName === 'psyche') {
+            // Asteroids - very close for tiny objects
+            distance = 0.4; // Extra close for asteroids
+            cameraOffset = new THREE.Vector3(1, 0.7, 1).normalize();
+          } else if (objName.includes('comet') || objName.includes('halley') || 
+                     objName.includes('encke') || objName.includes('tempel')) {
+            // Comets - close-up to see nucleus and tail
+            distance = 1.2; // Close enough to see detail and tail
+            cameraOffset = new THREE.Vector3(1, 0.5, 1.5).normalize(); // Offset to see tail
+          } else if (objName.includes('neo') || objName.includes('apophis') || 
+                     objName.includes('bennu')) {
+            // Near-Earth Objects - very close
+            distance = 0.3;
+            cameraOffset = new THREE.Vector3(1, 0.6, 1).normalize();
+          } else if (objName.includes('oumuamua') || objName.includes('borisov') || 
+                     objName.includes('atlas')) {
+            // Interstellar objects - close-up for these special visitors
+            distance = 0.8;
+            cameraOffset = new THREE.Vector3(1, 0.5, 1).normalize();
+          }
+          
+          console.log('📏 Calculated distance:', distance, 'for object:', objectName);
+          console.log('📐 Camera offset:', cameraOffset);
+          
+          // Calculate new camera position based on target position and offset
+          const newPosition = targetPos.clone().add(cameraOffset.multiplyScalar(distance));
+          console.log('📍 New camera position:', newPosition);
+          
+          // Smooth animation to new position
+          const startPos = camera.position.clone();
+          const startTarget = controls.target.clone();
+          const duration = 1500; // 1.5 seconds
+          const startTime = Date.now();
+          
+          const animateFocus = () => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // Ease-in-out function
+            const eased = progress < 0.5 
+              ? 2 * progress * progress 
+              : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+            
+            // Interpolate camera position and target
+            camera.position.lerpVectors(startPos, newPosition, eased);
+            controls.target.lerpVectors(startTarget, targetPos, eased);
+            controls.update();
+            
+            if (progress < 1) {
+              requestAnimationFrame(animateFocus);
+            } else {
+              console.log('✅ focusObject animation complete');
+            }
+          };
+          
+          animateFocus();
+        } else {
+          console.error('❌ Object not found:', objectName);
+          console.log('📋 Available objects:', Array.from(planetsRef.current.keys()));
         }
-        controls.update();
       },
+      getAvailableObjects: () => {
+        const objects: string[] = [];
+        planetsRef.current.forEach((_, name) => {
+          objects.push(name);
+        });
+        return objects.sort();
+      }
     };
 
     // Notify parent that camera controls are ready
+    console.log('🎮 CelestialCanvas: Camera controls object created');
+    console.log('📋 Available control functions:', Object.keys(cameraControls));
+    console.log('🌍 Planets currently loaded:', planetsRef.current.size);
     if (onCameraControlsReady) {
+      console.log('📞 Calling onCameraControlsReady callback');
       onCameraControlsReady(cameraControls);
+      console.log('✅ onCameraControlsReady callback completed');
+    } else {
+      console.warn('⚠️ No onCameraControlsReady callback provided');
     }
 
     // Handle resize
@@ -1296,46 +1096,14 @@ export default function CelestialCanvas({
 
     // Cleanup
     return () => {
-      console.log('🧹 CLEANUP: Disposing scene and removing all objects');
-      
       window.removeEventListener('resize', handleResize);
       renderer.domElement.removeEventListener('click', handleClick);
       renderer.domElement.removeEventListener('mousemove', handleMouseMove);
       cancelAnimationFrame(animationId);
-      
-      // Clear all refs to prevent duplicate creation on remount
-      planetsRef.current.clear();
-      orbitsRef.current.clear();
-      labelsRef.current.clear();
-      moonsRef.current.clear();
-      neoRingRefs.current.clear();
-      
-      // Dispose scene objects
-      scene.traverse((object) => {
-        if (object instanceof THREE.Mesh) {
-          object.geometry?.dispose();
-          if (object.material) {
-            if (Array.isArray(object.material)) {
-              object.material.forEach(material => material.dispose());
-            } else {
-              object.material.dispose();
-            }
-          }
-        }
-      });
-      
       controls.dispose();
       renderer.dispose();
-      
-      // Remove DOM elements
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
-      if (container.contains(labelRenderer.domElement)) {
-        container.removeChild(labelRenderer.domElement);
-      }
-      
-      console.log('✅ CLEANUP: Complete');
+      container.removeChild(renderer.domElement);
+      container.removeChild(labelRenderer.domElement);
     };
   }, [showGrid, showOrbits, showLabels, showConstellations, showAsteroidBelt, showMoons, speedMultiplier, isPaused, hoveredPlanet, onPlanetSelect, onTimeUpdate, onCameraControlsReady, orbitalData]);
 
@@ -1350,108 +1118,10 @@ export default function CelestialCanvas({
     labelsRef.current.forEach((label) => {
       label.visible = showLabels;
     });
-    moonLabelsRef.current.forEach((moonLabel) => {
-      moonLabel.visible = showLabels;
-    });
     constellationsRef.current.forEach((constellation) => {
       constellation.visible = showConstellations;
     });
   }, [showGrid, showOrbits, showLabels, showConstellations]);
-
-  // Function to animate camera to a celestial object
-  const flyToObject = (objectName: string) => {
-    if (!cameraRef.current || !controlsRef.current || !planetsRef.current || isAnimatingCamera) {
-      return;
-    }
-
-    const targetMesh = planetsRef.current.get(objectName);
-    if (!targetMesh) {
-      console.warn(`Object "${objectName}" not found`);
-      return;
-    }
-
-    setIsAnimatingCamera(true);
-    setShowObjectFinder(false);
-
-    const camera = cameraRef.current;
-    const controls = controlsRef.current;
-    const targetPosition = targetMesh.position.clone();
-
-    // Calculate appropriate distance based on object type
-    const objectData = orbitalData.find(obj => obj.name === objectName);
-    let distance = 10; // Default distance
-
-    if (objectData) {
-      if (objectData.type === 'planet') {
-        // Planets: larger viewing distance
-        if (objectName === 'Jupiter' || objectName === 'Saturn') distance = 20;
-        else if (objectName === 'Uranus' || objectName === 'Neptune') distance = 15;
-        else distance = 8;
-      } else if (objectData.type === 'interstellar') {
-        // Interstellar objects: very far, need large view
-        distance = 50;
-      } else if (objectData.type === 'neo' || objectData.type === 'asteroid') {
-        // Small objects: closer view
-        distance = 3;
-      } else if (objectData.type === 'comet') {
-        // Comets: medium distance to see tail
-        distance = 8;
-      }
-    }
-
-    // Calculate camera position (offset from target)
-    const direction = new THREE.Vector3();
-    camera.getWorldDirection(direction);
-    const offset = direction.multiplyScalar(-distance);
-    const startPosition = camera.position.clone();
-    const endPosition = targetPosition.clone().add(offset);
-
-    // Animation parameters
-    const duration = 2000; // 2 seconds
-    const startTime = Date.now();
-
-    const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      
-      // Easing function (ease-in-out cubic)
-      const eased = progress < 0.5
-        ? 4 * progress * progress * progress
-        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-
-      // Interpolate camera position
-      camera.position.lerpVectors(startPosition, endPosition, eased);
-      
-      // Update controls target
-      controls.target.lerp(targetPosition, eased);
-      controls.update();
-
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        setIsAnimatingCamera(false);
-      }
-    };
-
-    animate();
-  };
-
-  // Group celestial objects by type for dropdown
-  const groupedObjects = orbitalData.reduce((acc, obj) => {
-    const type = obj.type.charAt(0).toUpperCase() + obj.type.slice(1);
-    if (!acc[type]) acc[type] = [];
-    acc[type].push(obj.name);
-    return acc;
-  }, {} as Record<string, string[]>);
-
-  // Sort groups and objects
-  const sortedGroups = Object.keys(groupedObjects).sort((a, b) => {
-    const order = ['Planet', 'Asteroid', 'Comet', 'Neo', 'Interstellar'];
-    return order.indexOf(a) - order.indexOf(b);
-  });
-  sortedGroups.forEach(group => {
-    groupedObjects[group].sort();
-  });
 
   return (
     <div ref={containerRef} className="w-full h-full bg-black relative">
@@ -1470,119 +1140,10 @@ export default function CelestialCanvas({
           <p className="text-sm mt-2 opacity-75">Using fallback orbital data</p>
         </div>
       )}
-      
-      {/* Find Object Dropdown */}
-      <div className="absolute top-4 right-40 z-50 pointer-events-auto">
-        <div className="relative">
-          <button
-            onClick={() => setShowObjectFinder(!showObjectFinder)}
-            disabled={isAnimatingCamera || isLoading}
-            className="bg-linear-to-br from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            title="Find celestial object"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <span className="font-medium">Find Object</span>
-            <svg 
-              className={`w-4 h-4 transition-transform ${showObjectFinder ? 'rotate-180' : ''}`} 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-          
-          {showObjectFinder && (
-            <div className="absolute top-full right-0 mt-2 w-72 max-h-96 overflow-y-auto bg-gray-900 border border-gray-700 rounded-lg shadow-2xl pointer-events-auto">
-              <div className="p-2">
-                {sortedGroups.map((group) => (
-                  <div key={group} className="mb-3 last:mb-0">
-                    <div className="text-gray-400 text-xs font-semibold uppercase tracking-wider px-3 py-2 bg-gray-800 rounded-t-md">
-                      {group}s ({groupedObjects[group].length})
-                    </div>
-                    <div className="space-y-1 mt-1">
-                      {groupedObjects[group].map((objectName) => (
-                        <button
-                          key={objectName}
-                          onClick={() => flyToObject(objectName)}
-                          className="w-full text-left px-3 py-2 text-white hover:bg-indigo-600/20 hover:text-indigo-300 rounded-md transition-colors flex items-center justify-between group"
-                        >
-                          <span className="text-sm">{objectName}</span>
-                          <svg 
-                            className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" 
-                            fill="none" 
-                            stroke="currentColor" 
-                            viewBox="0 0 24 24"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                          </svg>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="border-t border-gray-700 p-3 bg-gray-800/50">
-                <button
-                  onClick={() => {
-                    if (cameraRef.current && controlsRef.current) {
-                      // Reset to default view
-                      const camera = cameraRef.current;
-                      const controls = controlsRef.current;
-                      const startPos = camera.position.clone();
-                      const endPos = new THREE.Vector3(0, 15, 30);
-                      const startTarget = controls.target.clone();
-                      const endTarget = new THREE.Vector3(0, 0, 0);
-                      const duration = 1500;
-                      const startTime = Date.now();
-
-                      setIsAnimatingCamera(true);
-                      setShowObjectFinder(false);
-
-                      const animate = () => {
-                        const elapsed = Date.now() - startTime;
-                        const progress = Math.min(elapsed / duration, 1);
-                        const eased = progress < 0.5
-                          ? 4 * progress * progress * progress
-                          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-
-                        camera.position.lerpVectors(startPos, endPos, eased);
-                        controls.target.lerpVectors(startTarget, endTarget, eased);
-                        controls.update();
-
-                        if (progress < 1) {
-                          requestAnimationFrame(animate);
-                        } else {
-                          setIsAnimatingCamera(false);
-                        }
-                      };
-                      animate();
-                    }
-                  }}
-                  disabled={isAnimatingCamera}
-                  className="w-full bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded-md text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Reset Camera View
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-      
       {selectedPlanet && (
         <PlanetInfoPanel
           planet={selectedPlanet}
           onClose={() => setSelectedPlanet(null)}
-        />
-      )}
-      
-      {hoveredNEO && globalNEORiskAssessments.has(hoveredNEO.name) && (
-        <NEORiskTooltip
-          assessment={globalNEORiskAssessments.get(hoveredNEO.name)!}
-          position={hoveredNEO.position}
         />
       )}
     </div>
@@ -1597,10 +1158,10 @@ export default function CelestialCanvas({
 
 function addSky(scene: THREE.Scene) {
   // Create procedural starfield as reliable alternative to external textures
-  // This approach generates thousands of star particles for a stunning Milky Way effect
+  // Optimized star count for better performance and stability
   
   const starsGeometry = new THREE.BufferGeometry();
-  const starCount = 15000; // Increased for dense starfield
+  const starCount = 8000; // Reduced from 15000 for better performance
   
   const positions = new Float32Array(starCount * 3);
   const colors = new Float32Array(starCount * 3);
@@ -1652,8 +1213,8 @@ function addSky(scene: THREE.Scene) {
     sizeAttenuation: true,
     vertexColors: true,
     transparent: true,
-    opacity: 0.9,
-    blending: THREE.AdditiveBlending, // Makes stars glow
+    opacity: 0.8, // Reduced from 0.9
+    blending: THREE.NormalBlending, // Changed from AdditiveBlending for stability
     depthWrite: false
   });
   
@@ -1662,7 +1223,7 @@ function addSky(scene: THREE.Scene) {
   
   // Add Milky Way band effect (denser concentration of stars)
   const milkyWayGeometry = new THREE.BufferGeometry();
-  const milkyWayCount = 8000;
+  const milkyWayCount = 2000; // Reduced from 8000 for better performance
   
   const mwPositions = new Float32Array(milkyWayCount * 3);
   const mwColors = new Float32Array(milkyWayCount * 3);
@@ -1697,8 +1258,8 @@ function addSky(scene: THREE.Scene) {
     sizeAttenuation: true,
     vertexColors: true,
     transparent: true,
-    opacity: 0.6,
-    blending: THREE.AdditiveBlending,
+    opacity: 0.5, // Reduced from 0.6
+    blending: THREE.NormalBlending, // Changed from AdditiveBlending for stability
     depthWrite: false
   });
   
@@ -1706,7 +1267,7 @@ function addSky(scene: THREE.Scene) {
   milkyWayBand.rotation.z = Math.PI / 4; // Tilt the Milky Way band
   scene.add(milkyWayBand);
   
-  console.log('✅ Procedural starfield generated: 15,000 background stars + 8,000 Milky Way band stars');
+  console.log('✅ Procedural starfield generated: 8,000 background stars + 2,000 Milky Way stars (optimized)');
 }
 
 function addSun(scene: THREE.Scene) {
@@ -1757,53 +1318,378 @@ function addSun(scene: THREE.Scene) {
   console.log('✅ Enhanced Sun created with shadow casting and multi-layer glow');
 }
 
-// Update NEO risk indicator rings based on ML assessments
-function updateNEORiskRings(
-  neoRingRefs: React.MutableRefObject<Map<string, THREE.Mesh>>,
-  assessments: Map<string, NEORiskAssessment>
-) {
-  if (neoRingRefs.current.size === 0) return; // No rings to update
+// Enhanced planet materials with physically accurate properties
+function createPlanetMaterial(
+  planetName: string, 
+  textureLoader: THREE.TextureLoader | null
+): THREE.Material {
   
-  neoRingRefs.current.forEach((ring, neoName) => {
-    const material = ring.material as THREE.MeshBasicMaterial;
-    const assessment = assessments.get(neoName);
-    
-    // Always add pulsing animation to NEO rings
-    const basePulseSpeed = 0.003;
-    const basePulseAmplitude = 0.2;
-    
-    if (assessment) {
-      // Color and pulse based on Torino Scale
-      if (assessment.torino_scale === 0) {
-        material.color.setHex(0xffffff); // White - no threat
-        const baseOpacity = 0.3;
-        const pulse = Math.sin(Date.now() * basePulseSpeed) * 0.1 + baseOpacity;
-        material.opacity = pulse;
-      } else if (assessment.torino_scale <= 2) {
-        material.color.setHex(0xffff00); // Yellow - merits attention
-        const baseOpacity = 0.6;
-        const pulse = Math.sin(Date.now() * basePulseSpeed) * basePulseAmplitude + baseOpacity;
-        material.opacity = pulse;
-      } else if (assessment.torino_scale <= 4) {
-        material.color.setHex(0xff9900); // Orange - close approach
-        const baseOpacity = 0.7;
-        const pulse = Math.sin(Date.now() * basePulseSpeed * 1.5) * 0.3 + baseOpacity;
-        material.opacity = pulse;
-      } else {
-        material.color.setHex(0xff0000); // Red - threatening
-        const baseOpacity = 0.9;
-        const pulse = Math.sin(Date.now() * basePulseSpeed * 2) * 0.4 + baseOpacity;
-        material.opacity = pulse;
+  switch(planetName) {
+    case 'Mercury':
+      return new THREE.MeshPhongMaterial({
+        color: 0xCCCCCC,         // Light gray
+        emissive: 0x888888,      // Medium gray emissive
+        emissiveIntensity: 0.08, // Subtle glow
+        shininess: 8,
+        specular: 0x999999       // Light gray specular
+      });
+      
+    case 'Venus':
+      // Thick CO2 atmosphere with sulfuric acid clouds
+      return new THREE.MeshPhongMaterial({
+        color: 0xCCFFCC,         // Pale green/mint color
+        emissive: 0x88FF88,      // Bright green emissive
+        emissiveIntensity: 0.2,  // Strong glow
+        shininess: 25,
+        specular: 0xFFFFFF       // Bright specular
+      });
+      
+    case 'Earth':
+      const earthMat = new THREE.MeshPhongMaterial({
+        color: 0x82EEFD,         // Light sky blue
+        emissive: 0x5ACDEE,      // Bright sky blue emissive
+        emissiveIntensity: 0.2,  // Strong glow
+        shininess: 30,           // More reflective oceans
+        specular: 0xAAF5FF       // Bright light blue specular highlights
+      });
+      
+      // Load Earth textures if available
+      if (textureLoader) {
+        textureLoader.load(
+          'https://www.solarsystemscope.com/textures/download/2k_earth_daymap.jpg',
+          (dayTexture) => {
+            earthMat.map = dayTexture;
+            earthMat.needsUpdate = true;
+          },
+          undefined,
+          () => {} // Silently fail if texture not available
+        );
+        
+        // Normal map for topography
+        textureLoader.load(
+          'https://www.solarsystemscope.com/textures/download/2k_earth_normal_map.jpg',
+          (normalTexture) => {
+            earthMat.normalMap = normalTexture;
+            earthMat.normalScale = new THREE.Vector2(0.5, 0.5);
+            earthMat.needsUpdate = true;
+          },
+          undefined,
+          () => {}
+        );
+        
+        // Specular map for water reflection
+        textureLoader.load(
+          'https://www.solarsystemscope.com/textures/download/2k_earth_specular_map.jpg',
+          (specTexture) => {
+            earthMat.specularMap = specTexture;
+            earthMat.needsUpdate = true;
+          },
+          undefined,
+          () => {}
+        );
       }
-    } else {
-      // No assessment yet - just pulse with current color
-      const currentOpacity = material.opacity;
-      const pulse = Math.sin(Date.now() * basePulseSpeed) * 0.15 + Math.max(0.5, currentOpacity);
-      material.opacity = Math.min(pulse, 1.0);
+      
+      return earthMat;
+      
+    case 'Mars':
+      return new THREE.MeshPhongMaterial({
+        color: 0xFF3300,         // Bright red-orange
+        emissive: 0xFF2200,      // Bright red emissive
+        emissiveIntensity: 0.15, // Strong red glow
+        shininess: 12,
+        specular: 0xFF6633       // Orange specular
+      });
+      
+    case 'Jupiter':
+      return new THREE.MeshPhongMaterial({
+        color: 0xFF9933,         // Bright orange
+        emissive: 0xFF7722,      // Bright orange emissive
+        emissiveIntensity: 0.12, // Strong glow
+        shininess: 10,
+        specular: 0xFFAA55       // Bright orange specular
+      });
+      
+    case 'Saturn':
+      return new THREE.MeshPhongMaterial({
+        color: 0xFFFCC0,         // Pale yellow (corrected from FFFCC)
+        emissive: 0xFFEE88,      // Bright yellow emissive
+        emissiveIntensity: 0.18, // Strong yellow glow
+        shininess: 15,
+        specular: 0xFFFF99       // Bright yellow specular
+      });
+      
+    case 'Uranus':
+      return new THREE.MeshPhongMaterial({
+        color: 0x4FD0E7,
+        emissive: 0x004466,
+        emissiveIntensity: 0.12,
+        shininess: 30,
+        specular: 0x66AACC,
+        transparent: true,
+        opacity: 0.98
+      });
+      
+    case 'Neptune':
+      return new THREE.MeshPhongMaterial({
+        color: 0x4169E1,
+        emissive: 0x000088,
+        emissiveIntensity: 0.15,
+        shininess: 35,
+        specular: 0x4466AA,
+        transparent: true,
+        opacity: 0.98
+      });
+      
+    default:
+      return new THREE.MeshPhongMaterial({
+        color: 0xCCCCCC,
+        emissive: 0x111111,
+        emissiveIntensity: 0.1
+      });
+  }
+}
+
+// Enhanced atmospheric effects
+function addAtmosphere(
+  planetMesh: THREE.Mesh,
+  planetName: string,
+  planetSize: number
+) {
+  const atmosphereData: { [key: string]: any } = {
+    Earth: {
+      color: 0x82EEFD,       // Light sky blue to match planet
+      thickness: 1.06,       // Much thicker atmosphere (6% larger)
+      opacity: 0.85,         // Very bright, highly visible
+      fresnel: true,
+      intensity: 3.5         // Very strong intensity
+    },
+    Venus: {
+      color: 0xCCFFCC,       // Pale green/mint to match planet
+      thickness: 1.08,       // Extra thick atmosphere
+      opacity: 0.8,          // Very bright
+      fresnel: true,         // Changed to use Fresnel
+      intensity: 3.2         // Strong intensity
+    },
+    Mars: {
+      color: 0xFF6633,       // Bright orange-red
+      thickness: 1.04,       // Thicker atmosphere
+      opacity: 0.5,          // More visible
+      fresnel: true,
+      intensity: 2.0         // Stronger intensity
+    },
+    Jupiter: {
+      color: 0xFFAA55,       // Bright orange
+      thickness: 1.05,       // Thicker atmosphere
+      opacity: 0.65,         // Brighter
+      fresnel: true,         // Changed to use Fresnel
+      intensity: 2.8         // Strong intensity
+    },
+    Saturn: {
+      color: 0xFFCC33,       // Golden orange Fresnel glow
+      thickness: 1.07,       // Much thicker atmosphere (7% larger)
+      opacity: 0.75,         // Very bright and visible
+      fresnel: true,         // NOW USES FRESNEL!
+      intensity: 3.0         // Strong Fresnel intensity
+    },
+    Uranus: {
+      color: 0x66DDFF,
+      thickness: 1.02,
+      opacity: 0.25,
+      fresnel: true
+    },
+    Neptune: {
+      color: 0x3366FF,
+      thickness: 1.02,
+      opacity: 0.3,
+      fresnel: true
+    }
+  };
+  
+  const atmData = atmosphereData[planetName];
+  if (!atmData) return;
+  
+  const atmosphereGeometry = new THREE.SphereGeometry(
+    planetSize * atmData.thickness,
+    64, 
+    64
+  );
+  
+  // Use custom shader for Fresnel effect (edge glow)
+  let atmosphereMaterial;
+  
+  if (atmData.fresnel) {
+    // Fresnel shader for realistic atmospheric glow
+    atmosphereMaterial = new THREE.ShaderMaterial({
+      vertexShader: `
+        varying vec3 vNormal;
+        varying vec3 vPositionNormal;
+        void main() {
+          vNormal = normalize(normalMatrix * normal);
+          vPositionNormal = normalize((modelViewMatrix * vec4(position, 1.0)).xyz);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 glowColor;
+        uniform float intensity;
+        varying vec3 vNormal;
+        varying vec3 vPositionNormal;
+        void main() {
+          float fresnel = dot(vNormal, vPositionNormal);
+          fresnel = clamp(1.0 - fresnel, 0.0, 1.0);
+          fresnel = pow(fresnel, 3.0) * intensity;
+          gl_FragColor = vec4(glowColor, fresnel);
+        }
+      `,
+      uniforms: {
+        glowColor: { value: new THREE.Color(atmData.color) },
+        intensity: { value: atmData.intensity || (atmData.opacity * 2.0) }
+      },
+      side: THREE.BackSide,
+      blending: THREE.AdditiveBlending,
+      transparent: true
+    });
+  } else {
+    atmosphereMaterial = new THREE.MeshBasicMaterial({
+      color: atmData.color,
+      transparent: true,
+      opacity: atmData.opacity,
+      side: THREE.BackSide
+    });
+  }
+  
+  const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+  planetMesh.add(atmosphere);
+}
+
+// Enhanced Saturn ring system
+function addEnhancedSaturnRings(saturnMesh: THREE.Mesh, planetSize: number) {
+  // Ring system data (A, B, C, D rings and Cassini Division)
+  const ringSystem = [
+    // D Ring (innermost, very faint)
+    { inner: 1.11, outer: 1.24, color: 0x666666, opacity: 0.1 },
+    // C Ring (crepe ring, translucent)
+    { inner: 1.24, outer: 1.52, color: 0x999999, opacity: 0.3 },
+    // B Ring (brightest, densest)
+    { inner: 1.52, outer: 1.95, color: 0xDDDDCC, opacity: 0.9 },
+    // Cassini Division (gap)
+    { inner: 1.95, outer: 2.02, color: 0x000000, opacity: 0.05 },
+    // A Ring (outer bright ring)
+    { inner: 2.02, outer: 2.27, color: 0xCCCCAA, opacity: 0.8 },
+    // Encke Gap
+    { inner: 2.27, outer: 2.28, color: 0x000000, opacity: 0.05 },
+    // Outer A
+    { inner: 2.28, outer: 2.40, color: 0xBBBB99, opacity: 0.7 },
+    // F Ring (thin)
+    { inner: 2.40, outer: 2.42, color: 0xEEEEDD, opacity: 0.5 }
+  ];
+  
+  ringSystem.forEach(ring => {
+    const ringGeometry = new THREE.RingGeometry(
+      planetSize * ring.inner,
+      planetSize * ring.outer,
+      128,
+      8
+    );
+    
+    // UV mapping for ring texture
+    const uvs = ringGeometry.attributes.uv as THREE.BufferAttribute;
+    for (let i = 0; i < uvs.count; i++) {
+      uvs.setXY(i, uvs.getX(i), 1.0 - uvs.getY(i));
     }
     
-    material.needsUpdate = true;
+    const ringMaterial = new THREE.MeshPhongMaterial({
+      color: ring.color,
+      emissive: ring.color,
+      emissiveIntensity: 0.1,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: ring.opacity,
+      shininess: 50,
+      specular: 0x222222
+    });
+    
+    const ringMesh = new THREE.Mesh(ringGeometry, ringMaterial);
+    ringMesh.rotation.x = Math.PI / 2;
+    ringMesh.rotation.z = deg2rad(27); // Saturn's axial tilt
+    ringMesh.receiveShadow = true;
+    ringMesh.castShadow = true;
+    
+    saturnMesh.add(ringMesh);
   });
+}
+
+// Enhanced cloud layers
+function addCloudLayer(
+  planetMesh: THREE.Mesh,
+  planetName: string,
+  planetSize: number,
+  textureLoader: THREE.TextureLoader | null
+) {
+  const cloudData: { [key: string]: any } = {
+    Earth: {
+      size: 1.008,
+      opacity: 0.4,
+      speed: 0.0001,
+      texture: 'https://www.solarsystemscope.com/textures/download/2k_earth_clouds.jpg'
+    },
+    Venus: {
+      size: 1.015,
+      opacity: 0.8,
+      speed: 0.0003,
+      color: 0xFFEE99
+    },
+    Jupiter: {
+      size: 1.002,
+      opacity: 0.6,
+      speed: 0.0005,
+      bands: true
+    },
+    Saturn: {
+      size: 1.002,
+      opacity: 0.5,
+      speed: 0.0004,
+      bands: true
+    }
+  };
+  
+  const clouds = cloudData[planetName];
+  if (!clouds) return;
+  
+  const cloudGeometry = new THREE.SphereGeometry(
+    planetSize * clouds.size,
+    64,
+    64
+  );
+  
+  const cloudMaterial = new THREE.MeshPhongMaterial({
+    color: clouds.color || 0xFFFFFF,
+    transparent: true,
+    opacity: clouds.opacity,
+    depthWrite: false,
+    side: THREE.FrontSide
+  });
+  
+  // Load cloud texture if available
+  if (textureLoader && clouds.texture) {
+    textureLoader.load(
+      clouds.texture,
+      (texture) => {
+        cloudMaterial.map = texture;
+        cloudMaterial.alphaMap = texture;
+        cloudMaterial.needsUpdate = true;
+      },
+      undefined,
+      () => {} // Silently handle texture load failures
+    );
+  }
+  
+  const cloudMesh = new THREE.Mesh(cloudGeometry, cloudMaterial);
+  
+  // Animate cloud rotation
+  cloudMesh.userData.rotationSpeed = clouds.speed;
+  
+  planetMesh.add(cloudMesh);
 }
 
 function addPlanets(
@@ -1814,14 +1700,8 @@ function addPlanets(
   orbitsRef: React.MutableRefObject<Map<string, THREE.LineSegments>>,
   labelsRef: React.MutableRefObject<Map<string, CSS2DObject>>,
   orbitalData: CelestialObject[],
-  textureLoader: THREE.TextureLoader | null,
-  neoRingRefs: React.MutableRefObject<Map<string, THREE.Mesh>>
+  textureLoader: THREE.TextureLoader | null
 ) {
-  console.log('🟢🟢🟢 ADDPLANETS FUNCTION CALLED with', orbitalData.length, 'objects');
-  console.log('🟢 Current planetsRef size:', planetsRef.current.size);
-  console.log('🟢 Current labelsRef size:', labelsRef.current.size);
-  console.log('🟢 neoRingRefs map size:', neoRingRefs.current.size);
-  
   // Validate orbital data before proceeding
   if (!orbitalData || orbitalData.length === 0) {
     console.warn('⚠️ Orbital data not loaded yet, skipping planet creation');
@@ -1830,16 +1710,16 @@ function addPlanets(
 
   // Removed: const currentTime = Date.now(); - now using parameter
   
-  // Planet size scaling (relative sizes for visual effect)
+  // Planet size scaling using accurate relative sizes
   const planetSizes: { [key: string]: number } = {
-    Mercury: 0.15,
-    Venus: 0.35,
-    Earth: 0.38,
-    Mars: 0.20,
-    Jupiter: 1.2,
-    Saturn: 1.0,
-    Uranus: 1.5,  // Increased from 0.6 for better visibility
-    Neptune: 1.4  // Increased from 0.58 for better visibility
+    Mercury: ACCURATE_PLANET_SIZES.Mercury * 0.4,  // 0.383 * 0.4 = 0.15
+    Venus: ACCURATE_PLANET_SIZES.Venus * 0.37,     // 0.949 * 0.37 = 0.35
+    Earth: ACCURATE_PLANET_SIZES.Earth * 0.38,     // 1.000 * 0.38 = 0.38
+    Mars: ACCURATE_PLANET_SIZES.Mars * 0.38,       // 0.532 * 0.38 = 0.20
+    Jupiter: ACCURATE_PLANET_SIZES.Jupiter * 0.34, // 3.5 * 0.34 = 1.19
+    Saturn: ACCURATE_PLANET_SIZES.Saturn * 0.33,   // 3.0 * 0.33 = 0.99
+    Uranus: ACCURATE_PLANET_SIZES.Uranus * 0.83,   // 1.8 * 0.83 = 1.49
+    Neptune: ACCURATE_PLANET_SIZES.Neptune * 0.82  // 1.7 * 0.82 = 1.39
   };
   
   // Asteroid sizes (much smaller, scaled by diameter)
@@ -1857,15 +1737,11 @@ function addPlanets(
   const cometSizes: { [key: string]: number } = {
     "Halley's Comet": 0.04,
     "Hale-Bopp": 0.06,
-    "Swift-Tuttle": 0.05,
-    "Encke": 0.035,
-    "12P/Pons-Brooks": 0.045,
     "1I/'Oumuamua": 0.02,
     "2I/Borisov": 0.03,
     "3I/ATLAS": 0.025,    // 3I/ATLAS size
     "C/2025 A6 (Lemmon)": 0.035,   // C/2025 A6 (Lemmon) - bright comet
     "C/2025 R2 (SWAN)": 0.035,     // C/2025 R2 (SWAN) - bright comet
-    "C/2025 V1 (Borisov)": 0.03,   // C/2025 V1 (Borisov) - Nov 2025 discovery, tail-less appearance
     default: 0.03
   };
   
@@ -1954,107 +1830,28 @@ function addPlanets(
         metalness: 0.1,
         roughness: 0.9
       });
+    } else if (objectData.type === 'planet') {
+      // Use enhanced planet material function
+      objectGeometry = new THREE.SphereGeometry(objectSize, 64, 64);
+      objectMaterial = createPlanetMaterial(objectData.name, textureLoader);
     } else {
-      // Planets, asteroids, NEOs are spheres
-      objectGeometry = new THREE.SphereGeometry(objectSize, objectData.type === 'planet' ? 32 : 16, objectData.type === 'planet' ? 32 : 16);
+      // Asteroids, NEOs, and other objects use simple materials
+      objectGeometry = new THREE.SphereGeometry(objectSize, 16, 16);
       
-      // Temporarily disabled textures to avoid CORS errors
-      if (false && objectData.type === 'planet' && textureLoader) {
-        // Load planet texture
-        const textureUrl = PLANET_TEXTURES[objectData.name as keyof typeof PLANET_TEXTURES];
-        if (textureUrl) {
-          const texture = textureLoader.load(textureUrl);
-          // Special handling for Earth to make it bright and beautiful
-          if (objectData.name === 'Earth') {
-            objectMaterial = new THREE.MeshStandardMaterial({
-              map: texture,
-              color: 0x4A90E2, // Vibrant blue tint to enhance ocean colors
-              emissive: 0x0066FF, // Deep blue emissive instead of sky blue
-              emissiveIntensity: 0.5, // Moderate intensity - not too bright
-              metalness: 0.2,
-              roughness: 0.3, // Some roughness for natural look
-              transparent: false,
-              opacity: 1.0
-            });
-            
-            // Log Earth texture loading for debugging
-            console.log('🌍 Earth material created with vibrant blue ocean colors');
-          } else if (objectData.name === 'Uranus') {
-            // Make Uranus bright cyan-blue and highly visible with BasicMaterial (self-illuminating)
-            objectMaterial = new THREE.MeshBasicMaterial({
-              map: texture,
-              color: 0x00FFFF, // Bright cyan - fully visible
-              transparent: false
-            });
-            console.log('🔵 Uranus material created with self-illuminating cyan');
-          } else if (objectData.name === 'Neptune') {
-            // Make Neptune bright deep blue and highly visible with BasicMaterial (self-illuminating)
-            objectMaterial = new THREE.MeshBasicMaterial({
-              map: texture,
-              color: 0x4169E1, // Bright royal blue - fully visible
-              transparent: false
-            });
-            console.log('🔵 Neptune material created with self-illuminating blue');
-          } else {
-            objectMaterial = new THREE.MeshStandardMaterial({
-              map: texture,
-              emissive: objectColor,
-              emissiveIntensity: 0.2,
-              metalness: 0.1,
-              roughness: 0.8
-            });
-          }
-        } else {
-          // Fallback to solid color if no texture
-          // Make Uranus and Neptune extra bright since they're far away
-          if (objectData.name === 'Uranus') {
-            objectMaterial = new THREE.MeshBasicMaterial({
-              color: 0x00FFFF, // Bright cyan - self-illuminating
-              transparent: false
-            });
-          } else if (objectData.name === 'Neptune') {
-            objectMaterial = new THREE.MeshBasicMaterial({
-              color: 0x4169E1, // Bright blue - self-illuminating
-              transparent: false
-            });
-          } else {
-            objectMaterial = new THREE.MeshStandardMaterial({
-              color: objectColor,
-              emissive: objectColor,
-              emissiveIntensity: 0.2,
-              metalness: 0.1,
-              roughness: 0.8
-            });
-          }
-        }
+      if (objectData.type === 'interstellar') {
+        // Make interstellar objects bright and glowing
+        objectMaterial = new THREE.MeshBasicMaterial({
+          color: objectColor,
+          transparent: false
+        });
       } else {
-        // Non-planet objects or planets without textures
-        // Special handling for Uranus and Neptune
-        if (objectData.name === 'Uranus') {
-          objectMaterial = new THREE.MeshBasicMaterial({
-            color: 0x00FFFF, // Bright cyan - self-illuminating
-            transparent: false
-          });
-        } else if (objectData.name === 'Neptune') {
-          objectMaterial = new THREE.MeshBasicMaterial({
-            color: 0x4169E1, // Bright blue - self-illuminating
-            transparent: false
-          });
-        } else if (objectData.type === 'interstellar') {
-          // Make interstellar objects VERY bright and glowing
-          objectMaterial = new THREE.MeshBasicMaterial({
-            color: objectColor,
-            transparent: false
-          });
-        } else {
-          objectMaterial = new THREE.MeshStandardMaterial({
-            color: objectColor,
-            emissive: objectColor,
-            emissiveIntensity: objectData.type === 'planet' ? 0.5 : 0.2,
-            metalness: objectData.type === 'asteroid' ? 0.3 : 0.1,
-            roughness: objectData.type === 'asteroid' ? 0.7 : 0.8
-          });
-        }
+        objectMaterial = new THREE.MeshStandardMaterial({
+          color: objectColor,
+          emissive: objectColor,
+          emissiveIntensity: 0.25,
+          metalness: objectData.type === 'asteroid' ? 0.4 : 0.15,
+          roughness: objectData.type === 'asteroid' ? 0.85 : 0.75
+        });
       }
     }
     
@@ -2067,110 +1864,54 @@ function addPlanets(
     const position = getPlanetPosition(currentTime, elements);
     objectMesh.position.set(position.x, position.y, position.z);
     
-    // Debug logging for interstellar objects
-    if (objectData.type === 'interstellar') {
-      console.log(`🌌 Interstellar object: ${objectData.name}`);
-      console.log(`   Position: (${position.x.toFixed(2)}, ${position.y.toFixed(2)}, ${position.z.toFixed(2)})`);
-      console.log(`   Distance from Sun: ${Math.sqrt(position.x**2 + position.y**2 + position.z**2).toFixed(2)} units`);
-      console.log(`   Eccentricity: ${elements.e.toFixed(4)}, Semi-major axis: ${elements.a.toFixed(4)}`);
-    }
-    
     scene.add(objectMesh);
     planetsRef.current.set(objectData.name, objectMesh);
 
-    // Add NEO risk indicator ring
-    if (objectData.type === 'neo' || objectData.name === 'Apophis' || objectData.name === 'Ryugu') {
-      const ringGeometry = new THREE.RingGeometry(objectSize * 2.5, objectSize * 3.5, 32);
-      const ringMaterial = new THREE.MeshBasicMaterial({
-        color: 0xffff00, // Yellow/amber for attention - will be updated by risk assessment
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 0.7,
-        depthTest: false
-      });
-      const ring = new THREE.Mesh(ringGeometry, ringMaterial);
-      ring.rotateX(Math.PI / 2);
-      objectMesh.add(ring);
-      neoRingRefs.current.set(objectData.name, ring);
+    // Add enhanced planetary features
+    if (objectData.type === 'planet') {
+      // Add atmospheres for applicable planets
+      addAtmosphere(objectMesh, objectData.name, objectSize);
       
-      // Fetch ML risk assessment asynchronously and store in state
-      (async () => {
-        try {
-          const perihelion = objectData.a0 * (1 - objectData.e0);
-          const period = Math.sqrt(Math.pow(objectData.a0, 3));
-          
-          const assessment = await mlAPI.predictNEOCollisionRisk({
-            object_name: objectData.name,
-            semi_major_axis_au: objectData.a0,
-            eccentricity: objectData.e0,
-            inclination_deg: objectData.i0,
-            perihelion_distance_au: perihelion,
-            orbital_period_years: period,
-          });
-          
-          // Store in global map for access in hover handlers
-          globalNEORiskAssessments.set(objectData.name, assessment);
-          
-          // Update ring color based on Torino Scale
-          const material = ring.material as THREE.MeshBasicMaterial;
-          if (assessment.torino_scale === 0) {
-            material.color.setHex(0xffffff); // White
-            material.opacity = 0.4;
-          } else if (assessment.torino_scale <= 2) {
-            material.color.setHex(0xffff00); // Yellow
-            material.opacity = 0.6;
-          } else if (assessment.torino_scale <= 4) {
-            material.color.setHex(0xff9900); // Orange
-            material.opacity = 0.75;
-          } else {
-            material.color.setHex(0xff0000); // Red
-            material.opacity = 0.9;
-          }
-          material.needsUpdate = true;
-        } catch (err) {
-          console.error(`Failed to fetch risk assessment for ${objectData.name}:`, err);
-        }
-      })();
+      // Add cloud layers
+      addCloudLayer(objectMesh, objectData.name, objectSize, textureLoader);
+      
+      // Add Saturn's enhanced ring system
+      if (objectData.name === 'Saturn' && objectSize > 0 && !isNaN(objectSize)) {
+        addEnhancedSaturnRings(objectMesh, objectSize);
+      }
     }
 
-    // Add special features for specific planets
+    // Keep existing special features
     if (objectData.name === 'Saturn' && objectSize > 0 && !isNaN(objectSize)) {
-      // Add Saturn's rings
-      addSaturnRings(objectMesh, objectSize);
+      // Legacy ring function (remove if addEnhancedSaturnRings is working)
+      // addSaturnRings(objectMesh, objectSize);
     }
     
     if (objectData.name === 'Jupiter' && objectSize > 0 && !isNaN(objectSize)) {
-      // Add Jupiter's stripes and Great Red Spot
       addJupiterFeatures(objectMesh, objectSize);
     }
 
     if (objectData.name === 'Mars' && objectSize > 0 && !isNaN(objectSize)) {
-      // Add Mars' polar ice caps
       addMarsIceCaps(objectMesh, objectSize);
     }
 
     if (objectData.name === 'Venus' && objectSize > 0 && !isNaN(objectSize)) {
-      // Add Venus' thick cloud layer
       addVenusClouds(objectMesh, objectSize);
     }
 
     if (objectData.name === 'Uranus' && objectSize > 0 && !isNaN(objectSize)) {
-      // Add Uranus' extreme axial tilt
       addUranusTilt(objectMesh);
     }
 
     if (objectData.name === 'Neptune' && objectSize > 0 && !isNaN(objectSize)) {
-      // Add Neptune's deep blue color and atmospheric bands
       addNeptuneFeatures(objectMesh, objectSize);
     }
 
     if (objectData.name === 'Earth' && objectSize > 0 && !isNaN(objectSize)) {
-      // Add Earth's distinctive features: oceans, continents, clouds, and ice caps
       addEarthFeatures(objectMesh, objectSize);
     }
 
     if (objectData.name === 'Mercury' && objectSize > 0 && !isNaN(objectSize)) {
-      // Add Mercury's cratered surface
       addMercuryFeatures(objectMesh, objectSize);
     }
 
@@ -2219,12 +1960,8 @@ function addPlanets(
       }
     }
 
-    // Create CSS2D label (only for planets and notable objects)
-    // EXCLUDE moons - they have their own labels created in addMoonSystems()
-    const moonNames = ['Moon', 'Phobos', 'Deimos', 'Io', 'Europa', 'Ganymede', 'Callisto', 'Titan', 'Rhea', 'Iapetus', 'Dione', 'Titania', 'Oberon', 'Triton'];
-    const isMoon = moonNames.includes(objectData.name);
-    const shouldShowLabel = !isMoon && (objectData.type === 'planet' || 
-                           ['Ceres', 'Vesta', 'Pallas', 'Hygiea', 'Eunomia', 'Juno', "Halley's Comet", 'Hale-Bopp', 'Swift-Tuttle', 'Encke', 'Apophis', 'Ryugu', "1I/'Oumuamua", '2I/Borisov', '3I/ATLAS', 'C/2025 A6 (Lemmon)', 'C/2025 R2 (SWAN)', 'C/2025 V1 (Borisov)', '12P/Pons-Brooks'].includes(objectData.name));
+    // Create CSS2D label (label ALL objects now)
+    const shouldShowLabel = true; // Show labels for all celestial objects
     
     if (shouldShowLabel) {
       const labelDiv = document.createElement('div');
@@ -2236,23 +1973,21 @@ function addPlanets(
         labelText = '⚠️ ' + objectData.name + ' (fragmenting?)';
       }
       
-      // Add time-to-perihelion for active comets (exclude very long-period comets like Hale-Bopp)
-      const hasReasonableOrbit = objectData.mld > 10; // Mean motion > 10°/century (period < ~365 years)
-      if (objectData.type === 'comet' && !objectData.hyperbolic && hasReasonableOrbit) {
+      // Add time-to-perihelion for active comets
+      if (objectData.type === 'comet' && !objectData.hyperbolic) {
         const perihelionInfo = calculateTimeToPerihelion(objectData, currentTime);
         if (perihelionInfo) {
           const days = Math.abs(Math.round(perihelionInfo.daysToPerihelion));
           const years = (days / 365.25).toFixed(1);
           
-          // Only show for reasonable orbital periods (exclude very long period comets like Hale-Bopp)
-          if (days < 365 && !isNaN(days)) {
+          if (days < 365) {
             // Less than 1 year - show in days
             labelText += `\n${perihelionInfo.isApproaching ? '→' : '←'} ${days}d to perihelion`;
-          } else if (days < 3650 && !isNaN(days)) {
+          } else if (days < 3650) {
             // 1-10 years - show in years
             labelText += `\n${perihelionInfo.isApproaching ? '→' : '←'} ${years}y to perihelion`;
           }
-          // Don't show for very long periods (>10 years) or invalid values
+          // Don't show for very long periods (>10 years)
         }
       }
       
@@ -2389,85 +2124,6 @@ type OrbitalElements = {
   o: number;
 };
 
-// Orbital parameters calculation results
-interface OrbitalParameters {
-  perihelion_au: number;    // Closest distance to Sun (AU)
-  aphelion_au: number;      // Farthest distance to Sun (AU)
-  orbital_velocity_km_s: number; // Current velocity (km/s)
-  perihelion_velocity_km_s: number; // Velocity at perihelion
-  aphelion_velocity_km_s: number;   // Velocity at aphelion
-  orbital_period_years: number;      // Time for one complete orbit
-  current_distance_au: number;       // Current distance from Sun
-}
-
-/**
- * Calculate perihelion and aphelion distances for elliptical orbits
- * For hyperbolic orbits (e >= 1), returns only perihelion
- */
-function calculateOrbitalDistances(a: number, e: number): { perihelion: number; aphelion: number | null } {
-  if (e < 1) {
-    // Elliptical orbit
-    const perihelion = a * (1 - e);  // Closest approach
-    const aphelion = a * (1 + e);    // Farthest distance
-    return { perihelion, aphelion };
-  } else {
-    // Hyperbolic/parabolic orbit - only has perihelion
-    const perihelion = a * (1 - e);
-    return { perihelion, aphelion: null };
-  }
-}
-
-/**
- * Calculate orbital velocity using vis-viva equation
- * v = sqrt(GM * (2/r - 1/a))
- * where GM_sun = 1.32712440018e20 m³/s² (standard gravitational parameter)
- */
-function calculateOrbitalVelocity(r_au: number, a_au: number): number {
-  const GM_SUN = 1.32712440018e20; // m³/s²
-  const AU_TO_M = 1.496e11;         // meters per AU
-  
-  const r_m = r_au * AU_TO_M;
-  const a_m = a_au * AU_TO_M;
-  
-  // Vis-viva equation: v² = GM * (2/r - 1/a)
-  let v_m_s: number;
-  
-  if (a_au > 0) {
-    // Elliptical orbit
-    v_m_s = Math.sqrt(GM_SUN * (2 / r_m - 1 / a_m));
-  } else {
-    // Hyperbolic orbit (a < 0)
-    v_m_s = Math.sqrt(GM_SUN * (2 / r_m + 1 / Math.abs(a_m)));
-  }
-  
-  return v_m_s / 1000; // Convert to km/s
-}
-
-/**
- * Calculate comprehensive orbital parameters for an object
- */
-function calculateOrbitalParameters(elements: OrbitalElements, currentDistance_au: number): OrbitalParameters {
-  const { perihelion, aphelion } = calculateOrbitalDistances(elements.a, elements.e);
-  
-  // Calculate velocities at key points
-  const perihelion_velocity_km_s = calculateOrbitalVelocity(perihelion, elements.a);
-  const aphelion_velocity_km_s = aphelion ? calculateOrbitalVelocity(aphelion, elements.a) : 0;
-  const current_velocity_km_s = calculateOrbitalVelocity(currentDistance_au, elements.a);
-  
-  // Calculate orbital period using Kepler's third law: P² = a³ (for a in AU, P in years)
-  const orbital_period_years = elements.e < 1 ? Math.pow(Math.abs(elements.a), 1.5) : Infinity;
-  
-  return {
-    perihelion_au: perihelion,
-    aphelion_au: aphelion || 0,
-    orbital_velocity_km_s: current_velocity_km_s,
-    perihelion_velocity_km_s,
-    aphelion_velocity_km_s,
-    orbital_period_years,
-    current_distance_au: currentDistance_au
-  };
-}
-
 function updateMeanElements(utcMillis: number, elements: PlanetData): OrbitalElements {
   const tEph = getTEph(utcMillis);
   const t = (tEph - 2451545.0) / 36525.0;
@@ -2497,7 +2153,8 @@ function getPlanetPosition(utcMillis: number, elements: OrbitalElements) {
     const sinh_H = Math.sinh(H);
 
     // Distance from focus (Sun)
-    r = elements.a * (elements.e * cosh_H - 1);
+    // For hyperbolic orbits, a is negative, so use absolute value
+    r = Math.abs(elements.a) * (elements.e * cosh_H - 1);
 
     // True anomaly components
     cos_f = (cosh_H - elements.e) / (1 - elements.e * cosh_H);
@@ -2516,23 +2173,11 @@ function getPlanetPosition(utcMillis: number, elements: OrbitalElements) {
     sin_f = Math.sqrt(1 - elements.e*elements.e) * sin_E / (1 - elements.e * cos_E);
   }
 
-  // Calculate orbital parameters for this object
-  const orbitalParams = calculateOrbitalParameters(elements, r);
-  
-  // Log orbital data for NEOs and interesting objects
-  if (elements.name === 'Apophis' || elements.name === '99942 Apophis' || elements.name === 'Ryugu' || 
-      elements.name === '162173 Ryugu' || elements.name.includes('Oumuamua') || elements.name.includes('Borisov') || 
-      elements.name.includes('ATLAS') || elements.name.includes('Pons-Brooks')) {
-    console.log(`🚀 [${elements.name}] Orbital Parameters:`, {
-      current_distance: `${orbitalParams.current_distance_au.toFixed(4)} AU`,
-      perihelion: `${orbitalParams.perihelion_au.toFixed(4)} AU`,
-      aphelion: orbitalParams.aphelion_au > 0 ? `${orbitalParams.aphelion_au.toFixed(4)} AU` : 'N/A (hyperbolic)',
-      current_velocity: `${orbitalParams.orbital_velocity_km_s.toFixed(2)} km/s`,
-      perihelion_velocity: `${orbitalParams.perihelion_velocity_km_s.toFixed(2)} km/s`,
-      aphelion_velocity: orbitalParams.aphelion_velocity_km_s > 0 ? `${orbitalParams.aphelion_velocity_km_s.toFixed(2)} km/s` : 'N/A',
-      orbital_period: orbitalParams.orbital_period_years < 1000 ? `${orbitalParams.orbital_period_years.toFixed(2)} years` : 'N/A (hyperbolic)',
-      eccentricity: elements.e.toFixed(4)
-    });
+  // Validate r - prevent extreme distances (especially for highly eccentric comets)
+  // Clamp distance to reasonable values (0.1 AU to 500 AU)
+  if (isNaN(r) || r < 0.1 || r > 500) {
+    // For comets far from the Sun, place them at a safe distance
+    r = Math.max(0.1, Math.min(r, 500));
   }
 
   // Position in orbital plane (perifocal coordinates)
@@ -2557,6 +2202,23 @@ function getPlanetPosition(utcMillis: number, elements: OrbitalElements) {
     console.warn('NaN detected in planet position calculation for:', elements.name, { xEcl, yEcl, zEcl, r, cos_f, sin_f });
     return { x: 0, y: 0, z: 0 }; // Safe fallback position
   }
+  
+  // For comets, asteroids, and interstellar objects: clamp to maximum render distance
+  // Do NOT clamp planets - they need their correct positions!
+  const isPlanet = ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'].includes(elements.name);
+  
+  if (!isPlanet) {
+    const MAX_DISTANCE = 100; // Maximum render distance for small bodies
+    const distance = Math.sqrt(scaledX*scaledX + scaledY*scaledY + scaledZ*scaledZ);
+    if (distance > MAX_DISTANCE) {
+      const scale = MAX_DISTANCE / distance;
+      return {
+        x: scaledX * scale,
+        y: scaledY * scale,
+        z: scaledZ * scale
+      };
+    }
+  }
 
   return {
     x: scaledX,
@@ -2564,9 +2226,6 @@ function getPlanetPosition(utcMillis: number, elements: OrbitalElements) {
     z: scaledZ
   };
 }
-
-// Cache for stable positions of slow-moving objects with extreme orbits
-const stablePositionCache = new Map<string, { x: number; y: number; z: number }>();
 
 // Update planet positions in real-time
 function updatePlanetPositions(
@@ -2584,36 +2243,17 @@ function updatePlanetPositions(
     const object = planetsRef.current.get(objectData.name);
     if (!object) return;
 
-    // For objects with very long periods (>1000 years), freeze their position
-    // Their orbital motion is imperceptible on human timescales and high eccentricity
-    // causes numerical instability in the Kepler solver
-    // EXCEPTION: Hyperbolic/interstellar objects have low mld but are FAST flybys - don't freeze them!
-    const orbitalPeriodYears = 360 / (objectData.mld / 100); // Convert from °/century to years
-    const isVeryLongPeriod = (orbitalPeriodYears > 1000 || objectData.mld < 10) && !objectData.hyperbolic;
-    
-    if (isVeryLongPeriod) {
-      // Check if we have a cached stable position
-      let cachedPosition = stablePositionCache.get(objectData.name);
-      
-      if (!cachedPosition) {
-        // Calculate once and cache forever
-        const elements = updateMeanElements(currentTime, objectData);
-        cachedPosition = getPlanetPosition(currentTime, elements);
-        stablePositionCache.set(objectData.name, cachedPosition);
-        console.log(`🔒 Locked position for ${objectData.name} (${orbitalPeriodYears.toFixed(0)} year orbit)`);
-      }
-      
-      // Use the permanently cached position
-      object.position.set(cachedPosition.x, cachedPosition.y, cachedPosition.z);
-      return;
-    }
-
-    // Normal position calculation for objects with reasonable orbital periods
     // Recalculate orbital elements for current time
     const elements = updateMeanElements(currentTime, objectData);
     
     // Get new position
     const position = getPlanetPosition(currentTime, elements);
+    
+    // Debug logging for Neptune and Saturn
+    if (objectData.name === 'Neptune' || objectData.name === 'Saturn') {
+      const distance = Math.sqrt(position.x * position.x + position.y * position.y + position.z * position.z);
+      console.log(`${objectData.name} - a: ${elements.a.toFixed(2)} AU, distance: ${distance.toFixed(2)}, pos: (${position.x.toFixed(2)}, ${position.y.toFixed(2)}, ${position.z.toFixed(2)})`);
+    }
     
     // Update object position
     object.position.set(position.x, position.y, position.z);
@@ -2625,9 +2265,8 @@ function updatePlanetPositions(
       updateCometTailDirection(object, hasAnomalousTail);
     }
     
-    // Update label position if it exists (for labeled objects)
-    const shouldHaveLabel = objectData.type === 'planet' || 
-                           ['Ceres', 'Vesta', 'Pallas', 'Hygiea', 'Eunomia', 'Juno', "Halley's Comet", 'Hale-Bopp', 'Swift-Tuttle', 'Encke', 'Apophis', 'Ryugu', "1I/'Oumuamua", '2I/Borisov', '3I/ATLAS', 'C/2025 A6 (Lemmon)', 'C/2025 R2 (SWAN)', 'C/2025 V1 (Borisov)', '12P/Pons-Brooks'].includes(objectData.name);
+    // Update label position if it exists (label ALL objects now)
+    const shouldHaveLabel = true; // Label everything: planets, asteroids, comets, NEOs, interstellar objects
     if (shouldHaveLabel) {
       // Get size for label offset
       let objectSize = 0.1;
@@ -2641,20 +2280,7 @@ function updatePlanetPositions(
           objectSize = asteroidSizes[objectData.name] || asteroidSizes.default;
           break;
         case 'comet':
-          const cometSizes: { [key: string]: number } = { 
-            "Halley's Comet": 0.04, 
-            "Hale-Bopp": 0.06, 
-            "Swift-Tuttle": 0.05,
-            "Encke": 0.035,
-            "12P/Pons-Brooks": 0.045,
-            "C/2025 A6 (Lemmon)": 0.035, 
-            "C/2025 R2 (SWAN)": 0.035,
-            "C/2025 V1 (Borisov)": 0.03,
-            "1I/'Oumuamua": 0.02, 
-            "2I/Borisov": 0.03, 
-            "3I/ATLAS": 0.025, 
-            default: 0.03 
-          };
+          const cometSizes: { [key: string]: number } = { "Halley's Comet": 0.04, "Hale-Bopp": 0.06, "1I/'Oumuamua": 0.02, "2I/Borisov": 0.03, "3I/ATLAS": 0.025, "C/2025 A6 (Lemmon)": 0.035, "C/2025 R2 (SWAN)": 0.035, default: 0.03 };
           objectSize = cometSizes[objectData.name] || cometSizes.default;
           break;
         case 'neo':
@@ -2664,9 +2290,12 @@ function updatePlanetPositions(
           break;
       }
       
-      // Labels are already positioned correctly as children of the mesh
-      // They automatically follow the parent object's position
-      // No need to update label position here - causes flickering/orbital motion
+      // Find and update label position
+      object.children.forEach((child) => {
+        if (child instanceof CSS2DObject) {
+          child.position.set(0, objectSize + 0.5, 0);
+        }
+      });
     }
   });
 }
@@ -2880,7 +2509,7 @@ function addVenusClouds(venusMesh: THREE.Mesh, planetSize: number) {
   }
 
   // Add thick cloud layer completely obscuring the surface
-  const cloudRadius = planetSize * 1.05;
+  const cloudRadius = planetSize * 1.03; // Slightly larger than planet
   if (cloudRadius <= 0) {
     console.warn('Invalid cloud radius for Venus:', cloudRadius);
     return;
@@ -2890,28 +2519,30 @@ function addVenusClouds(venusMesh: THREE.Mesh, planetSize: number) {
   const cloudMaterial = new THREE.MeshStandardMaterial({
     color: 0xFFFACD, // Lemon chiffon (yellowish clouds)
     transparent: true,
-    opacity: 0.95,
-    roughness: 1.0,
-    metalness: 0.0
+    opacity: 0.7,
+    roughness: 0.9,
+    metalness: 0.0,
+    emissive: 0xFFE4B5,
+    emissiveIntensity: 0.3
   });
 
   const clouds = new THREE.Mesh(cloudGeometry, cloudMaterial);
   venusMesh.add(clouds);
 
-  // Add subtle atmospheric glow instead of torus rings
-  const glowRadius = planetSize * 1.15;
+  // Add outer atmospheric glow (no more hot cross bun!)
+  const glowRadius = planetSize * 1.08;
   const glowGeometry = new THREE.SphereGeometry(glowRadius, 32, 32);
   const glowMaterial = new THREE.MeshBasicMaterial({
-    color: 0xF5DEB3, // Wheat - subtle glow
+    color: 0xFFC649,
     transparent: true,
-    opacity: 0.15,
-    side: THREE.BackSide // Glow from inside
+    opacity: 0.2,
+    side: THREE.BackSide
   });
 
   const glow = new THREE.Mesh(glowGeometry, glowMaterial);
   venusMesh.add(glow);
 
-  console.log('✅ Added Venus\' thick cloud layer with atmospheric glow');
+  console.log('✅ Added Venus\' thick cloud layer and atmospheric glow');
 }
 
 function addNeptuneFeatures(neptuneMesh: THREE.Mesh, planetSize: number) {
@@ -3519,11 +3150,27 @@ function updateCometTailDirection(cometMesh: THREE.Mesh, hasAnomalousTail: boole
   const cometWorldPos = new THREE.Vector3();
   cometMesh.getWorldPosition(cometWorldPos);
   
+  // Validate comet position - if it's at extreme distance or NaN, skip tail update
+  const distance = cometWorldPos.length();
+  if (isNaN(distance) || distance > 100) {
+    // Comet is too far away or invalid - hide the tails
+    const tail = cometMesh.children.find(child => child.name === 'cometTail');
+    const ionTail = cometMesh.children.find(child => child.name === 'ionTail');
+    if (tail) tail.visible = false;
+    if (ionTail) ionTail.visible = false;
+    return;
+  }
+  
   // Sun is at origin (0, 0, 0)
   const sunPos = new THREE.Vector3(0, 0, 0);
   
   // Calculate direction from Sun to comet (tail points this way normally)
   const direction = new THREE.Vector3().subVectors(cometWorldPos, sunPos).normalize();
+  
+  // Validate direction vector
+  if (isNaN(direction.x) || isNaN(direction.y) || isNaN(direction.z)) {
+    return; // Skip if direction is invalid
+  }
   
   // For objects with anomalous tails (like fragmenting 3I/ATLAS), reverse the direction
   if (hasAnomalousTail) {
@@ -3535,6 +3182,7 @@ function updateCometTailDirection(cometMesh: THREE.Mesh, hasAnomalousTail: boole
   const ionTail = cometMesh.children.find(child => child.name === 'ionTail');
   
   if (tail) {
+    tail.visible = true; // Make sure tail is visible
     // Calculate rotation to point tail away from Sun (or toward for anomalous)
     // Tail points in +X direction by default, so we need to rotate it
     const quaternion = new THREE.Quaternion();
@@ -3544,6 +3192,7 @@ function updateCometTailDirection(cometMesh: THREE.Mesh, hasAnomalousTail: boole
   }
   
   if (ionTail) {
+    ionTail.visible = true; // Make sure ion tail is visible
     // Ion tail is slightly offset and more aligned with solar wind
     const quaternion = new THREE.Quaternion();
     const targetDirection = new THREE.Vector3(1, 0, 0);
@@ -3615,34 +3264,35 @@ interface MoonData {
   orbitalPeriod: number; // Days for one orbit
   eccentricity?: number; // Orbital eccentricity (0 = circular, >0 = elliptical)
   inclination?: number; // Orbital inclination in degrees (relative to planet's equator)
+  phaseOffset?: number; // Starting position in orbit (0-360 degrees)
 }
 
 const MOON_SYSTEMS: { [planet: string]: MoonData[] } = {
   Earth: [
-    { name: 'Moon', radius: 0.27, distance: 5, color: 0xC0C0C0, orbitalPeriod: 27.3, eccentricity: 0.0549, inclination: 5.14 }
+    { name: 'Moon', radius: 0.27, distance: 5, color: 0xC0C0C0, orbitalPeriod: 27.3, eccentricity: 0.0549, inclination: 5.14, phaseOffset: 0 }
   ],
   Mars: [
-    { name: 'Phobos', radius: 0.08, distance: 3, color: 0x8B7355, orbitalPeriod: 0.32, eccentricity: 0.0151, inclination: 1.08 },
-    { name: 'Deimos', radius: 0.06, distance: 6, color: 0x8B7355, orbitalPeriod: 1.26, eccentricity: 0.00033, inclination: 0.93 }
+    { name: 'Phobos', radius: 0.08, distance: 3, color: 0x8B7355, orbitalPeriod: 0.32, eccentricity: 0.0151, inclination: 1.08, phaseOffset: 0 },
+    { name: 'Deimos', radius: 0.06, distance: 6, color: 0x8B7355, orbitalPeriod: 1.26, eccentricity: 0.00033, inclination: 0.93, phaseOffset: 180 }
   ],
   Jupiter: [
-    { name: 'Io', radius: 0.29, distance: 4, color: 0xFFD700, orbitalPeriod: 1.77, eccentricity: 0.0041, inclination: 0.05 },
-    { name: 'Europa', radius: 0.25, distance: 6, color: 0xF0E68C, orbitalPeriod: 3.55, eccentricity: 0.0094, inclination: 0.47 },
-    { name: 'Ganymede', radius: 0.42, distance: 10, color: 0xC0C0C0, orbitalPeriod: 7.15, eccentricity: 0.0013, inclination: 0.20 },
-    { name: 'Callisto', radius: 0.38, distance: 15, color: 0x696969, orbitalPeriod: 16.69, eccentricity: 0.0074, inclination: 0.19 }
+    { name: 'Io', radius: 0.29, distance: 4, color: 0xFFD700, orbitalPeriod: 1.77, eccentricity: 0.0041, inclination: 0.05, phaseOffset: 0 },
+    { name: 'Europa', radius: 0.25, distance: 6, color: 0xF0E68C, orbitalPeriod: 3.55, eccentricity: 0.0094, inclination: 0.47, phaseOffset: 90 },
+    { name: 'Ganymede', radius: 0.42, distance: 10, color: 0xC0C0C0, orbitalPeriod: 7.15, eccentricity: 0.0013, inclination: 0.20, phaseOffset: 180 },
+    { name: 'Callisto', radius: 0.38, distance: 15, color: 0x696969, orbitalPeriod: 16.69, eccentricity: 0.0074, inclination: 0.19, phaseOffset: 270 }
   ],
   Saturn: [
-    { name: 'Titan', radius: 0.40, distance: 12, color: 0xFFA500, orbitalPeriod: 15.95, eccentricity: 0.0288, inclination: 0.35 },
-    { name: 'Rhea', radius: 0.12, distance: 8, color: 0xD3D3D3, orbitalPeriod: 4.52, eccentricity: 0.0012, inclination: 0.35 },
-    { name: 'Iapetus', radius: 0.12, distance: 20, color: 0x696969, orbitalPeriod: 79.33, eccentricity: 0.0283, inclination: 15.47 },
-    { name: 'Dione', radius: 0.09, distance: 7, color: 0xE0E0E0, orbitalPeriod: 2.74, eccentricity: 0.0022, inclination: 0.02 }
+    { name: 'Titan', radius: 0.40, distance: 12, color: 0xFFA500, orbitalPeriod: 15.95, eccentricity: 0.0288, inclination: 0.35, phaseOffset: 0 },
+    { name: 'Rhea', radius: 0.12, distance: 8, color: 0xD3D3D3, orbitalPeriod: 4.52, eccentricity: 0.0012, inclination: 0.35, phaseOffset: 120 },
+    { name: 'Iapetus', radius: 0.12, distance: 20, color: 0x696969, orbitalPeriod: 79.33, eccentricity: 0.0283, inclination: 15.47, phaseOffset: 240 },
+    { name: 'Dione', radius: 0.09, distance: 7, color: 0xE0E0E0, orbitalPeriod: 2.74, eccentricity: 0.0022, inclination: 0.02, phaseOffset: 90 }
   ],
   Uranus: [
-    { name: 'Titania', radius: 0.12, distance: 8, color: 0xADD8E6, orbitalPeriod: 8.71, eccentricity: 0.0011, inclination: 0.34 },
-    { name: 'Oberon', radius: 0.12, distance: 11, color: 0xB0C4DE, orbitalPeriod: 13.46, eccentricity: 0.0014, inclination: 0.10 }
+    { name: 'Titania', radius: 0.12, distance: 8, color: 0xADD8E6, orbitalPeriod: 8.71, eccentricity: 0.0011, inclination: 0.34, phaseOffset: 0 },
+    { name: 'Oberon', radius: 0.12, distance: 11, color: 0xB0C4DE, orbitalPeriod: 13.46, eccentricity: 0.0014, inclination: 0.10, phaseOffset: 180 }
   ],
   Neptune: [
-    { name: 'Triton', radius: 0.21, distance: 8, color: 0xE6E6FA, orbitalPeriod: -5.88, eccentricity: 0.000016, inclination: 156.83 } // Negative = retrograde orbit, high inclination
+    { name: 'Triton', radius: 0.21, distance: 8, color: 0xE6E6FA, orbitalPeriod: -5.88, eccentricity: 0.000016, inclination: 156.83, phaseOffset: 0 } // Negative = retrograde orbit, high inclination
   ]
 };
 
@@ -3655,9 +3305,7 @@ function addMoonSystems(
   showMoons: boolean,
   moonsRef: React.MutableRefObject<Map<string, THREE.Mesh[]>>,
   planetsRef: React.MutableRefObject<Map<string, THREE.Mesh>>,
-  currentTime: number,
-  showLabels: boolean,
-  moonLabelsRef: React.MutableRefObject<Map<string, CSS2DObject>>
+  currentTime: number
 ) {
   // Clear existing moons
   moonsRef.current.forEach((moonArray) => {
@@ -3666,9 +3314,6 @@ function addMoonSystems(
     });
   });
   moonsRef.current.clear();
-  
-  // Clear existing moon labels
-  moonLabelsRef.current.clear();
 
   if (!showMoons) {
     console.log('🌙 Moon systems hidden');
@@ -3727,9 +3372,10 @@ function addMoonSystems(
       // Get orbital parameters (defaults for backward compatibility)
       const eccentricity = moonData.eccentricity ?? 0.0;
       const inclination = (moonData.inclination ?? 0.0) * (Math.PI / 180); // Convert to radians
+      const phaseOffset = (moonData.phaseOffset ?? 0.0) * (Math.PI / 180); // Convert to radians
       
-      // Calculate mean anomaly (angle increases with time)
-      const meanAnomaly = (currentTime / (moonData.orbitalPeriod * 86400000 * MOON_SPEED_DIVISOR)) * Math.PI * 2;
+      // Calculate mean anomaly (angle increases with time) with phase offset
+      const meanAnomaly = (currentTime / (moonData.orbitalPeriod * 86400000 * MOON_SPEED_DIVISOR)) * Math.PI * 2 + phaseOffset;
       
       // Calculate semi-major axis
       const semiMajorAxis = planetRadius * moonData.distance;
@@ -3811,30 +3457,26 @@ function addMoonSystems(
         moonMat.emissiveIntensity = 0.1 + (phaseBrightness * 0.3); // Range: 0.1 (new) to 0.4 (full)
       }
 
-      // Create label for moon (smaller than planet labels)
-      if (showLabels) {
-        const labelDiv = document.createElement('div');
-        labelDiv.className = 'moon-label';
-        labelDiv.textContent = moonData.name;
-        labelDiv.style.color = '#a0a0a0'; // Gray color for moon labels
-        labelDiv.style.fontFamily = 'Arial, sans-serif';
-        labelDiv.style.fontSize = '8px'; // Smaller than planet labels (which are 10-12px)
-        labelDiv.style.fontWeight = 'normal'; // Not bold like planet labels
-        labelDiv.style.padding = '1px 4px';
-        labelDiv.style.background = 'rgba(0, 0, 0, 0.6)';
-        labelDiv.style.borderRadius = '2px';
-        labelDiv.style.pointerEvents = 'none';
-        labelDiv.style.userSelect = 'none';
+      // Add CSS2D label for moon (colorized to match moon color)
+      const labelDiv = document.createElement('div');
+      labelDiv.className = 'celestial-label';
+      labelDiv.textContent = moonData.name;
+      labelDiv.style.fontSize = '10px';
+      
+      // Convert moon color (hex number) to CSS color string
+      const moonColorHex = '#' + moonData.color.toString(16).padStart(6, '0');
+      labelDiv.style.color = moonColorHex;
+      
+      labelDiv.style.fontFamily = 'monospace';
+      labelDiv.style.textShadow = '0 0 3px rgba(0,0,0,0.8)';
+      labelDiv.style.pointerEvents = 'none';
+      labelDiv.style.userSelect = 'none';
 
-        const moonLabel = new CSS2DObject(labelDiv);
-        const labelOffset = moonRadius + 0.3; // Smaller offset for moon labels
-        moonLabel.position.set(0, labelOffset, 0);
-        moonLabel.visible = true;
-        moon.add(moonLabel);
-        
-        // Store moon label with unique key (planetName-moonName)
-        moonLabelsRef.current.set(`${planetName}-${moonData.name}`, moonLabel);
-      }
+      const moonLabel = new CSS2DObject(labelDiv);
+      // Position label above moon with better offset based on moon size
+      const labelOffset = moonRadius * 2.5; // More clearance for larger moons
+      moonLabel.position.set(0, labelOffset, 0);
+      moon.add(moonLabel);
 
       scene.add(moon);
       planetMoons.push(moon);

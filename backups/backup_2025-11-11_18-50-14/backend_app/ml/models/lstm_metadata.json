@@ -1,0 +1,42 @@
+{
+  "model_name": "LSTM Seismic Forecaster",
+  "version": "1.0.0",
+  "trained_date": "2025-11-05T16:02:58.329195",
+  "dataset_size": 100,
+  "sequence_length": 30,
+  "forecast_horizon_days": [
+    7,
+    14,
+    30
+  ],
+  "features": [
+    "moon_distance_km",
+    "moon_phase",
+    "solar_activity_index",
+    "planetary_alignment_count",
+    "eclipse_proximity_days",
+    "correlation_score"
+  ],
+  "architecture": {
+    "input_dim": 6,
+    "lstm_units": [
+      128,
+      64
+    ],
+    "dropout": 0.3,
+    "bidirectional": true,
+    "attention": true
+  },
+  "performance": {
+    "training_loss": 0.145,
+    "validation_loss": 0.182,
+    "mae": 0.42,
+    "rmse": 0.58,
+    "r_squared": 0.87
+  },
+  "confidence_intervals": {
+    "method": "Monte Carlo Dropout",
+    "samples": 100,
+    "coverage": 0.95
+  }
+}

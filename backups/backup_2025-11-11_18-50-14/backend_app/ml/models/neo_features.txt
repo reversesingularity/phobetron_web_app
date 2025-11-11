@@ -1,0 +1,6 @@
+distance_au
+velocity_km_s
+absolute_magnitude
+year
+month
+velocity_squared

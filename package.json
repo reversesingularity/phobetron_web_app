@@ -1,0 +1,39 @@
+{
+  "name": "phobetron-web-app",
+  "version": "2.0.0",
+  "description": "Phobetron Celestial Events Tracker - Full Stack Application",
+  "scripts": {
+    "dev": "pwsh -File ./start-dev.ps1",
+    "start": "pwsh -File ./start-dev.ps1",
+    "backend": "cd backend && python -m uvicorn app.main:app --reload --port 8000",
+    "frontend": "cd frontend && npm run dev",
+    "backend:install": "cd backend && pip install -r requirements.txt",
+    "frontend:install": "cd frontend && npm install",
+    "install:all": "npm run backend:install && npm run frontend:install",
+    "ml:train": "cd backend && python app/ml/train_all_models.py",
+    "db:migrate": "cd backend && alembic upgrade head",
+    "db:reset": "cd backend && alembic downgrade base && alembic upgrade head",
+    "test:backend": "cd backend && pytest",
+    "test:frontend": "cd frontend && npm test"
+  },
+  "keywords": [
+    "celestial-signs",
+    "astronomy",
+    "prophecy",
+    "machine-learning",
+    "tensorflow",
+    "fastapi",
+    "react",
+    "vite"
+  ],
+  "author": "Phobetron Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reversesingularity/phobetron_web_app.git"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "python": ">=3.10.0"
+  }
+}

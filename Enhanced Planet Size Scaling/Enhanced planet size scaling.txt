@@ -1,0 +1,393 @@
+// Enhanced planet size scaling - more accurate relative sizes
+const ACCURATE_PLANET_SIZES: { [key: string]: number } = {
+  Mercury: 0.383,  // Actual: 0.383 Earth radii
+  Venus: 0.949,    // Actual: 0.949 Earth radii  
+  Earth: 1.000,    // Reference size
+  Mars: 0.532,     // Actual: 0.532 Earth radii
+  Jupiter: 11.21,  // Actual: 11.21 Earth radii (scaled down to 3.5 for visibility)
+  Saturn: 9.45,    // Actual: 9.45 Earth radii (scaled down to 3.0 for visibility)
+  Uranus: 4.01,    // Actual: 4.01 Earth radii (scaled down to 1.8 for visibility)
+  Neptune: 3.88    // Actual: 3.88 Earth radii (scaled down to 1.7 for visibility)
+};
+
+// Enhanced planet materials with physically accurate properties
+function createPlanetMaterial(
+  planetName: string, 
+  textureLoader: THREE.TextureLoader | null
+): THREE.Material {
+  
+  switch(planetName) {
+    case 'Mercury':
+      return new THREE.MeshPhongMaterial({
+        color: 0x8C7853,
+        emissive: 0x1A1410,
+        emissiveIntensity: 0.05,
+        shininess: 5,
+        bumpScale: 0.05,
+        specular: 0x222222
+      });
+      
+    case 'Venus':
+      // Thick CO2 atmosphere with sulfuric acid clouds
+      return new THREE.MeshPhongMaterial({
+        color: 0xFFC649,
+        emissive: 0xFFAA00,
+        emissiveIntensity: 0.15,
+        shininess: 20,
+        specular: 0xFFEEDD,
+        reflectivity: 0.7 // Venus reflects 70% of sunlight
+      });
+      
+    case 'Earth':
+      const earthMat = new THREE.MeshPhongMaterial({
+        color: 0xFFFFFF,
+        emissive: 0x000033,
+        emissiveIntensity: 0.05,
+        shininess: 25,
+        specular: 0x3333FF,
+        bumpScale: 0.02,
+        reflectivity: 0.3
+      });
+      
+      // Load Earth day/night textures if available
+      if (textureLoader) {
+        textureLoader.load(
+          'https://www.solarsystemscope.com/textures/download/2k_earth_daymap.jpg',
+          (dayTexture) => {
+            earthMat.map = dayTexture;
+            earthMat.needsUpdate = true;
+          }
+        );
+        
+        // Normal map for topography
+        textureLoader.load(
+          'https://www.solarsystemscope.com/textures/download/2k_earth_normal_map.jpg',
+          (normalTexture) => {
+            earthMat.normalMap = normalTexture;
+            earthMat.normalScale = new THREE.Vector2(0.5, 0.5);
+            earthMat.needsUpdate = true;
+          },
+          undefined,
+          () => {} // Silently fail if texture not available
+        );
+        
+        // Specular map for water reflection
+        textureLoader.load(
+          'https://www.solarsystemscope.com/textures/download/2k_earth_specular_map.jpg',
+          (specTexture) => {
+            earthMat.specularMap = specTexture;
+            earthMat.needsUpdate = true;
+          },
+          undefined,
+          () => {}
+        );
+      }
+      
+      return earthMat;
+      
+    case 'Mars':
+      return new THREE.MeshPhongMaterial({
+        color: 0xCD5C5C,
+        emissive: 0x441111,
+        emissiveIntensity: 0.08,
+        shininess: 10,
+        bumpScale: 0.03,
+        specular: 0x222222
+      });
+      
+    case 'Jupiter':
+      const jupiterMat = new THREE.MeshPhongMaterial({
+        color: 0xFFE4B5,
+        emissive: 0x443322,
+        emissiveIntensity: 0.06,
+        shininess: 8,
+        specular: 0x222211
+      });
+      
+      return jupiterMat;
+      
+    case 'Saturn':
+      return new THREE.MeshPhongMaterial({
+        color: 0xFAD5A5,
+        emissive: 0x332211,
+        emissiveIntensity: 0.05,
+        shininess: 12,
+        specular: 0x333322
+      });
+      
+    case 'Uranus':
+      return new THREE.MeshPhongMaterial({
+        color: 0x4FD0E7,
+        emissive: 0x004466,
+        emissiveIntensity: 0.12,
+        shininess: 30,
+        specular: 0x66AACC,
+        transparent: true,
+        opacity: 0.98
+      });
+      
+    case 'Neptune':
+      return new THREE.MeshPhongMaterial({
+        color: 0x4169E1,
+        emissive: 0x000088,
+        emissiveIntensity: 0.15,
+        shininess: 35,
+        specular: 0x4466AA,
+        transparent: true,
+        opacity: 0.98
+      });
+      
+    default:
+      return new THREE.MeshPhongMaterial({
+        color: 0xCCCCCC,
+        emissive: 0x111111,
+        emissiveIntensity: 0.1
+      });
+  }
+}
+
+// Enhanced atmospheric effects
+function addAtmosphere(
+  planetMesh: THREE.Mesh,
+  planetName: string,
+  planetSize: number
+) {
+  const atmosphereData: { [key: string]: any } = {
+    Earth: {
+      color: 0x0088FF,
+      thickness: 1.025,
+      opacity: 0.3,
+      fresnel: true
+    },
+    Venus: {
+      color: 0xFFCC00,
+      thickness: 1.05,
+      opacity: 0.5,
+      fresnel: false
+    },
+    Mars: {
+      color: 0xFF6633,
+      thickness: 1.015,
+      opacity: 0.15,
+      fresnel: true
+    },
+    Jupiter: {
+      color: 0xFFAA66,
+      thickness: 1.01,
+      opacity: 0.2,
+      fresnel: false
+    },
+    Saturn: {
+      color: 0xFFDD99,
+      thickness: 1.01,
+      opacity: 0.15,
+      fresnel: false
+    },
+    Uranus: {
+      color: 0x66DDFF,
+      thickness: 1.02,
+      opacity: 0.25,
+      fresnel: true
+    },
+    Neptune: {
+      color: 0x3366FF,
+      thickness: 1.02,
+      opacity: 0.3,
+      fresnel: true
+    },
+    Titan: { // For Saturn's moon
+      color: 0xFFAA66,
+      thickness: 1.1,
+      opacity: 0.6,
+      fresnel: false
+    }
+  };
+  
+  const atmData = atmosphereData[planetName];
+  if (!atmData) return;
+  
+  const atmosphereGeometry = new THREE.SphereGeometry(
+    planetSize * atmData.thickness,
+    64, 
+    64
+  );
+  
+  // Use custom shader for Fresnel effect (edge glow)
+  let atmosphereMaterial;
+  
+  if (atmData.fresnel) {
+    // Fresnel shader for realistic atmospheric glow
+    atmosphereMaterial = new THREE.ShaderMaterial({
+      vertexShader: `
+        varying vec3 vNormal;
+        varying vec3 vPositionNormal;
+        void main() {
+          vNormal = normalize(normalMatrix * normal);
+          vPositionNormal = normalize((modelViewMatrix * vec4(position, 1.0)).xyz);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 glowColor;
+        uniform float intensity;
+        varying vec3 vNormal;
+        varying vec3 vPositionNormal;
+        void main() {
+          float fresnel = dot(vNormal, vPositionNormal);
+          fresnel = clamp(1.0 - fresnel, 0.0, 1.0);
+          fresnel = pow(fresnel, 3.0) * intensity;
+          gl_FragColor = vec4(glowColor, fresnel);
+        }
+      `,
+      uniforms: {
+        glowColor: { value: new THREE.Color(atmData.color) },
+        intensity: { value: atmData.opacity * 2.0 }
+      },
+      side: THREE.BackSide,
+      blending: THREE.AdditiveBlending,
+      transparent: true
+    });
+  } else {
+    atmosphereMaterial = new THREE.MeshBasicMaterial({
+      color: atmData.color,
+      transparent: true,
+      opacity: atmData.opacity,
+      side: THREE.BackSide
+    });
+  }
+  
+  const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+  planetMesh.add(atmosphere);
+}
+
+// Enhanced Saturn ring system
+function addEnhancedSaturnRings(saturnMesh: THREE.Mesh, planetSize: number) {
+  // Ring system data (A, B, C, D rings and Cassini Division)
+  const ringSystem = [
+    // D Ring (innermost, very faint)
+    { inner: 1.11, outer: 1.24, color: 0x666666, opacity: 0.1 },
+    // C Ring (crepe ring, translucent)
+    { inner: 1.24, outer: 1.52, color: 0x999999, opacity: 0.3 },
+    // B Ring (brightest, densest)
+    { inner: 1.52, outer: 1.95, color: 0xDDDDCC, opacity: 0.9 },
+    // Cassini Division (gap)
+    { inner: 1.95, outer: 2.02, color: 0x000000, opacity: 0.05 },
+    // A Ring (outer bright ring)
+    { inner: 2.02, outer: 2.27, color: 0xCCCCAA, opacity: 0.8 },
+    // Encke Gap
+    { inner: 2.27, outer: 2.28, color: 0x000000, opacity: 0.05 },
+    // Outer A
+    { inner: 2.28, outer: 2.40, color: 0xBBBB99, opacity: 0.7 },
+    // F Ring (thin)
+    { inner: 2.40, outer: 2.42, color: 0xEEEEDD, opacity: 0.5 }
+  ];
+  
+  ringSystem.forEach(ring => {
+    const ringGeometry = new THREE.RingGeometry(
+      planetSize * ring.inner,
+      planetSize * ring.outer,
+      128,
+      8
+    );
+    
+    // UV mapping for ring texture
+    const uvs = ringGeometry.attributes.uv;
+    for (let i = 0; i < uvs.count; i++) {
+      uvs.setXY(i, uvs.getX(i), 1.0 - uvs.getY(i));
+    }
+    
+    const ringMaterial = new THREE.MeshPhongMaterial({
+      color: ring.color,
+      emissive: ring.color,
+      emissiveIntensity: 0.1,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: ring.opacity,
+      shininess: 50,
+      specular: 0x222222
+    });
+    
+    const ringMesh = new THREE.Mesh(ringGeometry, ringMaterial);
+    ringMesh.rotation.x = Math.PI / 2;
+    ringMesh.rotation.z = deg2rad(27); // Saturn's axial tilt
+    ringMesh.receiveShadow = true;
+    ringMesh.castShadow = true;
+    
+    saturnMesh.add(ringMesh);
+  });
+}
+
+// Enhanced cloud layers
+function addCloudLayer(
+  planetMesh: THREE.Mesh,
+  planetName: string,
+  planetSize: number,
+  textureLoader: THREE.TextureLoader | null
+) {
+  const cloudData: { [key: string]: any } = {
+    Earth: {
+      size: 1.008,
+      opacity: 0.4,
+      speed: 0.0001,
+      texture: 'https://www.solarsystemscope.com/textures/download/2k_earth_clouds.jpg'
+    },
+    Venus: {
+      size: 1.015,
+      opacity: 0.8,
+      speed: 0.0003,
+      color: 0xFFEE99
+    },
+    Jupiter: {
+      size: 1.002,
+      opacity: 0.6,
+      speed: 0.0005,
+      bands: true
+    },
+    Saturn: {
+      size: 1.002,
+      opacity: 0.5,
+      speed: 0.0004,
+      bands: true
+    }
+  };
+  
+  const clouds = cloudData[planetName];
+  if (!clouds) return;
+  
+  const cloudGeometry = new THREE.SphereGeometry(
+    planetSize * clouds.size,
+    64,
+    64
+  );
+  
+  const cloudMaterial = new THREE.MeshPhongMaterial({
+    color: clouds.color || 0xFFFFFF,
+    transparent: true,
+    opacity: clouds.opacity,
+    depthWrite: false,
+    side: THREE.FrontSide
+  });
+  
+  // Load cloud texture if available
+  if (textureLoader && clouds.texture) {
+    textureLoader.load(
+      clouds.texture,
+      (texture) => {
+        cloudMaterial.map = texture;
+        cloudMaterial.alphaMap = texture;
+        cloudMaterial.needsUpdate = true;
+      },
+      undefined,
+      () => {} // Silently handle texture load failures
+    );
+  }
+  
+  const cloudMesh = new THREE.Mesh(cloudGeometry, cloudMaterial);
+  
+  // Animate cloud rotation
+  cloudMesh.userData.rotationSpeed = clouds.speed;
+  
+  planetMesh.add(cloudMesh);
+}
+
+// Add these enhanced features to your existing addPlanets function where the planets are created

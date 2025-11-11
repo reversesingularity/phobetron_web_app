@@ -1,9 +1,9 @@
 #!/usr/bin/env pwsh
-# Celestial Signs - Development Server Startup Script
-# This script starts both the backend (FastAPI) and frontend (Next.js) servers
+# Phobetron - Development Server Startup Script
+# This script starts both the backend (FastAPI) and frontend (Vite) servers
 
 Write-Host "`n╔════════════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
-Write-Host "║        🌌 Celestial Signs - Starting Dev Servers...        ║" -ForegroundColor Cyan
+Write-Host "║        🌌 Phobetron - Starting Dev Servers...              ║" -ForegroundColor Cyan
 Write-Host "╚════════════════════════════════════════════════════════════════╝`n" -ForegroundColor Cyan
 
 # Get the script's directory
@@ -12,7 +12,7 @@ $ProjectRoot = $PSScriptRoot
 # Backend configuration
 $BackendPath = Join-Path $ProjectRoot "backend"
 $VenvPython = Join-Path $BackendPath "venv\Scripts\python.exe"
-$BackendPort = 8020
+$BackendPort = 8000
 
 # Frontend configuration
 $FrontendPath = Join-Path $ProjectRoot "frontend"
@@ -29,17 +29,17 @@ if (-not (Test-Path $VenvPython)) {
 function Stop-ExistingServers {
     Write-Host "🔍 Checking for existing servers..." -ForegroundColor Yellow
     
-    # Stop existing Node.js processes
+    # Stop existing Node.js processes (Vite)
     Get-Process -Name "node" -ErrorAction SilentlyContinue | Where-Object { 
-        $_.CommandLine -like "*next dev*" 
+        $_.CommandLine -like "*vite*" 
     } | ForEach-Object {
-        Write-Host "  ⏹️  Stopping existing Next.js server (PID: $($_.Id))" -ForegroundColor Yellow
+        Write-Host "  ⏹️  Stopping existing Vite server (PID: $($_.Id))" -ForegroundColor Yellow
         Stop-Process -Id $_.Id -Force -ErrorAction SilentlyContinue
     }
     
     # Stop existing Python/Uvicorn processes
     Get-Process -Name "python","uvicorn" -ErrorAction SilentlyContinue | Where-Object {
-        $_.CommandLine -like "*8020*" -or $_.CommandLine -like "*main:app*"
+        $_.CommandLine -like "*8000*" -or $_.CommandLine -like "*main:app*"
     } | ForEach-Object {
         Write-Host "  ⏹️  Stopping existing backend server (PID: $($_.Id))" -ForegroundColor Yellow
         Stop-Process -Id $_.Id -Force -ErrorAction SilentlyContinue
@@ -70,7 +70,7 @@ Start-Sleep -Seconds 3
 # Check if backend started successfully
 $BackendHealthy = $false
 try {
-    $response = Invoke-WebRequest -Uri "http://localhost:$BackendPort/api/v1/health" -TimeoutSec 5 -UseBasicParsing
+    $response = Invoke-WebRequest -Uri "http://localhost:$BackendPort/health" -TimeoutSec 5 -UseBasicParsing
     if ($response.StatusCode -eq 200) {
         $BackendHealthy = $true
         Write-Host "✅ Backend API is healthy!" -ForegroundColor Green
@@ -82,14 +82,14 @@ try {
 Write-Host ""
 
 # Start Frontend Server
-Write-Host "🚀 Starting Frontend Next.js Server..." -ForegroundColor Cyan
+Write-Host "🚀 Starting Frontend Vite Server..." -ForegroundColor Cyan
 Write-Host "   📍 Path: $FrontendPath" -ForegroundColor Gray
 Write-Host "   🔌 Port: $FrontendPort`n" -ForegroundColor Gray
 
 $FrontendJob = Start-Job -ScriptBlock {
     param($FrontendPath)
     Set-Location $FrontendPath
-    npm run dev:frontend
+    npm run dev
 } -ArgumentList $FrontendPath
 
 # Wait for frontend to start
@@ -125,10 +125,10 @@ try {
         
         # Display job output periodically
         Receive-Job -Job $BackendJob -ErrorAction SilentlyContinue | ForEach-Object {
-            Write-Host "[API] $_" -ForegroundColor Magenta
+            Write-Host "[BACKEND] $_" -ForegroundColor Magenta
         }
         Receive-Job -Job $FrontendJob -ErrorAction SilentlyContinue | ForEach-Object {
-            Write-Host "[NEXT] $_" -ForegroundColor Cyan
+            Write-Host "[VITE] $_" -ForegroundColor Cyan
         }
         
         Start-Sleep -Seconds 1

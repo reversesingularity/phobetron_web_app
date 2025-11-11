@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database (PostGIS will be added via extensions)
+  postgres:
+    image: postgres:15-alpine
+    container_name: phobetron_db
+    environment:
+      POSTGRES_USER: phobetron
+      POSTGRES_PASSWORD: phobetron_password
+      POSTGRES_DB: phobetron
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U phobetron"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: phobetron_backend
+    environment:
+      DATABASE_URL: postgresql://phobetron:phobetron_password@postgres:5432/phobetron
+      CORS_ORIGINS: http://localhost:3000,http://frontend:3000
+      API_V1_STR: /api/v1
+    ports:
+      - "8020:8020"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ../backend:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8020 --reload
+
+  # Frontend
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: phobetron_frontend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8020
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  default:
+    name: phobetron_network
