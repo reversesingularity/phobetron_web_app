@@ -6,6 +6,7 @@ set -e
 
 echo "========================================"
 echo "Starting Phobetron Backend on Railway"
+echo "Version: 1.0.1 (Pool size: 20)"
 echo "========================================"
 echo "Current directory: $(pwd)"
 echo "Python version: $(python3 --version)"
