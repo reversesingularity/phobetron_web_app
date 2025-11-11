@@ -17,5 +17,13 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+  },
+  preview: {
+    port: 8080,
+    host: '0.0.0.0',
+    allowedHosts: [
+      'phobetronwebapp-production-d69a.up.railway.app',
+      '.up.railway.app', // Allow all Railway domains
+    ]
   }
 })
