@@ -20,6 +20,9 @@ def get_engine():
             database_url,
             pool_pre_ping=True,  # Verify connections before using
             pool_recycle=300,    # Recycle connections after 5 minutes
+            pool_size=20,        # Increase from default 5 to 20 for production
+            max_overflow=40,     # Increase from default 10 to 40 for burst traffic
+            pool_timeout=60,     # Increase timeout from 30s to 60s
             echo=False
         )
     return _engine
