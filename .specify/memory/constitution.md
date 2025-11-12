@@ -704,9 +704,159 @@ const border = "border-zinc-800";
 
 ---
 
-**Version**: 1.3.0 | **Ratified**: October 27, 2025 | **Last Amended**: November 2, 2025
+## Production Deployment (Railway.app) - LOCKED
+
+### Architecture: Multi-Project Setup
+**Backend Project**: endearing-encouragement  
+**Frontend + Database Project**: humble-fascination  
+
+⚠️ **CRITICAL**: Backend and Postgres are in SEPARATE Railway projects - internal DNS (`postgres.railway.internal`) does NOT work cross-project.
+
+### Backend Configuration (endearing-encouragement)
+
+#### Railway Settings
+- **Root Directory**: `backend`
+- **Build Command**: Automatic (Dockerfile detected)
+- **Start Command**: Defined in railway.toml
+
+#### Environment Variables (EXACT VALUES - VERIFIED WORKING)
+```bash
+DATABASE_URL=postgresql://postgres:diAzWOwKuEhKBcNLcZlsVqfwHrptCQlt@crossover.proxy.rlwy.net:44440/railway
+RAILWAY_ENVIRONMENT=production
+PORT=8080  # Auto-injected by Railway
+```
+
+⚠️ **DATABASE CONNECTION RULES**:
+1. **MUST use public proxy**: `crossover.proxy.rlwy.net:44440` (NOT `postgres.railway.internal:5432`)
+2. **Password is case-sensitive**: Verify exact characters from Railway Postgres → Credentials tab
+3. **DO NOT use variable references**: `${{Postgres.DATABASE_URL}}` or `${{shared.DATABASE_PUBLIC_URL}}` contain stale/incorrect values
+4. **Hardcode full connection string** with verified password
+
+#### railway.toml (Repository Root)
+```toml
+[build]
+builder = "dockerfile"
+dockerfilePath = "backend/Dockerfile"
+
+[deploy]
+startCommand = "bash railway-start.sh"  # MUST use "bash" for $PORT expansion
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
+
+[env]
+RAILWAY_ENVIRONMENT = "production"
+```
+
+⚠️ **CRITICAL**: `startCommand = "bash railway-start.sh"` ensures environment variables expand correctly. Using `"./railway-start.sh"` causes literal "$PORT" string to be passed to uvicorn, breaking deployment.
+
+#### backend/Dockerfile
+```dockerfile
+FROM python:3.11-slim
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y gcc g++ curl && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements FIRST for layer caching
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY . .  # Note: Railway sets context to /backend when Root Directory = "backend"
+
+# Make startup script executable
+RUN chmod +x railway-start.sh
+
+EXPOSE 8080
+CMD ["bash", "railway-start.sh"]
+```
+
+⚠️ **COPY PATH RULES**: When Railway Root Directory = `backend`, use relative paths:
+- ✅ `COPY requirements.txt .`
+- ✅ `COPY . .`
+- ❌ `COPY backend/requirements.txt .` (wrong - Railway already in /backend context)
+
+#### backend/railway-start.sh
+```bash
+#!/bin/bash
+PORT="${PORT:-8080}"  # Default to 8080 if Railway doesn't inject PORT
+exec uvicorn app.main:app --host 0.0.0.0 --port "$PORT" --workers 2
+```
+
+### Frontend Configuration (humble-fascination)
+
+#### Environment Variables
+```bash
+VITE_API_URL=https://phobetronwebapp-production.up.railway.app/api/v1
+```
+
+⚠️ **CRITICAL**: Include `/api/v1` suffix in base URL, but do NOT duplicate it.
+
+#### frontend/src/services/api.ts
+```typescript
+const API_BASE_URL = import.meta.env.VITE_API_URL || 
+  'https://phobetronwebapp-production.up.railway.app/api/v1';
+```
+
+### Deployment Verification Checklist
+
+After any deployment:
+
+```bash
+# 1. Test database connection
+curl https://phobetronwebapp-production.up.railway.app/api/v1/admin/check-tables
+# Expected: {"status":"success","table_count":18,"tables":[...]}
+
+# 2. Test data endpoints
+curl https://phobetronwebapp-production.up.railway.app/api/v1/events/earthquakes?limit=5
+curl https://phobetronwebapp-production.up.railway.app/api/v1/events/volcanic-activity?limit=5
+curl https://phobetronwebapp-production.up.railway.app/api/v1/scientific/close-approaches?limit=5
+
+# 3. Verify frontend
+# Open: https://phobetronwebapp-production-d69a.up.railway.app
+# Check: All pages load data, no 404s in Network tab
+```
+
+### Common Deployment Failures & Solutions
+
+1. **"password authentication failed for user postgres"**
+   - **Cause**: Wrong password or using internal DNS
+   - **Fix**: Verify password character-by-character, use public proxy `crossover.proxy.rlwy.net:44440`
+
+2. **"could not translate host name postgres.railway.internal"**
+   - **Cause**: Using internal DNS across projects
+   - **Fix**: Change to public proxy `crossover.proxy.rlwy.net:44440`
+
+3. **"Error: Invalid value for '--port': '$PORT' is not a valid integer"**
+   - **Cause**: railway.toml uses `./railway-start.sh` instead of `bash railway-start.sh`
+   - **Fix**: Change startCommand to `"bash railway-start.sh"`
+
+4. **Frontend 404 errors for /api/v1/api/v1/...**
+   - **Cause**: Duplicate /api/v1 prefix in VITE_API_URL
+   - **Fix**: Ensure VITE_API_URL ends with `/api/v1` (no duplicate)
+
+5. **Dockerfile build fails: '/requirements.txt': not found**
+   - **Cause**: Wrong COPY paths when Root Directory set
+   - **Fix**: Use `COPY requirements.txt .` (not `COPY backend/requirements.txt .`)
+
+### Production URLs (VERIFIED STABLE - Nov 12, 2025)
+- **Backend API**: https://phobetronwebapp-production.up.railway.app
+- **Frontend**: https://phobetronwebapp-production-d69a.up.railway.app
+- **Database**: crossover.proxy.rlwy.net:44440 (public proxy)
+
+### Stable Backup Reference
+**Location**: `backups/PRODUCTION_STABLE_20251112_183253/`  
+**Status**: ✅ VERIFIED PRODUCTION STABLE  
+**Deployment Notes**: `PRODUCTION_STABLE_20251112_183253/DEPLOYMENT_NOTES.md`  
+
+Use this backup for restoration if production breaks.
+
+---
+
+**Version**: 1.4.0 | **Ratified**: October 27, 2025 | **Last Amended**: November 12, 2025
 
 **Amendment Notes**:
+- v1.4.0 (Nov 12, 2025): **PRODUCTION DEPLOYMENT LOCKED** - Added comprehensive Railway deployment section after 15+ hours of debugging. Documented critical password case sensitivity issue, cross-project networking limitations, Dockerfile COPY path rules, railway.toml startCommand bash requirement, and frontend API base URL configuration. Linked to PRODUCTION_STABLE_20251112_183253 backup as canonical reference.
 - v1.3.0 (Nov 2, 2025): **CELESTIAL THEME COMPLETE** - All 8 pages transformed with unified celestial design system. Added comprehensive design pattern documentation: twinkling stars, nebula clouds, glowing gradients, neumorphic cards, Framer Motion animations, custom scrollbars. Locked designs for Dashboard V2, Watchman's View, Earth Dashboard, Prophecy Codex, Alerts, Settings, and Timeline pages. Timeline rebuilt (504→400 lines) and added to navigation sidebar. 100% project completion achieved.
 - v1.2.0 (Nov 1, 2025): All 8 orbital mechanics enhancements completed - Moon eccentricity/inclination, 3I/ATLAS debris trail, lunar phases, time-to-perihelion countdown, object magnitudes, tidal locking, planetary perturbations. Research-grade accuracy achieved (⭐⭐⭐⭐⭐)
 - v1.1.0 (Oct 27, 2025): Solar System visualization design locked, Time Controls Panel completed, Planet Info Panel completed
