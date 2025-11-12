@@ -13,12 +13,8 @@ echo "Python version: $(python3 --version)"
 echo ""
 
 # Set default PORT if not provided by Railway
-if [ -z "$PORT" ]; then
-    echo "WARNING: PORT environment variable not set, defaulting to 8080"
-    export PORT=8080
-else
-    echo "Using PORT from environment: $PORT"
-fi
+PORT="${PORT:-8080}"
+echo "Using PORT: $PORT"
 
 echo "Starting uvicorn on 0.0.0.0:$PORT..."
 echo "Environment variables:"
