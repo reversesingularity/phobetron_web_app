@@ -70,12 +70,12 @@ export const earthquakesAPI = {
     start_date?: string
     end_date?: string
   }) =>
-    apiClient.get<PaginatedResponse<Earthquake>>('/events/earthquakes', {
+    apiClient.get<PaginatedResponse<Earthquake>>('/api/v1/events/earthquakes', {
       params,
     }),
 
   getById: (id: string) =>
-    apiClient.get<Earthquake>(`/events/earthquakes/${id}`),
+    apiClient.get<Earthquake>(`/api/v1/events/earthquakes/${id}`),
 }
 
 export const volcanicAPI = {
@@ -86,12 +86,12 @@ export const volcanicAPI = {
     country?: string
   }) =>
     apiClient.get<PaginatedResponse<VolcanicActivity>>(
-      '/events/volcanic-activity',
+      '/api/v1/events/volcanic-activity',
       { params }
     ),
 
   getById: (id: string) =>
-    apiClient.get<VolcanicActivity>(`/events/volcanic-activity/${id}`),
+    apiClient.get<VolcanicActivity>(`/api/v1/events/volcanic-activity/${id}`),
 }
 
 export const neoAPI = {
@@ -102,12 +102,12 @@ export const neoAPI = {
     object_name?: string
   }) =>
     apiClient.get<PaginatedResponse<NEOCloseApproach>>(
-      '/scientific/close-approaches',
+      '/api/v1/scientific/close-approaches',
       { params }
     ),
 
   getById: (id: string) =>
-    apiClient.get<NEOCloseApproach>(`/scientific/close-approaches/${id}`),
+    apiClient.get<NEOCloseApproach>(`/api/v1/scientific/close-approaches/${id}`),
 }
 
 export default apiClient
