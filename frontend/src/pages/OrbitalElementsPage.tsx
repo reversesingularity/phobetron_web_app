@@ -11,17 +11,17 @@ import { Orbit, Loader2, AlertCircle, Rocket, Star } from 'lucide-react'
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://phobetronwebapp-production.up.railway.app'
 
 interface OrbitalElement {
-  id: number
+  id: string
   object_name: string
-  semi_major_axis: number
+  semi_major_axis_au: number
   eccentricity: number
-  inclination: number
-  longitude_ascending_node: number | null
-  argument_perihelion: number | null
-  mean_anomaly: number | null
-  orbital_period: number | null
-  epoch: string
+  inclination_deg: number
+  longitude_ascending_node_deg: number | null
+  argument_perihelion_deg: number | null
+  mean_anomaly_deg: number | null
+  epoch_iso: string
   data_source: string
+  is_interstellar: boolean
   created_at: string
 }
 
@@ -211,7 +211,7 @@ const OrbitalElementsPage = () => {
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div>
                     <span className="text-gray-400">Semi-major Axis (a)</span>
-                    <p className="text-white font-semibold">{element.semi_major_axis.toFixed(3)} AU</p>
+                    <p className="text-white font-semibold">{element.semi_major_axis_au.toFixed(3)} AU</p>
                   </div>
                   <div>
                     <span className="text-gray-400">Eccentricity (e)</span>
@@ -219,37 +219,30 @@ const OrbitalElementsPage = () => {
                   </div>
                   <div>
                     <span className="text-gray-400">Inclination (i)</span>
-                    <p className="text-white font-semibold">{element.inclination.toFixed(2)}°</p>
+                    <p className="text-white font-semibold">{element.inclination_deg.toFixed(2)}°</p>
                   </div>
-                  {element.orbital_period && (
-                    <div>
-                      <span className="text-gray-400">Period</span>
-                      <p className="text-white font-semibold">
-                        {element.orbital_period < 1 
-                          ? `${(element.orbital_period * 365.25).toFixed(0)} days`
-                          : `${element.orbital_period.toFixed(2)} years`
-                        }
-                      </p>
-                    </div>
-                  )}
+                  <div>
+                    <span className="text-gray-400">Interstellar</span>
+                    <p className="text-white font-semibold">{element.is_interstellar ? 'Yes' : 'No'}</p>
+                  </div>
                 </div>
               </div>
 
               {/* Advanced Parameters */}
-              {(element.longitude_ascending_node !== null || element.argument_perihelion !== null) && (
+              {(element.longitude_ascending_node_deg !== null || element.argument_perihelion_deg !== null) && (
                 <div className="bg-gray-900/50 rounded p-3 border border-gray-700/50">
                   <h4 className="text-sm font-semibold text-gray-400 mb-2">Advanced Parameters</h4>
                   <div className="grid grid-cols-2 gap-3 text-sm">
-                    {element.longitude_ascending_node !== null && (
+                    {element.longitude_ascending_node_deg !== null && (
                       <div>
                         <span className="text-gray-400">Longitude Ω</span>
-                        <p className="text-white font-semibold">{element.longitude_ascending_node.toFixed(2)}°</p>
+                        <p className="text-white font-semibold">{element.longitude_ascending_node_deg.toFixed(2)}°</p>
                       </div>
                     )}
-                    {element.argument_perihelion !== null && (
+                    {element.argument_perihelion_deg !== null && (
                       <div>
                         <span className="text-gray-400">Argument ω</span>
-                        <p className="text-white font-semibold">{element.argument_perihelion.toFixed(2)}°</p>
+                        <p className="text-white font-semibold">{element.argument_perihelion_deg.toFixed(2)}°</p>
                       </div>
                     )}
                   </div>
@@ -260,7 +253,7 @@ const OrbitalElementsPage = () => {
             {/* Footer */}
             <div className="mt-4 pt-4 border-t border-gray-700 flex justify-between items-center text-xs text-gray-500">
               <span>Source: {element.data_source}</span>
-              <span>Epoch: {new Date(element.epoch).toLocaleDateString()}</span>
+              <span>Epoch: {new Date(element.epoch_iso).toLocaleDateString()}</span>
             </div>
           </div>
         ))}
