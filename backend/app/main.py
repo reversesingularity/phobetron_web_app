@@ -44,6 +44,9 @@ async def lifespan(app: FastAPI):
         print("🧠 Loading ML models into memory...", flush=True)
         model_loader.load_all_models()
         print("✅ ML models loaded successfully!", flush=True)
+    except ImportError as e:
+        print(f"⚠️ Warning: model_loader module not found: {str(e)}", flush=True)
+        print("API will continue without ML models loaded into memory", flush=True)
     except Exception as e:
         print(f"⚠️ Warning: ML models failed to load: {str(e)}", flush=True)
         print("API will continue but predictions may be limited", flush=True)
