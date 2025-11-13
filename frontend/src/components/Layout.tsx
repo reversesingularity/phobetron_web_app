@@ -58,7 +58,7 @@ const Layout = ({ children }: LayoutProps) => {
             </div>
 
             {/* Desktop Navigation - Scrollable */}
-            <nav className="hidden md:flex flex-1 overflow-x-auto scrollbar-hide ml-4">
+            <nav className="hidden md:flex flex-1 overflow-x-auto scrollbar-thin ml-4 pb-1">
               <div className="flex space-x-1 min-w-max">
                 {navigation.map((item) => {
                   const Icon = item.icon

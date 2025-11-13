@@ -57,12 +57,25 @@ h1 {
   @apply bg-gray-500;
 }
 
-/* Hide scrollbar for navigation */
-.scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+/* Thin scrollbar for navigation */
+.scrollbar-thin {
+  scrollbar-width: thin;  /* Firefox */
+  scrollbar-color: rgba(139, 92, 246, 0.5) transparent;
 }
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;  /* Chrome, Safari and Opera */
+.scrollbar-thin::-webkit-scrollbar {
+  height: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.5);
+  border-radius: 2px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.8);
 }
