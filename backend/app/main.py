@@ -38,19 +38,6 @@ async def lifespan(app: FastAPI):
     print(f"CORS Origins: {settings.BACKEND_CORS_ORIGINS}", flush=True)
     print("=" * 60, flush=True)
     
-    # Load ML models into memory
-    try:
-        from app.ml.model_loader import model_loader
-        print("🧠 Loading ML models into memory...", flush=True)
-        model_loader.load_all_models()
-        print("✅ ML models loaded successfully!", flush=True)
-    except ImportError as e:
-        print(f"⚠️ Warning: model_loader module not found: {str(e)}", flush=True)
-        print("API will continue without ML models loaded into memory", flush=True)
-    except Exception as e:
-        print(f"⚠️ Warning: ML models failed to load: {str(e)}", flush=True)
-        print("API will continue but predictions may be limited", flush=True)
-    
     print("Application startup complete!", flush=True)
     print("Database connection will be established on first request", flush=True)
     sys.stdout.flush()
