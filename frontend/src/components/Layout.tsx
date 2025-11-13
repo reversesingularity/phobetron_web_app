@@ -11,7 +11,9 @@ import {
   X,
   Star,
   Bell,
-  Book
+  Book,
+  Brain,
+  Sparkles
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -33,6 +35,9 @@ const Layout = ({ children }: LayoutProps) => {
     { name: "Watchman's View", href: '/watchmans-view', icon: Star, highlight: true },
     { name: 'Alerts', href: '/alerts', icon: Bell, highlight: true },
     { name: 'Prophecy Codex', href: '/prophecy-codex', icon: Book, highlight: true },
+    { name: 'Celestial Signs', href: '/celestial-signs', icon: Sparkles, highlight: true },
+    { name: 'Orbital Elements', href: '/orbital-elements', icon: Orbit, highlight: true },
+    { name: 'ML Models', href: '/ml-models', icon: Brain, highlight: true },
   ]
 
   const isActive = (path: string) => location.pathname === path

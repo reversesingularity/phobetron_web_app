@@ -9,6 +9,9 @@ import SolarSystemPage from './pages/SolarSystemPage'
 import WatchmansView from './pages/WatchmansView'
 import AlertsPage from './pages/AlertsPage'
 import ProphecyCodex from './pages/ProphecyCodex'
+import CelestialSignsPage from './pages/CelestialSignsPage'
+import OrbitalElementsPage from './pages/OrbitalElementsPage'
+import MLModelsPage from './pages/MLModelsPage'
 
 function App() {
   return (
@@ -24,6 +27,9 @@ function App() {
           <Route path="/watchmans-view" element={<WatchmansView />} />
           <Route path="/alerts" element={<AlertsPage />} />
           <Route path="/prophecy-codex" element={<ProphecyCodex />} />
+          <Route path="/celestial-signs" element={<CelestialSignsPage />} />
+          <Route path="/orbital-elements" element={<OrbitalElementsPage />} />
+          <Route path="/ml-models" element={<MLModelsPage />} />
         </Routes>
       </Layout>
     </Router>

@@ -9,20 +9,82 @@
  */
 
 import { useState, useEffect } from 'react'
-import { Book, Search, Star, AlertTriangle, Calendar } from 'lucide-react'
+import { Book, Search, Star, AlertTriangle, Calendar, Loader2 } from 'lucide-react'
 import type { BiblicalProphecy } from '../lib/types/celestial'
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://phobetronwebapp-production.up.railway.app'
+
+interface DbProphecy {
+  id: number
+  event_name: string
+  prophecy_category: string | null
+  book_name: string
+  chapter: number | null
+  verse_start: number | null
+  verse_end: number | null
+  prophecy_text: string | null
+  source_type: string | null
+  chronological_order: number | null
+  fulfillment_status: string | null
+  theological_interpretation: string | null
+  created_at: string
+}
 
 const ProphecyCodex = () => {
   const [prophecies, setProphecies] = useState<BiblicalProphecy[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [filterCategory, setFilterCategory] = useState<string>('all')
   const [selectedProphecy, setSelectedProphecy] = useState<BiblicalProphecy | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    // Load prophecies (in production, this would be from database)
-    const mockProphecies = generateMockProphecies()
-    setProphecies(mockProphecies)
+    fetchProphecies()
   }, [])
+
+  const fetchProphecies = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      
+      const response = await fetch(`${API_BASE_URL}/api/v1/theological/prophecies?limit=100`)
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+      }
+
+      const data = await response.json()
+      
+      // Convert database prophecies to UI format
+      const converted: BiblicalProphecy[] = data.data.map((p: DbProphecy) => {
+        const reference = p.verse_end && p.verse_end !== p.verse_start
+          ? `${p.book_name} ${p.chapter}:${p.verse_start}-${p.verse_end}`
+          : `${p.book_name} ${p.chapter}:${p.verse_start}`
+        
+        return {
+          id: p.id.toString(),
+          reference,
+          text: p.prophecy_text || p.event_name,
+          category: (p.prophecy_category || 'general').toLowerCase(),
+          keywords: p.event_name.split(' ').filter(w => w.length > 3),
+          eschatologicalContext: p.theological_interpretation || '',
+          fulfillmentStatus: (p.fulfillment_status || 'future').toLowerCase() as 'fulfilled' | 'ongoing' | 'partial' | 'future',
+          relatedProphecies: [],
+          hebrewWords: [],
+          greekWords: [],
+        }
+      })
+      
+      setProphecies(converted)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch prophecies')
+      console.error('Error fetching prophecies:', err)
+      // Fallback to mock data on error
+      setProphecies(generateMockProphecies())
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const generateMockProphecies = (): BiblicalProphecy[] => {
     return [
@@ -192,6 +254,17 @@ const ProphecyCodex = () => {
     fulfilled: prophecies.filter(p => p.fulfillmentStatus === 'fulfilled').length,
     ongoing: prophecies.filter(p => p.fulfillmentStatus === 'ongoing').length,
     future: prophecies.filter(p => p.fulfillmentStatus === 'future').length,
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-amber-900 to-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-amber-400 mx-auto mb-4" />
+          <p className="text-white">Loading biblical prophecies...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
