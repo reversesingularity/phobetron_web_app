@@ -1,8 +1,8 @@
 # 🎯 PRODUCTION STABLE CONFIGURATION
 
 **Status**: ✅ **PRODUCTION OPERATIONAL**  
-**Verified**: November 12, 2025 04:55 UTC  
-**Backup Location**: `backups/PRODUCTION_STABLE_20251112_183253/`  
+**Verified**: November 13, 2025 22:55 UTC  
+**Backup Location**: `backups/PRODUCTION_STABLE_20251113_225505/`  
 
 ---
 
@@ -14,8 +14,8 @@
 - **API Health**: https://phobetronwebapp-production.up.railway.app/api/v1/admin/check-tables
 
 ### Documentation
-- **Deployment Guide**: `backups/PRODUCTION_STABLE_20251112_183253/DEPLOYMENT_NOTES.md`
-- **Quick Restore**: `backups/PRODUCTION_STABLE_20251112_183253/README.md`
+- **Deployment Guide**: `backups/PRODUCTION_STABLE_20251113_225505/DEPLOYMENT_NOTES.md`
+- **Quick Restore**: `backups/PRODUCTION_STABLE_20251113_225505/README.md`
 - **Constitution v1.4.0**: `.specify/memory/constitution.md`
 
 ---
@@ -26,20 +26,20 @@ If production breaks, restore from backup:
 
 ```powershell
 # 1. Copy backend files
-Copy-Item -Path "backups\PRODUCTION_STABLE_20251112_183253\backend\*" `
+Copy-Item -Path "backups\PRODUCTION_STABLE_20251113_225505\backend\*" `
           -Destination "backend\" -Recurse -Force
 
 # 2. Copy railway.toml
-Copy-Item -Path "backups\PRODUCTION_STABLE_20251112_183253\railway.toml" `
+Copy-Item -Path "backups\PRODUCTION_STABLE_20251113_225505\railway.toml" `
           -Destination "railway.toml" -Force
 
 # 3. Copy frontend files  
-Copy-Item -Path "backups\PRODUCTION_STABLE_20251112_183253\frontend\*" `
+Copy-Item -Path "backups\PRODUCTION_STABLE_20251113_225505\frontend\*" `
           -Destination "frontend\" -Recurse -Force
 
 # 4. Commit and push
 git add .
-git commit -m "Restore from PRODUCTION_STABLE_20251112_183253"
+git commit -m "Restore from PRODUCTION_STABLE_20251113_225505"
 git push origin 001-database-schema
 ```
 
@@ -86,7 +86,17 @@ All should return JSON with data (not errors).
 
 ## 📋 WHAT WAS FIXED
 
-**15+ Hours of Debugging** resolved:
+**Recent Updates (November 13, 2025)**:
+- ✅ Created 3 new UI pages (Celestial Signs, Orbital Elements, ML Models)
+- ✅ Fixed all API endpoint prefixes (/api/v1)
+- ✅ Fixed default API URLs (production Railway)
+- ✅ Fixed Orbital Elements field mappings (semi_major_axis_au, inclination_deg, etc.)
+- ✅ Updated ProphecyCodex with live API integration
+- ✅ Navigation scrollbar made visible with thin purple indicator
+- ✅ All 12 pages functional (10 fully working, 2 with fallback)
+- ✅ Database populated: 6 orbital elements, 10 celestial signs, 40 prophecies
+
+**Previous Fixes (15+ Hours of Debugging)**:
 - ❌ Password case typo (lowercase 'c' → uppercase 'C')
 - ❌ Cross-project Railway networking issues
 - ❌ Dockerfile COPY path problems with Root Directory
@@ -101,16 +111,46 @@ All should return JSON with data (not errors).
 ## 🎯 BACKUP HIERARCHY (NEWEST FIRST)
 
 **USE THIS BACKUP** when restoring:
-1. ✅ **PRODUCTION_STABLE_20251112_183253** ← **USE THIS**
-2. solar_system_stable_20251110_211532
-3. solar_system_stable_20251110_211522
-4. solar_system_integration_20251109_213132
-5. solar_system_integration_20251109_213119
+1. ✅ **PRODUCTION_STABLE_20251113_225505** ← **USE THIS** (Navigation fixes, scrollable UI)
+2. PRODUCTION_STABLE_20251112_183253 (Previous stable - API endpoints working)
+3. solar_system_stable_20251110_211532
+4. solar_system_stable_20251110_211522
+5. solar_system_integration_20251109_213132
 
 The others are obsolete - this is the ONLY verified production stable config.
 
 ---
 
-**Last Updated**: November 12, 2025 18:32:53  
+## 🎨 CURRENT FEATURES (v1.1.0)
+
+### Live Database Content
+- 93 earthquakes (M5.5+ worldwide, last 30 days)
+- 80 NEO close approaches (within 0.05 AU)
+- 10 volcanic events (VEI 3+, last 30 days)
+- 6 orbital elements (Mercury, Venus, Earth, Mars, 'Oumuamua, Borisov)
+- 10 celestial signs (Revelation & Joel prophecies)
+- 40 biblical prophecies (canonical, apocryphal, pseudepigraphal)
+
+### Active Pages (12 Total)
+1. ✅ Dashboard - Overview with all event types
+2. ✅ Earthquakes - Real-time USGS data
+3. ✅ Volcanic Activity - Global eruptions
+4. ✅ NEO - Near-Earth Objects tracking
+5. ✅ Map - Geographic visualization
+6. ✅ Solar System - 3D visualization
+7. ✅ Watchman's View - Integrated monitoring
+8. ⚠️ Alerts - ML predictions (fallback to mock data)
+9. ✅ Prophecy Codex - 40 biblical prophecies
+10. ✅ Celestial Signs - 10 Revelation signs
+11. ✅ Orbital Elements - 6 objects with Keplerian parameters
+12. ✅ ML Models - 4 models (79% avg accuracy)
+
+### Known Issues
+- ML Watchman Alerts endpoint returns 500 error ('EnhancedAlert' object has no attribute 'description')
+- Both affected pages (Alerts, Watchman's View) use fallback mock data
+
+---
+
+**Last Updated**: November 13, 2025 22:55:05  
 **Constitution Version**: 1.4.0  
-**Deployment Notes**: See `backups/PRODUCTION_STABLE_20251112_183253/DEPLOYMENT_NOTES.md`  
+**Deployment Notes**: See `backups/PRODUCTION_STABLE_20251113_225505/DEPLOYMENT_NOTES.md`  
