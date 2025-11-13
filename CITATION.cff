@@ -9,7 +9,10 @@ abstract: >-
   3D solar system visualization, Hebrew calendar integration, and four trained 
   ML models achieving 75%+ accuracy in detecting patterns between celestial 
   events and terrestrial disasters (earthquakes, volcanic eruptions, hurricanes, 
-  tsunamis) based on Greek biblical terminology.
+  tsunamis) based on Greek biblical terminology. Version 1.1.0 includes live 
+  database integration with 6 orbital elements (Mercury, Venus, Earth, Mars, 
+  'Oumuamua, Borisov), 10 celestial signs from Revelation and Joel, and 40 
+  biblical prophecies from canonical, apocryphal, and pseudepigraphal sources.
 authors:
   - family-names: "MODINA"
     given-names: "CHRIS"
@@ -32,8 +35,8 @@ keywords:
   - disaster correlation
   - Greek biblical terminology
 license: MIT
-version: 1.0.0
-date-released: "2025-11-08"
+version: 1.1.0
+date-released: "2025-11-13"
 identifiers:
   - type: doi
     value: "10.5281/zenodo.17558316"
