@@ -1,15 +1,10 @@
 # Railway Configuration for Frontend Service
-# Phobetron Web Application - Vite React Frontend
+# Root Directory in Railway dashboard is set to: frontend
 
 [build]
-builder = "DOCKERFILE"
-dockerfilePath = "Dockerfile"
 
 [deploy]
-restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 10
 healthcheckPath = "/"
 healthcheckTimeout = 300
-
-# No custom start command - use Dockerfile's CMD ["nginx", "-g", "daemon off;"]
-# Railway will automatically use the CMD from the Dockerfile
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
