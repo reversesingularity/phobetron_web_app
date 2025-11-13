@@ -47,44 +47,46 @@ const Layout = ({ children }: LayoutProps) => {
       {/* Header */}
       <header className="bg-gray-800 border-b border-gray-700 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center flex-shrink-0">
               <h1 className="text-2xl font-bold text-white">
                 <span className="text-blue-400">Phobetron</span>
               </h1>
-              <p className="ml-4 text-sm text-gray-400 hidden sm:block">
+              <p className="ml-4 text-sm text-gray-400 hidden lg:block">
                 Celestial Events Tracker
               </p>
             </div>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex space-x-1">
-              {navigation.map((item) => {
-                const Icon = item.icon
-                const isHighlight = 'highlight' in item && item.highlight
-                return (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    className={`
-                      px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2
-                      transition-colors
-                      ${
-                        isActive(item.href)
-                          ? isHighlight 
-                            ? 'bg-purple-900 text-white border border-purple-500/50'
-                            : 'bg-gray-900 text-white'
-                          : isHighlight
-                          ? 'text-purple-300 hover:bg-purple-900/50 hover:text-white border border-purple-500/30'
-                          : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                      }
-                    `}
-                  >
-                    <Icon size={18} />
-                    {item.name}
-                  </Link>
-                )
-              })}
+            {/* Desktop Navigation - Scrollable */}
+            <nav className="hidden md:flex flex-1 justify-end overflow-x-auto scrollbar-hide ml-4">
+              <div className="flex space-x-1">
+                {navigation.map((item) => {
+                  const Icon = item.icon
+                  const isHighlight = 'highlight' in item && item.highlight
+                  return (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className={`
+                        px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2
+                        transition-colors whitespace-nowrap
+                        ${
+                          isActive(item.href)
+                            ? isHighlight 
+                              ? 'bg-purple-900 text-white border border-purple-500/50'
+                              : 'bg-gray-900 text-white'
+                            : isHighlight
+                            ? 'text-purple-300 hover:bg-purple-900/50 hover:text-white border border-purple-500/30'
+                            : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                        }
+                      `}
+                    >
+                      <Icon size={18} />
+                      <span className="hidden xl:inline">{item.name}</span>
+                    </Link>
+                  )
+                })}
+              </div>
             </nav>
 
             {/* Mobile menu button */}
