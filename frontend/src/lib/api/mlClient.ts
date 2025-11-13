@@ -14,7 +14,7 @@
 import { CelestialEvent, EarthEvent, Alert, PropheticPattern, EventPrediction } from '../types/celestial';
 
 // Backend API base URL
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://phobetronwebapp-production.up.railway.app';
 
 // ===== Request/Response Types =====
 

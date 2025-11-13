@@ -35,7 +35,7 @@ import PlanetInfoPanel from './PlanetInfoPanel';
 const AU_SCALE = 10;
 
 // API base URL - Updated to match backend server port
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8020';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://phobetronwebapp-production.up.railway.app';
 
 // Orbital element data structure from API
 interface OrbitalElementData {

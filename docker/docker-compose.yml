@@ -51,6 +51,56 @@ services:
     depends_on:
       - backend
 
+  # Redis (Message Broker for Celery)
+  redis:
+    image: redis:7-alpine
+    container_name: phobetron_redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Celery Worker (Background Tasks)
+  celery_worker:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: phobetron_celery_worker
+    environment:
+      DATABASE_URL: postgresql://phobetron:phobetron_password@postgres:5432/phobetron
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../backend:/app
+    command: celery -A app.tasks.data_fetching worker --loglevel=info
+
+  # Celery Beat (Scheduler)
+  celery_beat:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: phobetron_celery_beat
+    environment:
+      DATABASE_URL: postgresql://phobetron:phobetron_password@postgres:5432/phobetron
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../backend:/app
+    command: celery -A app.tasks.data_fetching beat --loglevel=info
+
 volumes:
   postgres_data:
     driver: local
