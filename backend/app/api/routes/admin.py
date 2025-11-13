@@ -2,10 +2,17 @@
 Admin endpoints for database management.
 WARNING: These should be protected in production!
 """
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy import text
+from sqlalchemy.orm import Session
+from datetime import datetime, timedelta
 import subprocess
 import os
+from typing import Dict, List
+
+from app.db.session import get_db
+from app.integrations.external_apis import USGSEarthquakeClient
+from app.models.events import Earthquakes
 
 router = APIRouter(tags=["admin"])
 
@@ -68,6 +75,77 @@ async def check_tables():
         finally:
             db.close()
     except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/fetch-latest-data")
+async def fetch_latest_data(db: Session = Depends(get_db)) -> Dict:
+    """
+    Manually trigger data fetch from USGS and NASA APIs.
+    Railway-safe: No background tasks, synchronous execution.
+    
+    Returns:
+        Summary of fetched data with counts and sample entries
+    """
+    try:
+        results = {
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "earthquakes": {"fetched": 0, "new": 0, "updated": 0, "sample": []},
+            "status": "success"
+        }
+        
+        # Fetch USGS earthquakes (M4.5+ from last 30 days)
+        usgs_client = USGSEarthquakeClient()
+        earthquakes = usgs_client.get_recent_earthquakes(min_magnitude=4.5, days_back=30)
+        
+        results["earthquakes"]["fetched"] = len(earthquakes)
+        
+        # Save to database (upsert logic)
+        for eq in earthquakes[:50]:  # Limit to 50 to avoid timeout
+            # Extract event_id from URL or use magnitude+time combo
+            event_id = eq.get('url', '').split('/')[-1] if eq.get('url') else None
+            if not event_id:
+                # Create pseudo-ID from magnitude, lat, lon, time
+                event_id = f"eq_{eq['magnitude']}_{eq['latitude']}_{eq['longitude']}_{eq['time']}"
+            
+            # Check if exists
+            existing = db.query(Earthquakes).filter(Earthquakes.event_id == event_id).first()
+            
+            if not existing:
+                # Create new record
+                earthquake = Earthquakes(
+                    event_id=event_id,
+                    event_time=datetime.fromisoformat(eq['time'].replace('Z', '+00:00')) if eq.get('time') else None,
+                    magnitude=eq.get('magnitude'),
+                    magnitude_type='mw',  # Default
+                    latitude=eq.get('latitude'),
+                    longitude=eq.get('longitude'),
+                    depth_km=eq.get('depth'),
+                    region=eq.get('place', 'Unknown'),
+                    data_source='USGS'
+                )
+                db.add(earthquake)
+                results["earthquakes"]["new"] += 1
+                
+                # Add first 3 as samples
+                if len(results["earthquakes"]["sample"]) < 3:
+                    results["earthquakes"]["sample"].append({
+                        "event_id": event_id,
+                        "magnitude": eq.get('magnitude'),
+                        "region": eq.get('place'),
+                        "time": eq.get('time')
+                    })
+        
+        db.commit()
+        
+        return results
+        
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Data fetch failed: {str(e)}"
+        )
         return {
             "status": "error",
             "error": str(e),
