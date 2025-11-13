@@ -1,4 +1,4 @@
-# Backend Dockerfile for Phobetron (Railway)
+# Backend Production Dockerfile for Phobetron
 FROM python:3.11-slim
 
 # Set working directory
@@ -19,17 +19,17 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
-# Make startup script executable
-RUN chmod +x railway-start.sh
-
 # Create non-root user for security
 RUN useradd --create-home --shell /bin/bash app \
     && chown -R app:app /app
 USER app
 
-# Expose common Railway ports
-EXPOSE 8080
-EXPOSE 8000
+# Expose port 8020 for API
+EXPOSE 8020
 
-# Run the Railway startup script
-CMD ["./railway-start.sh"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost:8020/api/v1/health || exit 1
+
+# Run the FastAPI application with Uvicorn
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8020"]
