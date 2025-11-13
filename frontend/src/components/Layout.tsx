@@ -58,8 +58,8 @@ const Layout = ({ children }: LayoutProps) => {
             </div>
 
             {/* Desktop Navigation - Scrollable */}
-            <nav className="hidden md:flex overflow-x-auto scrollbar-hide ml-4">
-              <div className="flex space-x-1">
+            <nav className="hidden md:flex flex-1 overflow-x-auto scrollbar-hide ml-4">
+              <div className="flex space-x-1 min-w-max">
                 {navigation.map((item) => {
                   const Icon = item.icon
                   const isHighlight = 'highlight' in item && item.highlight
@@ -69,7 +69,7 @@ const Layout = ({ children }: LayoutProps) => {
                       to={item.href}
                       className={`
                         px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2
-                        transition-colors whitespace-nowrap
+                        transition-colors whitespace-nowrap flex-shrink-0
                         ${
                           isActive(item.href)
                             ? isHighlight 
