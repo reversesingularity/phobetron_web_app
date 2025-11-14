@@ -472,37 +472,37 @@ async def comprehensive_pattern_detection(
             
             # Fetch earthquakes in range
             eq_query = """
-            SELECT id, event_date, magnitude, depth_km, location_name, latitude, longitude, fatalities
+            SELECT id, event_time as event_date, magnitude, depth_km, region as location_name, latitude, longitude, 0 as fatalities
             FROM earthquakes
-            WHERE event_date BETWEEN :start_date AND :end_date
-            ORDER BY event_date
+            WHERE event_time BETWEEN :start_date AND :end_date
+            ORDER BY event_time
             """
             eq_result = db.execute(text(eq_query), {"start_date": start_date, "end_date": end_date})
             earthquakes = [dict(row._mapping) for row in eq_result]
             
             # Fetch volcanic activity
             vol_query = """
-            SELECT id, event_date, volcano_name, vei, latitude, longitude, fatalities
+            SELECT id, eruption_start as event_date, volcano_name, vei, latitude, longitude, 0 as fatalities
             FROM volcanic_activity
-            WHERE event_date BETWEEN :start_date AND :end_date
-            ORDER BY event_date
+            WHERE eruption_start BETWEEN :start_date AND :end_date
+            ORDER BY eruption_start
             """
             vol_result = db.execute(text(vol_query), {"start_date": start_date, "end_date": end_date})
             volcanic = [dict(row._mapping) for row in vol_result]
             
             # Fetch hurricanes
             hur_query = """
-            SELECT id, event_date, name, category, max_wind_speed_kmh, peak_latitude, peak_longitude, fatalities
+            SELECT id, formation_date as event_date, storm_name as name, category, max_sustained_winds_kph as max_wind_speed_kmh, peak_latitude, peak_longitude, fatalities
             FROM hurricanes
-            WHERE event_date BETWEEN :start_date AND :end_date
-            ORDER BY event_date
+            WHERE formation_date BETWEEN :start_date AND :end_date
+            ORDER BY formation_date
             """
             hur_result = db.execute(text(hur_query), {"start_date": start_date, "end_date": end_date})
             hurricanes = [dict(row._mapping) for row in hur_result]
             
             # Fetch tsunamis
             tsu_query = """
-            SELECT id, event_date, cause, wave_height_m, source_latitude, source_longitude, fatalities
+            SELECT id, event_date, source_type as cause, max_wave_height_m as wave_height_m, source_latitude, source_longitude, fatalities
             FROM tsunamis
             WHERE event_date BETWEEN :start_date AND :end_date
             ORDER BY event_date
