@@ -22,6 +22,7 @@ from app.api.routes.data_sources import router as data_sources_router  # ESA/NAS
 from app.api.v1.ml_predictions import router as ml_predictions_router  # Production ML predictions
 from app.api.routes.verification import router as verification_router  # Database verification endpoints
 from app.api.routes.admin import router as admin_router  # Admin/migration endpoints
+from app.api.routes.admin_populate import router as admin_populate_router  # Temporary: Populate feast days
 from app.core.config import settings
 
 
@@ -73,6 +74,7 @@ app.include_router(data_sources_router)  # Data sources with ESA/NASA fallback
 app.include_router(ml_predictions_router)  # Production ML predictions
 app.include_router(verification_router)  # Database verification and testing
 app.include_router(admin_router, prefix=f"{settings.API_V1_STR}/admin")  # Admin and migration endpoints
+app.include_router(admin_populate_router, prefix=f"{settings.API_V1_STR}")  # Temporary: Admin populate endpoint
 
 
 @app.get("/health", tags=["health"])
