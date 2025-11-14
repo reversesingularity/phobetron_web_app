@@ -433,10 +433,10 @@ async def comprehensive_pattern_detection(
             feast_days = []
             try:
                 feast_query = """
-                SELECT id, name, feast_date, feast_type, duration_days, significance
+                SELECT id, name, gregorian_date, feast_type, is_range, significance
                 FROM feast_days
-                WHERE feast_date BETWEEN :start_date AND :end_date
-                ORDER BY feast_date
+                WHERE gregorian_date BETWEEN :start_date AND :end_date
+                ORDER BY gregorian_date
                 """
                 feast_result = db.execute(text(feast_query), {"start_date": start_date, "end_date": end_date})
                 feast_days = [dict(row._mapping) for row in feast_result]
@@ -513,7 +513,7 @@ async def comprehensive_pattern_detection(
             # Detect patterns: events within ±7 days of feast days
             patterns = []
             for feast in feast_days:
-                feast_date = feast['feast_date']
+                feast_date = feast['gregorian_date']
                 window_start = feast_date - timedelta(days=7)
                 window_end = feast_date + timedelta(days=7)
                 
@@ -567,7 +567,7 @@ async def comprehensive_pattern_detection(
                     
                     patterns.append({
                         'feast_day': feast['name'],
-                        'feast_date': feast['feast_date'].isoformat(),
+                        'feast_date': feast['gregorian_date'].isoformat(),
                         'feast_type': feast['feast_type'],
                         'events': nearby_events,
                         'event_count': len(nearby_events),
