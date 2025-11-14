@@ -57,16 +57,22 @@ const ProphecyCodex = () => {
       
       // Convert database prophecies to UI format
       const converted: BiblicalProphecy[] = data.data.map((p: DbProphecy) => {
-        // Build reference string - handle missing chapter/verse data
-        let reference = p.book_name || 'Unknown'
-        if (p.chapter && p.verse_start) {
-          if (p.verse_end && p.verse_end !== p.verse_start) {
-            reference = `${p.book_name} ${p.chapter}:${p.verse_start}-${p.verse_end}`
+        // Build reference string - use event name as fallback if no book reference
+        let reference = p.event_name // Use event name as default
+        
+        if (p.book_name) {
+          // If we have a book name, build proper reference
+          if (p.chapter && p.verse_start) {
+            if (p.verse_end && p.verse_end !== p.verse_start) {
+              reference = `${p.book_name} ${p.chapter}:${p.verse_start}-${p.verse_end}`
+            } else {
+              reference = `${p.book_name} ${p.chapter}:${p.verse_start}`
+            }
+          } else if (p.chapter) {
+            reference = `${p.book_name} ${p.chapter}`
           } else {
-            reference = `${p.book_name} ${p.chapter}:${p.verse_start}`
+            reference = p.book_name
           }
-        } else if (p.chapter) {
-          reference = `${p.book_name} ${p.chapter}`
         }
         
         return {
