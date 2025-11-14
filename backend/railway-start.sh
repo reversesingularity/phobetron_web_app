@@ -23,6 +23,12 @@ echo "  DATABASE_URL=${DATABASE_URL:0:30}... (truncated)"
 echo "  RAILWAY_ENVIRONMENT=${RAILWAY_ENVIRONMENT:-not set}"
 echo ""
 
+# Run database migrations before starting the server
+echo "Running database migrations..."
+alembic upgrade head || echo "Warning: Migration failed, continuing anyway"
+echo "Migrations complete"
+echo ""
+
 # Start uvicorn - the /health endpoint will respond immediately
 # Database connectivity and migrations are handled by the application lifespan
 exec uvicorn app.main:app \
