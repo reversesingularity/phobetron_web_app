@@ -4,7 +4,7 @@ Add this temporarily to routes and call via browser/curl.
 """
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from app.database import get_db
+from app.db.session import get_db
 from datetime import date
 
 router = APIRouter(prefix="/admin", tags=["admin"])
