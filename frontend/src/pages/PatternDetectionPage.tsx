@@ -57,8 +57,19 @@ export default function PatternDetectionPage() {
     
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8020'
+      
+      // Convert years to date range (YYYY-MM-DD format)
+      const startDate = `${startYear}-01-01`
+      const endDate = `${endYear}-12-31`
+      
       const response = await fetch(
-        `${apiUrl}/api/v1/ml/comprehensive-pattern-detection?start_year=${startYear}&end_year=${endYear}&min_correlation=${minCorrelation}`
+        `${apiUrl}/api/v1/ml/comprehensive-pattern-detection?start_date=${startDate}&end_date=${endDate}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
       )
       
       if (!response.ok) {
