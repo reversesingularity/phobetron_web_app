@@ -91,11 +91,23 @@ export default function PatternDetectionPage() {
         }
       )
       
+      const data = await response.json()
+      
+      // Check if API returned an error response (even with 200 status)
+      if (!data.success && data.error) {
+        if (data.error === 'feast_days_table_missing') {
+          setError('⚠️ Database setup incomplete: Feast days not yet populated. Please contact administrator to run the data population script.')
+        } else {
+          setError(data.message || 'Pattern detection encountered an error')
+        }
+        setPatternData(data) // Set data anyway to show empty state
+        return
+      }
+      
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`)
       }
       
-      const data = await response.json()
       setPatternData(data)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load pattern data')

@@ -423,19 +423,52 @@ async def comprehensive_pattern_detection(
         from app.db.session import SessionLocal
         from sqlalchemy import text
         from datetime import datetime, timedelta
+        import logging
         
+        logger = logging.getLogger(__name__)
         db = SessionLocal()
         
         try:
-            # Fetch feast days in range
-            feast_query = """
-            SELECT id, name, feast_date, feast_type, duration_days, significance
-            FROM feast_days
-            WHERE feast_date BETWEEN :start_date AND :end_date
-            ORDER BY feast_date
-            """
-            feast_result = db.execute(text(feast_query), {"start_date": start_date, "end_date": end_date})
-            feast_days = [dict(row._mapping) for row in feast_result]
+            # Fetch feast days in range (with error handling for missing table)
+            feast_days = []
+            try:
+                feast_query = """
+                SELECT id, name, feast_date, feast_type, duration_days, significance
+                FROM feast_days
+                WHERE feast_date BETWEEN :start_date AND :end_date
+                ORDER BY feast_date
+                """
+                feast_result = db.execute(text(feast_query), {"start_date": start_date, "end_date": end_date})
+                feast_days = [dict(row._mapping) for row in feast_result]
+            except Exception as feast_error:
+                logger.warning(f"Could not fetch feast days: {feast_error}")
+                # Return empty result if feast_days table doesn't exist yet
+                if "feast_days" in str(feast_error) and "does not exist" in str(feast_error):
+                    return {
+                        "success": False,
+                        "error": "feast_days_table_missing",
+                        "message": "Feast days data not yet populated. Please run: railway run --service backend python scripts/populate_production_data.py",
+                        "patterns": [],
+                        "statistics": {
+                            "total_patterns": 0,
+                            "high_correlation_count": 0,
+                            "average_correlation": 0,
+                            "total_events_analyzed": 0,
+                            "feast_days_in_range": 0
+                        },
+                        "event_counts": {
+                            "earthquakes": 0,
+                            "volcanic": 0,
+                            "hurricanes": 0,
+                            "tsunamis": 0
+                        },
+                        "metadata": {
+                            "date_range": {"start": start_date, "end": end_date},
+                            "analysis_method": "Temporal Correlation Detection",
+                            "window_days": 7
+                        }
+                    }
+                raise
             
             # Fetch earthquakes in range
             eq_query = """
@@ -572,8 +605,43 @@ async def comprehensive_pattern_detection(
         finally:
             db.close()
         
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Pattern detection failed: {str(e)}")
+        import traceback
+        error_details = {
+            "error": str(e),
+            "type": type(e).__name__,
+            "traceback": traceback.format_exc()
+        }
+        logger.error(f"Pattern detection failed: {error_details}")
+        
+        # Return graceful error response instead of 500
+        return {
+            "success": False,
+            "error": "internal_error",
+            "message": f"Pattern detection encountered an error: {str(e)}",
+            "patterns": [],
+            "statistics": {
+                "total_patterns": 0,
+                "high_correlation_count": 0,
+                "average_correlation": 0,
+                "total_events_analyzed": 0,
+                "feast_days_in_range": 0
+            },
+            "event_counts": {
+                "earthquakes": 0,
+                "volcanic": 0,
+                "hurricanes": 0,
+                "tsunamis": 0
+            },
+            "metadata": {
+                "date_range": {"start": start_date, "end": end_date},
+                "analysis_method": "Temporal Correlation Detection",
+                "window_days": 7,
+                "error_details": error_details
+            }
+        }
 
 
 @router.get("/health", tags=["Health"])
