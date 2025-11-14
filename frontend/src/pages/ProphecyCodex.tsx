@@ -18,16 +18,17 @@ interface DbProphecy {
   id: number
   event_name: string
   prophecy_category: string | null
-  book_name: string
-  chapter: number | null
-  verse_start: number | null
-  verse_end: number | null
-  prophecy_text: string | null
-  source_type: string | null
+  scripture_reference: string
+  scripture_text: string | null
+  event_description: string | null
   chronological_order: number | null
-  fulfillment_status: string | null
-  theological_interpretation: string | null
-  created_at: string
+  theological_notes: string | null
+  
+  // Legacy fields (for backward compatibility)
+  book_name?: string
+  chapter?: number | null
+  verse_start?: number | null
+  verse_end?: number | null
 }
 
 const ProphecyCodex = () => {
@@ -47,7 +48,13 @@ const ProphecyCodex = () => {
       setLoading(true)
       setError(null)
       
-      const response = await fetch(`${API_BASE_URL}/api/v1/theological/prophecies?limit=100`)
+      const response = await fetch(`${API_BASE_URL}/api/v1/theological/prophecies?limit=100`, {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      })
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`)
@@ -57,26 +64,11 @@ const ProphecyCodex = () => {
       
       // Convert database prophecies to UI format
       const converted: BiblicalProphecy[] = data.data.map((p: DbProphecy) => {
-        // Build reference string - use event name as fallback if no book reference
-        let reference = p.event_name // Use event name as default
+        // Use scripture_reference from database (e.g., "Revelation 6:1-2")
+        const reference = p.scripture_reference || p.event_name
         
-        if (p.book_name) {
-          // If we have a book name, build proper reference
-          if (p.chapter && p.verse_start) {
-            if (p.verse_end && p.verse_end !== p.verse_start) {
-              reference = `${p.book_name} ${p.chapter}:${p.verse_start}-${p.verse_end}`
-            } else {
-              reference = `${p.book_name} ${p.chapter}:${p.verse_start}`
-            }
-          } else if (p.chapter) {
-            reference = `${p.book_name} ${p.chapter}`
-          } else {
-            reference = p.book_name
-          }
-        }
-        
-        // Use prophecy_text if available, otherwise show event_name with note
-        const displayText = p.prophecy_text || `[${p.event_name}] - Scripture text to be added`
+        // Use scripture_text if available, otherwise show placeholder
+        const displayText = p.scripture_text || `[${p.event_name}] - Scripture text to be added`
         
         return {
           id: p.id.toString(),
@@ -84,8 +76,8 @@ const ProphecyCodex = () => {
           text: displayText,
           category: (p.prophecy_category || 'general').toLowerCase(),
           keywords: p.event_name.split(' ').filter(w => w.length > 3),
-          eschatologicalContext: p.theological_interpretation || '',
-          fulfillmentStatus: (p.fulfillment_status || 'future').toLowerCase() as 'fulfilled' | 'ongoing' | 'partial' | 'future',
+          eschatologicalContext: p.theological_notes || p.event_description || '',
+          fulfillmentStatus: 'future' as const, // Default to future
           relatedProphecies: [],
           hebrewWords: [],
           greekWords: [],
