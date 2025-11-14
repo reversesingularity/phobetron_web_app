@@ -9,33 +9,52 @@ interface PatternEvent {
   significance: number
 }
 
-interface PatternCorrelation {
+interface CorrelatedEvent {
+  type: string
+  date: string
+  magnitude?: number
+  name?: string
+  vei?: number
+  category?: number
+  cause?: string
+  wave_height?: number
+  location?: string
+  days_from_feast: number
+}
+
+interface Pattern {
   feast_day: string
   feast_date: string
-  celestial_event?: string
-  natural_events: string[]
+  feast_type: string
+  events: CorrelatedEvent[]
+  event_count: number
   correlation_score: number
-  time_proximity_days: number
+  significance: string
 }
 
 interface PatternData {
-  start_date: string
-  end_date: string
-  total_patterns: number
-  events: {
-    feast_days: PatternEvent[]
-    eclipses: PatternEvent[]
-    earthquakes: PatternEvent[]
-    volcanic: PatternEvent[]
-    hurricanes: PatternEvent[]
-    tsunamis: PatternEvent[]
-    neos: PatternEvent[]
-  }
-  correlations: PatternCorrelation[]
+  success: boolean
+  patterns: Pattern[]
   statistics: {
+    total_patterns: number
     high_correlation_count: number
     average_correlation: number
-    most_active_month: string
+    total_events_analyzed: number
+    feast_days_in_range: number
+  }
+  event_counts: {
+    earthquakes: number
+    volcanic: number
+    hurricanes: number
+    tsunamis: number
+  }
+  metadata: {
+    date_range: {
+      start: string
+      end: string
+    }
+    analysis_method: string
+    window_days: number
   }
 }
 
@@ -219,9 +238,9 @@ export default function PatternDetectionPage() {
                   <h3 className="text-sm font-medium text-blue-300">Total Patterns</h3>
                   <TrendingUp className="w-5 h-5 text-blue-400" />
                 </div>
-                <p className="text-3xl font-bold text-white">{patternData.total_patterns}</p>
+                <p className="text-3xl font-bold text-white">{patternData.statistics.total_patterns}</p>
                 <p className="text-sm text-gray-400 mt-1">
-                  {patternData.start_date} to {patternData.end_date}
+                  {patternData.statistics.feast_days_in_range} feast days analyzed
                 </p>
               </div>
 
@@ -231,9 +250,9 @@ export default function PatternDetectionPage() {
                   <AlertTriangle className="w-5 h-5 text-purple-400" />
                 </div>
                 <p className="text-3xl font-bold text-white">
-                  {patternData.statistics?.high_correlation_count || 0}
+                  {patternData.statistics.high_correlation_count}
                 </p>
-                <p className="text-sm text-gray-400 mt-1">Score ≥ 0.7</p>
+                <p className="text-sm text-gray-400 mt-1">Score ≥ 70</p>
               </div>
 
               <div className="bg-gradient-to-br from-orange-900/40 to-orange-800/20 rounded-lg p-6 border border-orange-700/50">
@@ -242,9 +261,9 @@ export default function PatternDetectionPage() {
                   <Activity className="w-5 h-5 text-orange-400" />
                 </div>
                 <p className="text-3xl font-bold text-white">
-                  {patternData.statistics?.average_correlation?.toFixed(2) || '0.00'}
+                  {patternData.statistics.average_correlation.toFixed(1)}
                 </p>
-                <p className="text-sm text-gray-400 mt-1">Across all events</p>
+                <p className="text-sm text-gray-400 mt-1">Across all patterns</p>
               </div>
             </div>
 
@@ -252,34 +271,10 @@ export default function PatternDetectionPage() {
             <div className="bg-gray-800/50 rounded-lg p-6 mb-8 border border-gray-700">
               <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
                 <Calendar className="w-6 h-6 text-blue-400" />
-                Event Timeline Overview
+                Event Counts
               </h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
-                {/* Feast Days Column */}
-                <div className="bg-gray-900/50 rounded-lg p-4 border border-blue-700/30">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Calendar className="w-5 h-5 text-blue-400" />
-                    <h3 className="font-semibold text-blue-300">Feast Days</h3>
-                  </div>
-                  <p className="text-2xl font-bold text-white mb-1">
-                    {patternData.events?.feast_days?.length || 0}
-                  </p>
-                  <p className="text-xs text-gray-400">Biblical Feasts</p>
-                </div>
-
-                {/* Eclipses Column */}
-                <div className="bg-gray-900/50 rounded-lg p-4 border border-purple-700/30">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Moon className="w-5 h-5 text-purple-400" />
-                    <h3 className="font-semibold text-purple-300">Eclipses</h3>
-                  </div>
-                  <p className="text-2xl font-bold text-white mb-1">
-                    {patternData.events?.eclipses?.length || 0}
-                  </p>
-                  <p className="text-xs text-gray-400">Solar & Lunar</p>
-                </div>
-
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 {/* Earthquakes Column */}
                 <div className="bg-gray-900/50 rounded-lg p-4 border border-red-700/30">
                   <div className="flex items-center gap-2 mb-3">
@@ -287,7 +282,7 @@ export default function PatternDetectionPage() {
                     <h3 className="font-semibold text-red-300">Earthquakes</h3>
                   </div>
                   <p className="text-2xl font-bold text-white mb-1">
-                    {patternData.events?.earthquakes?.length || 0}
+                    {patternData.event_counts.earthquakes}
                   </p>
                   <p className="text-xs text-gray-400">Seismic Events</p>
                 </div>
@@ -299,7 +294,7 @@ export default function PatternDetectionPage() {
                     <h3 className="font-semibold text-orange-300">Volcanic</h3>
                   </div>
                   <p className="text-2xl font-bold text-white mb-1">
-                    {patternData.events?.volcanic?.length || 0}
+                    {patternData.event_counts.volcanic}
                   </p>
                   <p className="text-xs text-gray-400">Eruptions</p>
                 </div>
@@ -311,7 +306,7 @@ export default function PatternDetectionPage() {
                     <h3 className="font-semibold text-cyan-300">Hurricanes</h3>
                   </div>
                   <p className="text-2xl font-bold text-white mb-1">
-                    {patternData.events?.hurricanes?.length || 0}
+                    {patternData.event_counts.hurricanes}
                   </p>
                   <p className="text-xs text-gray-400">Tropical Storms</p>
                 </div>
@@ -323,21 +318,9 @@ export default function PatternDetectionPage() {
                     <h3 className="font-semibold text-teal-300">Tsunamis</h3>
                   </div>
                   <p className="text-2xl font-bold text-white mb-1">
-                    {patternData.events?.tsunamis?.length || 0}
+                    {patternData.event_counts.tsunamis}
                   </p>
                   <p className="text-xs text-gray-400">Ocean Waves</p>
-                </div>
-
-                {/* NEOs Column */}
-                <div className="bg-gray-900/50 rounded-lg p-4 border border-yellow-700/30">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Sun className="w-5 h-5 text-yellow-400" />
-                    <h3 className="font-semibold text-yellow-300">NEOs</h3>
-                  </div>
-                  <p className="text-2xl font-bold text-white mb-1">
-                    {patternData.events?.neos?.length || 0}
-                  </p>
-                  <p className="text-xs text-gray-400">Close Approaches</p>
                 </div>
               </div>
             </div>
@@ -346,44 +329,55 @@ export default function PatternDetectionPage() {
             <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
               <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
                 <TrendingUp className="w-6 h-6 text-purple-400" />
-                Detected Correlations
+                Detected Patterns (±{patternData.metadata.window_days} days)
               </h2>
 
-              {patternData.correlations && patternData.correlations.length > 0 ? (
+              {patternData.patterns && patternData.patterns.length > 0 ? (
                 <div className="space-y-4">
-                  {patternData.correlations.map((correlation, index) => (
+                  {patternData.patterns.map((pattern, index) => (
                     <div
                       key={index}
                       className="bg-gray-900/50 rounded-lg p-4 border border-gray-700/50 hover:border-purple-500/50 transition"
                     >
-                      <div className="flex items-start justify-between mb-2">
+                      <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
                             <Calendar className="w-5 h-5 text-blue-400" />
                             <h3 className="font-semibold text-lg text-white">
-                              {correlation.feast_day}
+                              {pattern.feast_day}
                             </h3>
                             <span className="text-sm text-gray-400">
-                              {new Date(correlation.feast_date).toLocaleDateString()}
+                              {new Date(pattern.feast_date).toLocaleDateString()}
+                            </span>
+                            <span className="px-2 py-1 bg-blue-900/30 text-blue-300 rounded text-xs border border-blue-700/50">
+                              {pattern.feast_type}
                             </span>
                           </div>
                           
-                          {correlation.celestial_event && (
-                            <div className="flex items-center gap-2 mb-2 text-sm text-purple-300">
-                              <Moon className="w-4 h-4" />
-                              <span>{correlation.celestial_event}</span>
-                            </div>
-                          )}
-
-                          {correlation.natural_events && correlation.natural_events.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mt-2">
-                              {correlation.natural_events.map((event, i) => (
-                                <span
+                          {pattern.events && pattern.events.length > 0 && (
+                            <div className="space-y-2 mt-3">
+                              {pattern.events.map((event, i) => (
+                                <div
                                   key={i}
-                                  className="px-2 py-1 bg-red-900/30 text-red-300 rounded text-xs border border-red-700/50"
+                                  className="flex items-center gap-3 text-sm bg-gray-800/50 rounded px-3 py-2 border border-gray-700/30"
                                 >
-                                  {event}
-                                </span>
+                                  {getEventIcon(event.type)}
+                                  <span className="capitalize text-gray-300">{event.type}</span>
+                                  {event.name && <span className="text-white font-medium">{event.name}</span>}
+                                  {event.location && <span className="text-gray-400">{event.location}</span>}
+                                  {event.magnitude && (
+                                    <span className="text-orange-400">M{event.magnitude.toFixed(1)}</span>
+                                  )}
+                                  {event.vei && (
+                                    <span className="text-red-400">VEI {event.vei}</span>
+                                  )}
+                                  {event.category && (
+                                    <span className="text-cyan-400">Cat {event.category}</span>
+                                  )}
+                                  <span className={`ml-auto text-xs ${Math.abs(event.days_from_feast) <= 3 ? 'text-red-400' : 'text-gray-500'}`}>
+                                    {event.days_from_feast > 0 ? '+' : ''}{event.days_from_feast} days
+                                  </span>
+                                </div>
                               ))}
                             </div>
                           )}
@@ -393,16 +387,18 @@ export default function PatternDetectionPage() {
                           <div className="flex items-center gap-2 mb-1">
                             <span className="text-xs text-gray-400">Correlation</span>
                             <div
-                              className={`w-16 h-2 rounded-full ${getCorrelationColor(
-                                correlation.correlation_score
-                              )}`}
+                              className={`w-16 h-2 rounded-full ${
+                                pattern.correlation_score >= 80 ? 'bg-red-500' :
+                                pattern.correlation_score >= 60 ? 'bg-orange-500' :
+                                pattern.correlation_score >= 40 ? 'bg-yellow-500' : 'bg-blue-500'
+                              }`}
                             />
                           </div>
                           <p className="text-2xl font-bold text-white">
-                            {(correlation.correlation_score * 100).toFixed(0)}%
+                            {pattern.correlation_score}
                           </p>
                           <p className="text-xs text-gray-400 mt-1">
-                            ±{correlation.time_proximity_days} days
+                            {pattern.event_count} events
                           </p>
                         </div>
                       </div>
@@ -416,7 +412,7 @@ export default function PatternDetectionPage() {
                     No significant correlations found in this date range.
                   </p>
                   <p className="text-sm text-gray-500 mt-2">
-                    Try adjusting the year range or lowering the minimum correlation threshold.
+                    Try adjusting the year range to include more feast days and events.
                   </p>
                 </div>
               )}

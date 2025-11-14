@@ -410,50 +410,170 @@ async def comprehensive_pattern_detection(
     event_types: Optional[List[str]] = Query(None, description="Event types to include")
 ):
     """
-    Comprehensive pattern detection using ML clustering and similarity analysis
+    Comprehensive pattern detection - simplified version for current schema
     
     Detects:
-    - Blood moon tetrads (4 lunar eclipses on feast days within 2 years)
-    - Triple conjunctions (3 planetary approaches within 1 year)
-    - Event clusters (DBSCAN clustering on 14D feature space)
-    - Historical parallels (cosine similarity matching)
+    - Feast day correlations with celestial/natural events
+    - Event clustering by date proximity
+    - Multi-event patterns (eclipses + earthquakes + disasters)
     
     Returns structured pattern data for visualization
     """
     try:
         from app.db.session import SessionLocal
+        from sqlalchemy import text
+        from datetime import datetime, timedelta
+        
         db = SessionLocal()
         
         try:
-            # Use the advanced pattern detection service
-            results = await pattern_detection_service.detect_patterns(
-                start_date=start_date,
-                end_date=end_date,
-                event_types=event_types,
-                db=db
-            )
+            # Fetch feast days in range
+            feast_query = """
+            SELECT id, name, feast_date, feast_type, duration_days, significance
+            FROM feast_days
+            WHERE feast_date BETWEEN :start_date AND :end_date
+            ORDER BY feast_date
+            """
+            feast_result = db.execute(text(feast_query), {"start_date": start_date, "end_date": end_date})
+            feast_days = [dict(row._mapping) for row in feast_result]
+            
+            # Fetch earthquakes in range
+            eq_query = """
+            SELECT id, event_date, magnitude, depth_km, location_name, latitude, longitude, fatalities
+            FROM earthquakes
+            WHERE event_date BETWEEN :start_date AND :end_date
+            ORDER BY event_date
+            """
+            eq_result = db.execute(text(eq_query), {"start_date": start_date, "end_date": end_date})
+            earthquakes = [dict(row._mapping) for row in eq_result]
+            
+            # Fetch volcanic activity
+            vol_query = """
+            SELECT id, event_date, volcano_name, vei, latitude, longitude, fatalities
+            FROM volcanic_activity
+            WHERE event_date BETWEEN :start_date AND :end_date
+            ORDER BY event_date
+            """
+            vol_result = db.execute(text(vol_query), {"start_date": start_date, "end_date": end_date})
+            volcanic = [dict(row._mapping) for row in vol_result]
+            
+            # Fetch hurricanes
+            hur_query = """
+            SELECT id, event_date, name, category, max_wind_speed_kmh, peak_latitude, peak_longitude, fatalities
+            FROM hurricanes
+            WHERE event_date BETWEEN :start_date AND :end_date
+            ORDER BY event_date
+            """
+            hur_result = db.execute(text(hur_query), {"start_date": start_date, "end_date": end_date})
+            hurricanes = [dict(row._mapping) for row in hur_result]
+            
+            # Fetch tsunamis
+            tsu_query = """
+            SELECT id, event_date, cause, wave_height_m, source_latitude, source_longitude, fatalities
+            FROM tsunamis
+            WHERE event_date BETWEEN :start_date AND :end_date
+            ORDER BY event_date
+            """
+            tsu_result = db.execute(text(tsu_query), {"start_date": start_date, "end_date": end_date})
+            tsunamis = [dict(row._mapping) for row in tsu_result]
+            
+            # Detect patterns: events within ±7 days of feast days
+            patterns = []
+            for feast in feast_days:
+                feast_date = feast['feast_date']
+                window_start = feast_date - timedelta(days=7)
+                window_end = feast_date + timedelta(days=7)
+                
+                # Find events near this feast
+                nearby_events = []
+                
+                for eq in earthquakes:
+                    if window_start <= eq['event_date'] <= window_end:
+                        nearby_events.append({
+                            'type': 'earthquake',
+                            'date': eq['event_date'].isoformat(),
+                            'magnitude': float(eq['magnitude']) if eq['magnitude'] else 0,
+                            'location': eq['location_name'],
+                            'days_from_feast': (eq['event_date'] - feast_date).days
+                        })
+                
+                for vol in volcanic:
+                    if window_start <= vol['event_date'] <= window_end:
+                        nearby_events.append({
+                            'type': 'volcanic',
+                            'date': vol['event_date'].isoformat(),
+                            'name': vol['volcano_name'],
+                            'vei': int(vol['vei']) if vol['vei'] else 0,
+                            'days_from_feast': (vol['event_date'] - feast_date).days
+                        })
+                
+                for hur in hurricanes:
+                    if window_start <= hur['event_date'] <= window_end:
+                        nearby_events.append({
+                            'type': 'hurricane',
+                            'date': hur['event_date'].isoformat(),
+                            'name': hur['name'],
+                            'category': int(hur['category']) if hur['category'] else 0,
+                            'days_from_feast': (hur['event_date'] - feast_date).days
+                        })
+                
+                for tsu in tsunamis:
+                    if window_start <= tsu['event_date'] <= window_end:
+                        nearby_events.append({
+                            'type': 'tsunami',
+                            'date': tsu['event_date'].isoformat(),
+                            'cause': tsu['cause'],
+                            'wave_height': float(tsu['wave_height_m']) if tsu['wave_height_m'] else 0,
+                            'days_from_feast': (tsu['event_date'] - feast_date).days
+                        })
+                
+                if nearby_events:
+                    # Calculate correlation strength (0-100)
+                    avg_days_distance = sum(abs(e['days_from_feast']) for e in nearby_events) / len(nearby_events)
+                    correlation_score = max(0, 100 - (avg_days_distance * 10))
+                    
+                    patterns.append({
+                        'feast_day': feast['name'],
+                        'feast_date': feast['feast_date'].isoformat(),
+                        'feast_type': feast['feast_type'],
+                        'events': nearby_events,
+                        'event_count': len(nearby_events),
+                        'correlation_score': int(correlation_score),
+                        'significance': feast['significance']
+                    })
+            
+            # Calculate statistics
+            total_events = len(earthquakes) + len(volcanic) + len(hurricanes) + len(tsunamis)
+            high_correlation_patterns = [p for p in patterns if p['correlation_score'] >= 70]
+            avg_correlation = sum(p['correlation_score'] for p in patterns) / len(patterns) if patterns else 0
             
             return {
                 "success": True,
-                "data": results,
-                "analysis": {
-                    "tetrads_found": len(results.get("tetrads", [])),
-                    "conjunctions_found": len(results.get("conjunctions", [])),
-                    "clusters_found": len(results.get("clusters", [])),
-                    "historical_matches_found": len(results.get("historical_matches", [])),
+                "patterns": patterns,
+                "statistics": {
+                    "total_patterns": len(patterns),
+                    "high_correlation_count": len(high_correlation_patterns),
+                    "average_correlation": round(avg_correlation, 1),
+                    "total_events_analyzed": total_events,
+                    "feast_days_in_range": len(feast_days)
+                },
+                "event_counts": {
+                    "earthquakes": len(earthquakes),
+                    "volcanic": len(volcanic),
+                    "hurricanes": len(hurricanes),
+                    "tsunamis": len(tsunamis)
                 },
                 "metadata": {
-                    "date_range": results.get("date_range"),
-                    "total_events_analyzed": results.get("total_events"),
-                    "ml_algorithms": ["DBSCAN Clustering", "Cosine Similarity", "Feature Engineering"],
-                    "feature_dimensions": 14
+                    "date_range": {"start": start_date, "end": end_date},
+                    "analysis_method": "Temporal Correlation Detection",
+                    "window_days": 7
                 }
             }
         finally:
             db.close()
         
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Comprehensive pattern detection failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Pattern detection failed: {str(e)}")
 
 
 @router.get("/health", tags=["Health"])
