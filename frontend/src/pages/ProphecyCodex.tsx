@@ -75,10 +75,13 @@ const ProphecyCodex = () => {
           }
         }
         
+        // Use prophecy_text if available, otherwise show event_name with note
+        const displayText = p.prophecy_text || `[${p.event_name}] - Scripture text to be added`
+        
         return {
           id: p.id.toString(),
           reference,
-          text: p.prophecy_text || p.event_name,
+          text: displayText,
           category: (p.prophecy_category || 'general').toLowerCase(),
           keywords: p.event_name.split(' ').filter(w => w.length > 3),
           eschatologicalContext: p.theological_interpretation || '',
