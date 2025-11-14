@@ -16,8 +16,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.models.events import Tsunami
-from geoalchemy2.shape import from_shape
-from shapely.geometry import Point
 
 
 def add_sample_tsunami_data(db: Session) -> int:
@@ -208,12 +206,10 @@ def add_sample_tsunami_data(db: Session) -> int:
         if existing:
             continue
         
-        # Create PostGIS point for source location
-        point = Point(tsunami_data['longitude'], tsunami_data['latitude'])
-        
         tsunami = Tsunami(
             event_date=tsunami_data['event_date'],
-            source_location=from_shape(point, srid=4326),
+            source_latitude=tsunami_data['latitude'],
+            source_longitude=tsunami_data['longitude'],
             source_type=tsunami_data['source_type'],
             earthquake_magnitude=tsunami_data.get('earthquake_magnitude'),
             max_wave_height_m=tsunami_data.get('max_wave_height_m'),

@@ -16,8 +16,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.models.events import Hurricane
-from geoalchemy2.shape import from_shape
-from shapely.geometry import Point
 
 
 def add_sample_hurricane_data(db: Session) -> int:
@@ -198,9 +196,6 @@ def add_sample_hurricane_data(db: Session) -> int:
         if existing:
             continue
         
-        # Create PostGIS point for peak location
-        point = Point(hurricane_data['longitude'], hurricane_data['latitude'])
-        
         hurricane = Hurricane(
             storm_name=hurricane_data['storm_name'],
             basin=hurricane_data['basin'],
@@ -208,7 +203,8 @@ def add_sample_hurricane_data(db: Session) -> int:
             season=hurricane_data['season'],
             formation_date=hurricane_data['formation_date'],
             dissipation_date=hurricane_data['dissipation_date'],
-            peak_location=from_shape(point, srid=4326),
+            peak_latitude=hurricane_data['latitude'],
+            peak_longitude=hurricane_data['longitude'],
             max_sustained_winds_kph=hurricane_data['max_sustained_winds_kph'],
             min_central_pressure_hpa=hurricane_data['min_central_pressure_hpa'],
             category=hurricane_data['category'],

@@ -5,9 +5,11 @@ This module contains models for User Story 2 - Prophetic Content Management:
 - Prophecies: Biblical prophecy records with scripture references
 - CelestialSigns: Theological interpretations of celestial events
 - ProphecySignLinks: Many-to-many relationship between prophecies and signs
+- FeastDay: Jewish biblical feast days (Hebrew calendar)
 """
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, ARRAY, Index, UniqueConstraint, CheckConstraint
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, ARRAY, Index, UniqueConstraint, CheckConstraint, Date, DateTime, Boolean
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 from app.db.base import Base
 
 
@@ -217,3 +219,109 @@ class ProphecySignLinks(Base):
     
     def __repr__(self):
         return f"<ProphecySignLinks(id={self.id}, prophecy_id={self.prophecy_id}, sign_id={self.sign_id})>"
+
+
+class FeastDay(Base):
+    """
+    Jewish biblical feast days calculated from Hebrew calendar.
+    
+    Stores the seven major biblical feasts (Moedim - appointed times):
+    Spring Feasts:
+    - Passover (Pesach) - Nisan 14
+    - Unleavened Bread - Nisan 15-21
+    - Pentecost (Shavuot) - 50 days after Passover
+    
+    Fall Feasts:
+    - Feast of Trumpets (Rosh Hashanah) - Tishrei 1
+    - Day of Atonement (Yom Kippur) - Tishrei 10
+    - Feast of Tabernacles (Sukkot) - Tishrei 15-21
+    
+    Used for correlating celestial events (especially blood moons) with feast days.
+    """
+    __tablename__ = "feast_days"
+    
+    # Primary key
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    
+    # Feast identification
+    feast_type = Column(
+        String(50),
+        nullable=False,
+        comment="Feast identifier: passover, unleavened_bread, pentecost, trumpets, atonement, tabernacles"
+    )
+    
+    name = Column(
+        String(255),
+        nullable=False,
+        comment="Full name of the feast (e.g., 'Passover (Pesach)', 'Day of Atonement (Yom Kippur)')"
+    )
+    
+    # Hebrew calendar date
+    hebrew_date = Column(
+        String(100),
+        nullable=False,
+        comment="Hebrew calendar date (e.g., 'Nisan 14', 'Tishrei 1', 'Tishrei 15-21')"
+    )
+    
+    # Gregorian calendar date
+    gregorian_date = Column(
+        Date,
+        nullable=False,
+        index=True,
+        comment="Gregorian calendar date (or start date for multi-day feasts)"
+    )
+    
+    gregorian_year = Column(
+        Integer,
+        nullable=False,
+        index=True,
+        comment="Gregorian year for easy querying"
+    )
+    
+    # For multi-day feasts (Unleavened Bread, Tabernacles)
+    end_date = Column(
+        Date,
+        nullable=True,
+        comment="End date for multi-day feasts (null for single-day feasts)"
+    )
+    
+    is_range = Column(
+        Boolean,
+        default=False,
+        nullable=False,
+        comment="True if feast spans multiple days"
+    )
+    
+    # Description and significance
+    significance = Column(
+        Text,
+        nullable=True,
+        comment="Biblical and theological significance of the feast"
+    )
+    
+    # Data source tracking
+    data_source = Column(
+        String(100),
+        default="hebrew_calendar_module",
+        comment="Source of calculation (e.g., 'hebrew_calendar_module', 'manual_entry')"
+    )
+    
+    # Timestamps
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    # Table-level constraints and indexes
+    __table_args__ = (
+        Index('idx_feast_type_year', 'feast_type', 'gregorian_year'),
+        Index('idx_feast_date', 'gregorian_date'),
+        UniqueConstraint('feast_type', 'gregorian_year', name='uq_feast_type_year'),
+        CheckConstraint(
+            "feast_type IN ('passover', 'unleavened_bread', 'pentecost', 'trumpets', 'atonement', 'tabernacles')",
+            name='ck_feast_type'
+        ),
+        {'comment': 'Jewish biblical feast days calculated from Hebrew calendar'}
+    )
+    
+    def __repr__(self):
+        date_str = f"{self.gregorian_date}" if not self.is_range else f"{self.gregorian_date} to {self.end_date}"
+        return f"<FeastDay(id={self.id}, name='{self.name}', date={date_str})>"

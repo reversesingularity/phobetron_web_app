@@ -1,12 +1,12 @@
 """
-Theological endpoints (prophecies, celestial signs, prophecy-sign links).
+Theological endpoints (prophecies, celestial signs, prophecy-sign links, feast days).
 """
-from typing import Optional
+from typing import Optional, List
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.models.theological import Prophecies, CelestialSigns, ProphecySignLinks
+from app.models.theological import Prophecies, CelestialSigns, ProphecySignLinks, FeastDay
 from app.schemas.theological import (
     PropheciesResponse,
     CelestialSignsResponse,
@@ -115,3 +115,59 @@ def get_prophecy_sign_links(
         limit=limit,
         data=[ProphecySignLinksResponse.model_validate(r) for r in records]
     )
+
+
+@router.get("/feasts", tags=["feasts"])
+def get_feast_days(
+    year: Optional[int] = Query(None, description="Filter by Gregorian year (e.g., 2025)"),
+    feast_type: Optional[str] = Query(None, description="Filter by feast type: passover, unleavened_bread, pentecost, trumpets, atonement, tabernacles"),
+    db: Session = Depends(get_db),
+):
+    """
+    Retrieve Jewish biblical feast days (Hebrew calendar).
+    
+    Returns the seven major biblical feasts (Moedim) with their Gregorian and Hebrew dates:
+    - Passover (Pesach) - Nisan 14
+    - Feast of Unleavened Bread - Nisan 15-21
+    - Pentecost (Shavuot) - 50 days after Passover
+    - Feast of Trumpets (Rosh Hashanah) - Tishrei 1
+    - Day of Atonement (Yom Kippur) - Tishrei 10
+    - Feast of Tabernacles (Sukkot) - Tishrei 15-21
+    
+    Example:
+        GET /api/v1/theological/feasts?year=2025
+        GET /api/v1/theological/feasts?feast_type=passover
+    """
+    query = db.query(FeastDay)
+    
+    if year is not None:
+        query = query.filter(FeastDay.gregorian_year == year)
+    
+    if feast_type:
+        query = query.filter(FeastDay.feast_type == feast_type)
+    
+    records = query.order_by(FeastDay.gregorian_date).all()
+    
+    # Format response
+    feast_data = []
+    for feast in records:
+        feast_dict = {
+            "id": feast.id,
+            "feast_type": feast.feast_type,
+            "name": feast.name,
+            "hebrew_date": feast.hebrew_date,
+            "gregorian_year": feast.gregorian_year,
+            "gregorian_date": feast.gregorian_date.isoformat(),
+            "is_range": feast.is_range,
+            "significance": feast.significance
+        }
+        
+        if feast.is_range and feast.end_date:
+            feast_dict["end_date"] = feast.end_date.isoformat()
+        
+        feast_data.append(feast_dict)
+    
+    return {
+        "total": len(feast_data),
+        "data": feast_data
+    }

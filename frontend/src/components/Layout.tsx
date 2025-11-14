@@ -13,7 +13,8 @@ import {
   Bell,
   Book,
   Brain,
-  Sparkles
+  Sparkles,
+  TrendingUp
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -36,6 +37,7 @@ const Layout = ({ children }: LayoutProps) => {
     { name: 'Alerts', href: '/alerts', icon: Bell, highlight: true },
     { name: 'Prophecy Codex', href: '/prophecy-codex', icon: Book, highlight: true },
     { name: 'Celestial Signs', href: '/celestial-signs', icon: Sparkles, highlight: true },
+    { name: 'Pattern Detection', href: '/pattern-detection', icon: TrendingUp, highlight: true },
     { name: 'Orbital Elements', href: '/orbital-elements', icon: Orbit, highlight: true },
     { name: 'ML Models', href: '/ml-models', icon: Brain, highlight: true },
   ]

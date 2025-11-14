@@ -5,7 +5,7 @@ Combines all API endpoint routers into a single router for the application.
 """
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import scientific, events, theological, alerts, correlations
+from app.api.v1.endpoints import scientific, events, theological, alerts, correlations, astronomical
 
 # Create main API router
 api_router = APIRouter()
@@ -27,6 +27,12 @@ api_router.include_router(
     theological.router,
     prefix="/theological",
     tags=["theological"],
+)
+
+api_router.include_router(
+    astronomical.router,
+    prefix="/astronomical",
+    tags=["astronomical"],
 )
 
 api_router.include_router(

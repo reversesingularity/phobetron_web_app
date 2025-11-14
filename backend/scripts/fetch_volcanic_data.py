@@ -16,8 +16,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.models.events import VolcanicActivity
-from geoalchemy2.shape import from_shape
-from shapely.geometry import Point
 
 
 # Smithsonian Global Volcanism Program API
@@ -99,16 +97,14 @@ def insert_volcanic_data(db: Session, volcanoes: List[Dict[str, Any]]) -> int:
             skipped += 1
             continue
         
-        # Create PostGIS point
-        point = Point(volcano_data['longitude'], volcano_data['latitude'])
-        
         volcanic_event = VolcanicActivity(
             volcano_name=volcano_data['volcano_name'],
             country=volcano_data['country'],
             vei=volcano_data['vei'],
             eruption_start=volcano_data['eruption_start'],
             eruption_end=volcano_data['eruption_end'],
-            location=from_shape(point, srid=4326),
+            latitude=volcano_data['latitude'],
+            longitude=volcano_data['longitude'],
             eruption_type=volcano_data['eruption_type'],
             data_source=volcano_data['data_source']
         )
@@ -233,16 +229,14 @@ def add_sample_volcanic_data(db: Session) -> int:
         if existing:
             continue
         
-        # Create PostGIS point
-        point = Point(volcano_data['longitude'], volcano_data['latitude'])
-        
         volcanic_event = VolcanicActivity(
             volcano_name=volcano_data['volcano_name'],
             country=volcano_data['country'],
             vei=volcano_data['vei'],
             eruption_start=volcano_data['eruption_start'],
             eruption_end=volcano_data['eruption_end'],
-            location=from_shape(point, srid=4326),
+            latitude=volcano_data['latitude'],
+            longitude=volcano_data['longitude'],
             eruption_type=volcano_data['eruption_type'],
             plume_height_km=volcano_data.get('plume_height_km'),
             notes=volcano_data.get('notes'),
