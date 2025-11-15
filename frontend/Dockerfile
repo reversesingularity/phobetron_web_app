@@ -33,7 +33,7 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 RUN rm -f /etc/nginx/conf.d/default.conf.backup
 
 # Expose port (Railway handles external port mapping)
-EXPOSE 3000
+EXPOSE 80
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]
