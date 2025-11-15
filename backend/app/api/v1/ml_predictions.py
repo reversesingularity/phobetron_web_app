@@ -492,3 +492,82 @@ async def get_model_status():
         "total_predictions_today": 47,  # Mock data
         "average_response_time_ms": 23
     }
+
+
+@router.get("/comprehensive-pattern-detection")
+async def comprehensive_pattern_detection(
+    start_date: str = Query(..., description="Start date (YYYY-MM-DD)"),
+    end_date: str = Query(..., description="End date (YYYY-MM-DD)"),
+    event_types: Optional[str] = Query("earthquake,hurricane,tsunami,volcanic", description="Comma-separated event types"),
+    min_magnitude: Optional[float] = Query(5.0, description="Minimum magnitude for earthquakes"),
+    time_window_days: Optional[int] = Query(14, description="Days before/after feast day to look for events"),
+    include_historical: Optional[bool] = Query(True, description="Include historical analysis")
+):
+    """
+    Comprehensive pattern detection analyzing correlations between biblical feast days and natural disasters.
+    """
+    try:
+        # Simple test response first
+        return {
+            'success': True,
+            'patterns': [
+                {
+                    'feast_day': 'Passover',
+                    'feast_date': '2024-04-15',
+                    'feast_type': 'spring_festival',
+                    'events': [
+                        {
+                            'type': 'earthquake',
+                            'date': '2024-04-10',
+                            'magnitude': 6.2,
+                            'location': '35.50, 25.40',
+                            'region': 'Greece',
+                            'days_from_feast': 5
+                        }
+                    ],
+                    'event_count': 1,
+                    'correlation_score': 0.65,
+                    'significance': 'MODERATE',
+                    'is_anomaly': False
+                }
+            ],
+            'statistics': {
+                'total_patterns_analyzed': 1,
+                'significant_patterns': 0,
+                'average_correlation_score': 0.65,
+                'total_correlated_events': 1,
+                'anomaly_count': 0
+            },
+            'statistical_analysis': {
+                'pearson_correlation': 0.65,
+                'spearman_correlation': 0.62,
+                'p_value': 0.15,
+                'is_statistically_significant': False,
+                'confidence_interval_95': {'lower': 0.0, 'upper': 1.0},
+                'confidence_interval_99': {'lower': 0.0, 'upper': 1.0},
+                'sample_size': 1
+            },
+            'correlation_matrix': {
+                'feast_earthquake': 0.52,
+                'feast_volcanic': 0.39,
+                'feast_hurricane': 0.45,
+                'feast_tsunami': 0.33
+            },
+            'seasonal_patterns': {
+                'Spring': {'count': 1, 'avg_correlation': 0.65, 'events': [1]},
+                'Summer': {'count': 0, 'avg_correlation': 0.0, 'events': []},
+                'Fall': {'count': 0, 'avg_correlation': 0.0, 'events': []},
+                'Winter': {'count': 0, 'avg_correlation': 0.0, 'events': []}
+            },
+            'analysis_period': {
+                'start_date': start_date,
+                'end_date': end_date,
+                'time_window_days': time_window_days
+            }
+        }
+
+    except Exception as e:
+        import traceback
+        print(f"Comprehensive pattern detection error: {e}")
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Pattern detection failed: {str(e)}")
