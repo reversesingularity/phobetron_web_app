@@ -17,12 +17,11 @@ from contextlib import asynccontextmanager
 from app.db.session import get_db, get_engine
 from app.api.v1.api import api_router
 from app.api.routes.ml_routes import router as ml_router
-# from app.api.routes.ml import router as ml_enhanced_router  # Enhanced ML routes - temporarily disabled
+from app.api.routes.ml import router as ml_enhanced_router  # Enhanced ML routes
 from app.api.routes.data_sources import router as data_sources_router  # ESA/NASA fallback routes
 from app.api.v1.ml_predictions import router as ml_predictions_router  # Production ML predictions
 from app.api.routes.verification import router as verification_router  # Database verification endpoints
 from app.api.routes.admin import router as admin_router  # Admin/migration endpoints
-from app.api.routes.admin_populate import router as admin_populate_router  # Temporary: Populate feast days
 from app.core.config import settings
 
 
@@ -38,17 +37,6 @@ async def lifespan(app: FastAPI):
     print(f"Pool config: size=20, max_overflow=40, timeout=60s", flush=True)
     print(f"CORS Origins: {settings.BACKEND_CORS_ORIGINS}", flush=True)
     print("=" * 60, flush=True)
-    
-    # Load ML models
-    print("Loading ML models...", flush=True)
-    try:
-        from app.ml.model_loader import model_loader
-        model_loader.load_all_models()
-        print("SUCCESS: ML models loaded successfully", flush=True)
-    except Exception as e:
-        print(f"WARNING: ML model loading failed: {e}", flush=True)
-        print("API will continue with limited ML functionality", flush=True)
-    
     print("Application startup complete!", flush=True)
     print("Database connection will be established on first request", flush=True)
     sys.stdout.flush()
@@ -80,12 +68,11 @@ app.add_middleware(
 # Include API routers
 app.include_router(api_router, prefix=settings.API_V1_STR)
 app.include_router(ml_router)  # ML/AI routes (legacy)
-# app.include_router(ml_enhanced_router)  # Enhanced ML/AI routes (new) - temporarily disabled
+app.include_router(ml_enhanced_router)  # Enhanced ML/AI routes (new)
 app.include_router(data_sources_router)  # Data sources with ESA/NASA fallback
 app.include_router(ml_predictions_router)  # Production ML predictions
 app.include_router(verification_router)  # Database verification and testing
 app.include_router(admin_router, prefix=f"{settings.API_V1_STR}/admin")  # Admin and migration endpoints
-app.include_router(admin_populate_router, prefix=f"{settings.API_V1_STR}")  # Temporary: Admin populate endpoint
 
 
 @app.get("/health", tags=["health"])
