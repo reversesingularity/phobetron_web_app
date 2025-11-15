@@ -66,7 +66,7 @@ async def populate_database():
             text=True,
             cwd="/app"  # Railway container working directory
         )
-
+        
         return {
             "status": "success" if result.returncode == 0 else "error",
             "return_code": result.returncode,
@@ -77,6 +77,29 @@ async def populate_database():
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.post("/create-celestial-events-table")
+async def create_celestial_events_table():
+    """
+    Create the celestial_events table for pattern detection.
+    WARNING: This endpoint should be protected or removed in production!
+    """
+    try:
+        # Run table creation script
+        result = subprocess.run(
+            ["python", "create_celestial_events_table.py"],
+            capture_output=True,
+            text=True,
+            cwd="/app"  # Railway container working directory
+        )
+
+        return {
+            "status": "success" if result.returncode == 0 else "error",
+            "return_code": result.returncode,
+            "stdout": result.stdout,
+            "stderr": result.stderr,
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 @router.get("/check-tables")
 async def check_tables():
     """
