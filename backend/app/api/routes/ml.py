@@ -405,7 +405,7 @@ async def detect_patterns(
 
 
 # @router.get("/comprehensive-pattern-detection")  # Removed - conflicts with ml_predictions.py
-async def comprehensive_pattern_detection(
+async def comprehensive_pattern_detection_disabled(
     start_date: str = Query(..., description="Start date YYYY-MM-DD"),
     end_date: str = Query(..., description="End date YYYY-MM-DD"),
     event_types: Optional[List[str]] = Query(None, description="Event types to include")
@@ -1321,7 +1321,7 @@ def prepare_lunar_features(data: Dict[str, Any]) -> np.ndarray:
 
 
 # @router.get("/comprehensive-pattern-detection")  # Removed - conflicts with ml_predictions.py
-async def comprehensive_pattern_detection(
+async def comprehensive_pattern_detection_disabled2(
     start_date: str = Query(..., description="Start date (YYYY-MM-DD)"),
     end_date: str = Query(..., description="End date (YYYY-MM-DD)"),
     event_types: Optional[str] = Query("earthquake,hurricane,tsunami,volcanic", description="Comma-separated event types"),
