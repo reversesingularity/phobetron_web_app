@@ -29,9 +29,6 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 RUN rm -f /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Substitute environment variables in nginx config
-RUN envsubst '${PORT}' < /etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf.tmp && mv /etc/nginx/conf.d/default.conf.tmp /etc/nginx/conf.d/default.conf
-
 # Remove default nginx config to avoid conflicts
 RUN rm -f /etc/nginx/conf.d/default.conf.backup
 
