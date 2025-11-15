@@ -5,8 +5,8 @@ dockerfilePath = "backend/Dockerfile"
 [deploy]
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
-healthcheckPath = "/health"
-healthcheckTimeout = 300
+# healthcheckPath = "/health"
+# healthcheckTimeout = 300
 startCommand = "bash railway-start.sh"
 
 # Railway automatically provides environment variables:
