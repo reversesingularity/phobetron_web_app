@@ -6,7 +6,7 @@ from sqlalchemy import (
     Column, String, Float, DateTime, Integer, Boolean, Text,
     CheckConstraint, UniqueConstraint, Index, Computed
 )
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, ARRAY
 from app.db.base import Base
 
 
