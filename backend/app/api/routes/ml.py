@@ -403,7 +403,8 @@ async def detect_patterns(
         raise HTTPException(status_code=500, detail=f"Pattern detection failed: {str(e)}")
 
 
-@router.get("/comprehensive-pattern-detection")
+
+# @router.get("/comprehensive-pattern-detection")  # Removed - conflicts with ml_predictions.py
 async def comprehensive_pattern_detection(
     start_date: str = Query(..., description="Start date YYYY-MM-DD"),
     end_date: str = Query(..., description="End date YYYY-MM-DD"),
@@ -1319,7 +1320,7 @@ def prepare_lunar_features(data: Dict[str, Any]) -> np.ndarray:
     return np.array(features).reshape(1, -1)
 
 
-@router.get("/comprehensive-pattern-detection")
+# @router.get("/comprehensive-pattern-detection")  # Removed - conflicts with ml_predictions.py
 async def comprehensive_pattern_detection(
     start_date: str = Query(..., description="Start date (YYYY-MM-DD)"),
     end_date: str = Query(..., description="End date (YYYY-MM-DD)"),
