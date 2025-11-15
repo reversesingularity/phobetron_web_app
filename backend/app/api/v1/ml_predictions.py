@@ -10,7 +10,7 @@ Production API endpoints for ML predictions:
 - GET /api/v1/ml/model-status - Model health and metrics
 """
 
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 from datetime import datetime, timedelta
