@@ -93,7 +93,7 @@ All should return JSON with data (not errors).
 - ✅ **Fixed frontend Dockerfile for Railway multi-service** - Removed incorrect API proxy, fixed VITE_API_URL
 - ✅ **Fixed watchman-alerts endpoint** - Resolved "'EnhancedAlert' object has no attribute 'description'" error
 - ✅ **Fixed Pattern Detection page** - Corrected API method (POST→GET) and URLs, fixed infinite loop in Watchman's View
-- ✅ **Fixed frontend nginx healthcheck** - Simplified nginx config and added /health endpoint for Railway compatibility
+- ✅ **Fixed frontend nginx healthcheck** - Simplified nginx config and removed conflicting Dockerfile HEALTHCHECK
 - ✅ Created 3 new UI pages (Celestial Signs, Orbital Elements, ML Models)
 - ✅ Fixed all API endpoint prefixes (/api/v1)
 - ✅ Fixed default API URLs (production Railway)
