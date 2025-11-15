@@ -10,5 +10,6 @@ healthcheckTimeout = 300
 startCommand = "bash railway-start.sh"
 
 # Railway automatically provides environment variables:
-# - DATABASE_URL: PostgreSQL connection string  
+# - DATABASE_URL: PostgreSQL connection string
 # - PORT: Port for the application (usually 8080)
+# Force redeploy after pattern detection fixes
