@@ -13,13 +13,13 @@ echo "Python version: $(python3 --version)"
 echo ""
 
 # Set default PORT if not provided by Railway
-PORT="${PORT:-8080}"
+PORT="8080"
 echo "Using PORT: $PORT"
 
 echo "Starting uvicorn on 0.0.0.0:$PORT..."
 echo "Environment variables:"
 echo "  PORT=$PORT"
-echo "  DATABASE_URL=${DATABASE_URL:0:30}... (truncated)"
+echo "  DATABASE_URL=[HIDDEN FOR SECURITY]"
 echo "  RAILWAY_ENVIRONMENT=${RAILWAY_ENVIRONMENT:-not set}"
 echo ""
 
