@@ -52,6 +52,31 @@ async def run_migrations():
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.post("/populate-database")
+async def populate_database():
+    """
+    Populate database with celestial signs and astronomical data.
+    WARNING: This endpoint should be protected or removed in production!
+    """
+    try:
+        # Run database population script
+        result = subprocess.run(
+            ["python", "populate_database.py"],
+            capture_output=True,
+            text=True,
+            cwd="/app"  # Railway container working directory
+        )
+
+        return {
+            "status": "success" if result.returncode == 0 else "error",
+            "return_code": result.returncode,
+            "stdout": result.stdout,
+            "stderr": result.stderr,
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.get("/check-tables")
 async def check_tables():
     """
