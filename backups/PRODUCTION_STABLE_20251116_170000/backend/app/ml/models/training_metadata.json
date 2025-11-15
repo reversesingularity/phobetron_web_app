@@ -1,0 +1,19 @@
+{
+  "training_date": "2025-11-11T19:17:56.928513",
+  "models_trained": [
+    "neo_distance_predictor.pkl",
+    "neo_hazard_classifier.pkl",
+    "watchman_severity_classifier.pkl",
+    "watchman_significance_classifier.pkl",
+    "lstm_forecaster.h5"
+  ],
+  "training_data_size": {
+    "earthquakes": 81,
+    "celestial_events": 44,
+    "total_events": 125
+  },
+  "model_versions": {
+    "sklearn": "1.3.0",
+    "tensorflow": "2.20.0"
+  }
+}

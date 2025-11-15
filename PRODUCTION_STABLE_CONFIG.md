@@ -12,8 +12,8 @@
 - **API Health**: https://phobetronwebapp-production.up.railway.app/api/v1/admin/check-tables
 
 ### Documentation
-- **Deployment Guide**: `backups/PRODUCTION_STABLE_20251113_225505/DEPLOYMENT_NOTES.md`
-- **Quick Restore**: `backups/PRODUCTION_STABLE_20251113_225505/README.md`
+- **Deployment Guide**: `backups/PRODUCTION_STABLE_20251116_170000/DEPLOYMENT_NOTES.md`
+- **Quick Restore**: `backups/PRODUCTION_STABLE_20251116_170000/README.md`
 - **Constitution v1.4.0**: `.specify/memory/constitution.md`
 
 ---
@@ -24,20 +24,20 @@ If production breaks, restore from backup:
 
 ```powershell
 # 1. Copy backend files
-Copy-Item -Path "backups\PRODUCTION_STABLE_20251113_225505\backend\*" `
+Copy-Item -Path "backups\PRODUCTION_STABLE_20251116_170000\backend\*" `
           -Destination "backend\" -Recurse -Force
 
 # 2. Copy railway.toml
-Copy-Item -Path "backups\PRODUCTION_STABLE_20251113_225505\railway.toml" `
+Copy-Item -Path "backups\PRODUCTION_STABLE_20251116_170000\railway.toml" `
           -Destination "railway.toml" -Force
 
 # 3. Copy frontend files  
-Copy-Item -Path "backups\PRODUCTION_STABLE_20251113_225505\frontend\*" `
+Copy-Item -Path "backups\PRODUCTION_STABLE_20251116_170000\frontend\*" `
           -Destination "frontend\" -Recurse -Force
 
 # 4. Commit and push
 git add .
-git commit -m "Restore from PRODUCTION_STABLE_20251113_225505"
+git commit -m "Restore from PRODUCTION_STABLE_20251116_170000"
 git push origin 001-database-schema
 ```
 
@@ -85,12 +85,11 @@ All should return JSON with data (not errors).
 ## 📋 WHAT WAS FIXED
 
 **Recent Updates (November 16, 2025)**:
-- ✅ **Fixed Railway nginx configuration issue** - Resolved "unknown directive" error causing 502 failures
-- ✅ **Implemented comprehensive-pattern-detection endpoint** - Advanced Pattern Detection page now functional
-- ✅ **Re-enabled health checks** - Deployment stability confirmed
-- ✅ **Fixed frontend Dockerfile for Railway multi-service** - Removed incorrect API proxy, fixed VITE_API_URL
-- ✅ **Fixed frontend nginx port configuration** - Removed PORT variable causing "invalid port" errors
-- ✅ **Fixed frontend nginx healthcheck** - Added PORT environment variable support for Railway
+- ✅ **Fixed Railway nginx port configuration** - Changed to port 8080 for Railway compatibility
+- ✅ **Fixed nginx SPA routing** - Corrected try_files directive for React routing
+- ✅ **Added AI Pattern Detection UI page** - Advanced pattern analysis interface (412 lines)
+- ✅ **Railway deployment stability** - Healthchecks pass, service operational
+- ✅ **Fixed frontend Dockerfile** - Removed envsubst, updated EXPOSE directive
 - ✅ **Fixed watchman-alerts endpoint** - Resolved "'EnhancedAlert' object has no attribute 'description'" error
 - ✅ **Fixed Pattern Detection page** - Corrected API method (POST→GET) and URLs, fixed infinite loop in Watchman's View
 - ✅ **Fixed missing Earth.png 404 errors** - Removed missing texture reference from CelestialCanvas
@@ -118,11 +117,12 @@ All should return JSON with data (not errors).
 ## 🎯 BACKUP HIERARCHY (NEWEST FIRST)
 
 **USE THIS BACKUP** when restoring:
-1. ✅ **PRODUCTION_STABLE_20251113_225505** ← **USE THIS** (Navigation fixes, scrollable UI)
-2. PRODUCTION_STABLE_20251112_183253 (Previous stable - API endpoints working)
-3. solar_system_stable_20251110_211532
-4. solar_system_stable_20251110_211522
-5. solar_system_integration_20251109_213132
+1. ✅ **PRODUCTION_STABLE_20251116_170000** ← **USE THIS** (AI Pattern Detection UI, Railway fixes)
+2. PRODUCTION_STABLE_20251113_225505 (Previous stable - Navigation fixes, scrollable UI)
+3. PRODUCTION_STABLE_20251112_183253 (Previous stable - API endpoints working)
+4. solar_system_stable_20251110_211532
+5. solar_system_stable_20251110_211522
+6. solar_system_integration_20251109_213132
 
 The others are obsolete - this is the ONLY verified production stable config.
 
@@ -138,7 +138,7 @@ The others are obsolete - this is the ONLY verified production stable config.
 - 10 celestial signs (Revelation & Joel prophecies)
 - 40 biblical prophecies (canonical, apocryphal, pseudepigraphal)
 
-### Active Pages (12 Total)
+### Active Pages (14 Total)
 1. ✅ Dashboard - Overview with all event types
 2. ✅ Earthquakes - Real-time USGS data
 3. ✅ Volcanic Activity - Global eruptions
@@ -152,15 +152,16 @@ The others are obsolete - this is the ONLY verified production stable config.
 11. ✅ Orbital Elements - 6 objects with Keplerian parameters
 12. ✅ ML Models - 4 models (79% avg accuracy)
 13. ✅ Pattern Detection - Feast day correlation analysis
-14. ✅ AI Pattern Detection - Advanced ML-powered pattern analysis
+14. ✅ AI Pattern Detection - Advanced ML-powered pattern analysis (UI ready, data pending)
 
 ### Known Issues
 - **Pattern Detection Database**: API functional but returns 0 patterns (Railway database lacks 2024 event data)
+- **AI Pattern Detection**: UI fully implemented but data fetching still elusive (API returns empty results)
 - ML Watchman Alerts endpoint returns 500 error ('EnhancedAlert' object has no attribute 'description') - **FIXED**
 - Both affected pages (Alerts, Watchman's View) use fallback mock data
 
 ---
 
-**Last Updated**: November 16, 2025 16:30 UTC  
+**Last Updated**: November 16, 2025 17:00 UTC  
 **Constitution Version**: 1.4.0  
-**Deployment Notes**: See `backups/PRODUCTION_STABLE_20251113_225505/DEPLOYMENT_NOTES.md`  
+**Deployment Notes**: See `backups/PRODUCTION_STABLE_20251116_170000/DEPLOYMENT_NOTES.md`  
