@@ -1,7 +1,7 @@
 # 🎯 PRODUCTION STABLE CONFIGURATION
 
 **Status**: ✅ **FULLY OPERATIONAL**  
-**Verified**: November 16, 2025 14:20 UTC  
+**Verified**: November 16, 2025 15:00 UTC  
 **Backup Location**: `backups/PRODUCTION_STABLE_20251113_225505/`  
 
 ---
@@ -93,6 +93,7 @@ All should return JSON with data (not errors).
 - ✅ **Fixed frontend Dockerfile for Railway multi-service** - Removed incorrect API proxy, fixed VITE_API_URL
 - ✅ **Fixed watchman-alerts endpoint** - Resolved "'EnhancedAlert' object has no attribute 'description'" error
 - ✅ **Fixed Pattern Detection page** - Corrected API method (POST→GET) and URLs, fixed infinite loop in Watchman's View
+- ✅ **Fixed frontend nginx healthcheck** - Simplified nginx config and added /health endpoint for Railway compatibility
 - ✅ Created 3 new UI pages (Celestial Signs, Orbital Elements, ML Models)
 - ✅ Fixed all API endpoint prefixes (/api/v1)
 - ✅ Fixed default API URLs (production Railway)
