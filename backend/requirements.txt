@@ -20,6 +20,7 @@ pydantic-settings>=2.0.0
 numpy>=1.26.0
 pandas>=2.2.0
 scikit-learn>=1.5.0
+scipy>=1.11.0
 
 # Phase 2: Deep Learning (LSTM)
 tensorflow>=2.15.0  # or tensorflow-cpu for non-GPU systems

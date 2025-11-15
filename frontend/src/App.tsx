@@ -13,6 +13,7 @@ import CelestialSignsPage from './pages/CelestialSignsPage'
 import OrbitalElementsPage from './pages/OrbitalElementsPage'
 import MLModelsPage from './pages/MLModelsPage'
 import PatternDetectionPage from './pages/PatternDetectionPage'
+import AdvancedPatternDetectionPage from './pages/AdvancedPatternDetectionPage'
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/orbital-elements" element={<OrbitalElementsPage />} />
           <Route path="/ml-models" element={<MLModelsPage />} />
           <Route path="/pattern-detection" element={<PatternDetectionPage />} />
+          <Route path="/advanced-pattern-detection" element={<AdvancedPatternDetectionPage />} />
         </Routes>
       </Layout>
     </Router>

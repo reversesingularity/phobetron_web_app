@@ -1,1 +1,71 @@
-{ "typescript.preferences.noSemicolons": "off", "typescript.suggest.completeFunctionCalls": false, "typescript.preferences.includePackageJsonAutoImports": "off", "typescript.suggest.autoImports": false, "typescript.validate.enable": true, "typescript.tsserver.log": "off", "typescript.tsserver.trace": "off", "files.exclude": { "**/node_modules/**": true, "**/__pycache__/**": true, "**/*.pyc": true, "**/.git/**": true, "**/dist/**": true, "**/build/**": true, "**/.next/**": true, "**/out/**": true }, "search.exclude": { "**/node_modules/**": true, "**/__pycache__/**": true, "**/*.pyc": true, "**/.git/**": true, "**/dist/**": true, "**/build/**": true } }
+{
+  // Editor Optimizations
+  "editor.minimap.enabled": false,
+  "editor.renderWhitespace": "none",
+  "editor.wordWrap": "off",
+  "editor.largeFileOptimizations": true,
+  "workbench.editor.enablePreview": false,
+  "files.trimTrailingWhitespace": false,
+  
+  // Performance: Disable Auto-Suggestions
+  "editor.quickSuggestions": {
+    "other": false,
+    "comments": false,
+    "strings": false
+  },
+  "editor.parameterHints.enabled": false,
+  "editor.hover.enabled": false,
+  
+  // Performance: Disable Auto-Formatting
+  "editor.codeActionsOnSave": {},
+  "editor.formatOnSave": false,
+  "editor.formatOnPaste": false,
+  "editor.formatOnType": false,
+  
+  // Privacy & Updates
+  "telemetry.enableTelemetry": false,
+  "workbench.enableExperiments": false,
+  "extensions.autoUpdate": false,
+  "update.mode": "none",
+  
+  // TypeScript Optimizations
+  "typescript.preferences.noSemicolons": "off",
+  "typescript.suggest.completeFunctionCalls": false,
+  "typescript.preferences.includePackageJsonAutoImports": "off",
+  "typescript.suggest.autoImports": false,
+  "typescript.validate.enable": true,
+  "typescript.tsserver.log": "off",
+  "typescript.tsserver.trace": "off",
+  
+  // File Exclusions
+  "files.exclude": {
+    "**/node_modules/**": true,
+    "**/__pycache__/**": true,
+    "**/*.pyc": true,
+    "**/.git/**": true,
+    "**/dist/**": true,
+    "**/build/**": true,
+    "**/.next/**": true,
+    "**/out/**": true
+  },
+  
+  // Search Exclusions
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/__pycache__/**": true,
+    "**/*.pyc": true,
+    "**/.git": true,
+    "**/dist": true,
+    "**/build/**": true
+  },
+  
+  // File Watcher Exclusions (Performance)
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/__pycache__/**": true,
+    "**/.next/**": true
+  }
+}

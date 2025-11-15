@@ -38,6 +38,17 @@ async def lifespan(app: FastAPI):
     print(f"Pool config: size=20, max_overflow=40, timeout=60s", flush=True)
     print(f"CORS Origins: {settings.BACKEND_CORS_ORIGINS}", flush=True)
     print("=" * 60, flush=True)
+    
+    # Load ML models
+    print("Loading ML models...", flush=True)
+    try:
+        from app.ml.model_loader import model_loader
+        model_loader.load_all_models()
+        print("SUCCESS: ML models loaded successfully", flush=True)
+    except Exception as e:
+        print(f"WARNING: ML model loading failed: {e}", flush=True)
+        print("API will continue with limited ML functionality", flush=True)
+    
     print("Application startup complete!", flush=True)
     print("Database connection will be established on first request", flush=True)
     sys.stdout.flush()

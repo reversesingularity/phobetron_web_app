@@ -37,13 +37,13 @@ class ModelLoader:
                 try:
                     # Try loading with compile=False to avoid metric issues
                     self.models["lstm_forecaster"] = tf.keras.models.load_model(str(lstm_path), compile=False)
-                    logger.info("✅ Loaded LSTM Seismic Forecaster (inference mode)")
+                    logger.info("Loaded LSTM Seismic Forecaster (inference mode)")
                 except Exception as e:
-                    logger.warning(f"⚠️ LSTM model load failed (will use fallback): {str(e)[:100]}")
+                    logger.warning(f"LSTM model load failed (will use fallback): {str(e)[:100]}")
                     # Use metadata-only fallback
                     self.models["lstm_forecaster"] = None
             else:
-                logger.warning(f"⚠️ LSTM model not found at {lstm_path}")
+                logger.warning(f"LSTM model not found at {lstm_path}")
             
             # Load scikit-learn models
             sklearn_models = {
@@ -56,17 +56,46 @@ class ModelLoader:
                 "watchman_significance": "watchman_significance_classifier.pkl"
             }
             
+            # Load pattern detection trained models
+            trained_models_dir = Path(__file__).parent / "trained_models"
+            print(f"Pattern models directory: {trained_models_dir}", flush=True)
+            print(f"Directory exists: {trained_models_dir.exists()}", flush=True)
+            pattern_models = {
+                "isolation_forest": "isolation_forest.pkl",
+                "isolation_forest_scaler": "isolation_forest_scaler.pkl",
+                "correlation_matrices": "correlation_matrices.pkl",
+                "statistical_tests": "statistical_tests.pkl",
+                "seasonal_patterns": "seasonal_patterns.pkl",
+                "training_summary": "training_summary.pkl"
+            }
+            
+            for model_name, filename in pattern_models.items():
+                model_path = trained_models_dir / filename
+                print(f"Checking {model_name} at {model_path}", flush=True)
+                if model_path.exists():
+                    try:
+                        with open(model_path, "rb") as f:
+                            self.models[model_name] = pickle.load(f)
+                        print(f"SUCCESS: Loaded {model_name} (pattern detection)", flush=True)
+                        logger.info(f"Loaded {model_name} (pattern detection)")
+                    except Exception as e:
+                        print(f"WARNING: {model_name} load failed: {str(e)[:100]}", flush=True)
+                        logger.warning(f"{model_name} load failed: {str(e)[:100]}")
+                else:
+                    print(f"WARNING: {model_name} not found at {model_path}", flush=True)
+                    logger.warning(f"{model_name} not found at {model_path}")
+            
             for model_name, filename in sklearn_models.items():
                 model_path = MODEL_DIR / filename
                 if model_path.exists():
                     try:
                         with open(model_path, "rb") as f:
                             self.models[model_name] = pickle.load(f)
-                        logger.info(f"✅ Loaded {model_name}")
+                        logger.info(f"Loaded {model_name}")
                     except Exception as e:
-                        logger.warning(f"⚠️ {model_name} load failed: {str(e)[:100]}")
+                        logger.warning(f"{model_name} load failed: {str(e)[:100]}")
                 else:
-                    logger.warning(f"⚠️ {model_name} not found at {model_path}")
+                    logger.warning(f"{model_name} not found at {model_path}")
             
             # Load metadata
             metadata_files = [
@@ -82,19 +111,20 @@ class ModelLoader:
                         with open(meta_path, "r") as f:
                             self.metadata[metadata_file.replace(".json", "")] = json.load(f)
                     except Exception as e:
-                        logger.warning(f"⚠️ Metadata {metadata_file} load failed: {str(e)[:100]}")
+                        logger.warning(f"Metadata {metadata_file} load failed: {str(e)[:100]}")
             
-            logger.info(f"✅ Loaded {len(self.models)} models and {len(self.metadata)} metadata files")
-            logger.info(f"📊 Models available: {list(self.models.keys())}")
+            logger.info(f"Loaded {len(self.models)} models and {len(self.metadata)} metadata files")
+            logger.info(f"Models available: {list(self.models.keys())}")
             
-            # Store in global cache
+            # Store in global cache (update in place to preserve module-level reference)
             global LOADED_MODELS
-            LOADED_MODELS = self.models
+            LOADED_MODELS.clear()
+            LOADED_MODELS.update(self.models)
             
         except Exception as e:
-            logger.error(f"❌ Error loading models: {str(e)}")
+            logger.error(f"ERROR: Error loading models: {str(e)}")
             # Don't raise - allow API to start even if models fail
-            logger.warning("⚠️ API will start with limited ML functionality")
+            logger.warning("WARNING: API will start with limited ML functionality")
     
     def get_model(self, model_name: str) -> Optional[Any]:
         """Get a loaded model by name"""

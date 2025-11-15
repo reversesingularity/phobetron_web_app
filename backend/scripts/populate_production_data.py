@@ -30,13 +30,13 @@ SessionLocal = sessionmaker(bind=engine)
 
 
 def populate_feast_days(db):
-    """Populate feast days for 2020-2030 using Hebrew calendar calculations"""
-    print("Populating feast days...")
+    """Populate feast days for 1900-2030 using Hebrew calendar calculations"""
+    print("Populating feast days (1900-2030)...")
     
     from app.integrations.hebrew_calendar import HebrewCalendarCalculator
     
     calculator = HebrewCalendarCalculator()
-    years_to_populate = range(2020, 2031)
+    years_to_populate = range(1900, 2031)  # Extended to cover 130 years of historical data
     
     total_added = 0
     
@@ -244,18 +244,49 @@ def populate_hurricane_data(db):
     total_added = 0
     for event in hurricanes:
         existing = db.query(Hurricane).filter(
-            Hurricane.name == event['name'],
-            Hurricane.event_date == event['event_date']
+            Hurricane.storm_name == event['name'],
+            Hurricane.formation_date == event['event_date']
         ).first()
         
         if not existing:
-            hurricane = Hurricane(**event)
+            # Map the data to the correct model fields
+            hurricane_data = {
+                'storm_name': event['name'],
+                'basin': event.get('basin', 'Atlantic'),  # Default to Atlantic
+                'storm_type': event.get('storm_type', 'Hurricane'),  # Default to Hurricane
+                'season': event['event_date'].year,
+                'formation_date': event['event_date'],
+                'peak_latitude': event.get('peak_latitude', 0.0),
+                'peak_longitude': event.get('peak_longitude', 0.0),
+                'max_sustained_winds_kph': event.get('max_wind_speed_kmh'),
+                'category': event.get('category'),
+                'fatalities': event.get('fatalities'),
+                'notes': event.get('description'),
+                'data_source': 'Historical Records'
+            }
+            hurricane = Hurricane(**hurricane_data)
             db.add(hurricane)
             total_added += 1
     
     db.commit()
     print(f"✅ Added {total_added} hurricanes")
     return total_added
+
+
+def map_tsunami_cause_to_source_type(cause):
+    """Map tsunami cause descriptions to valid source_type enum values"""
+    cause = cause.upper() if cause else 'UNKNOWN'
+    
+    if 'EARTHQUAKE' in cause:
+        return 'EARTHQUAKE'
+    elif 'VOLCANIC' in cause or 'VOLCANO' in cause:
+        return 'VOLCANIC'
+    elif 'LANDSLIDE' in cause or 'SLIDE' in cause:
+        return 'LANDSLIDE'
+    elif 'METEORITE' in cause or 'METEOR' in cause:
+        return 'METEORITE'
+    else:
+        return 'UNKNOWN'
 
 
 def populate_tsunami_data(db):
@@ -364,7 +395,18 @@ def populate_tsunami_data(db):
         ).first()
         
         if not existing:
-            tsunami = Tsunami(**event)
+            # Map the data to the correct model fields
+            tsunami_data = {
+                'event_date': event['event_date'],
+                'source_latitude': event['source_latitude'],
+                'source_longitude': event['source_longitude'],
+                'source_type': map_tsunami_cause_to_source_type(event.get('cause')),  # Map 'cause' to valid 'source_type'
+                'max_wave_height_m': event.get('wave_height_m'),
+                'fatalities': event.get('fatalities'),
+                'notes': event.get('description'),
+                'data_source': 'Historical Records'
+            }
+            tsunami = Tsunami(**tsunami_data)
             db.add(tsunami)
             total_added += 1
     

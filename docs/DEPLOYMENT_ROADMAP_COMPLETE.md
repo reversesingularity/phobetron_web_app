@@ -1140,6 +1140,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - run: npm install -g npm@11.6.2
       - run: npm install
       - run: npm run build
       - uses: vercel/action@v1

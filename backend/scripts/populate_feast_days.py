@@ -16,12 +16,12 @@ from app.models.theological import FeastDay
 from app.integrations.hebrew_calendar import HebrewCalendar
 
 
-def populate_feast_days(start_year: int = 2020, end_year: int = 2030):
+def populate_feast_days(start_year: int = 1900, end_year: int = 2030):
     """
     Populate feast_days table with biblical feast days
     
     Args:
-        start_year: Starting Gregorian year (default 2020)
+        start_year: Starting Gregorian year (default 1900)
         end_year: Ending Gregorian year (default 2030)
     """
     db = SessionLocal()
@@ -160,11 +160,11 @@ def verify_feast_days():
 
 if __name__ == "__main__":
     print("\n" + "="*60)
-    print(" 🕎 FEAST DAYS DATABASE POPULATION")
+    print(" 🕎 FEAST DAYS DATABASE POPULATION (1900-2030)")
     print("="*60 + "\n")
     
-    # Populate feast days for 2020-2030
-    populate_feast_days(2020, 2030)
+    # Populate feast days for 1900-2030 (130 years of historical data)
+    populate_feast_days(1900, 2030)
     
     # Verify the data
     verify_feast_days()
