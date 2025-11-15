@@ -75,7 +75,7 @@ export default function PatternDetectionPage() {
     setError(null)
     
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8020'
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://phobetronwebapp-production.up.railway.app'
       
       // Convert years to date range (YYYY-MM-DD format)
       const startDate = `${startYear}-01-01`
@@ -84,7 +84,7 @@ export default function PatternDetectionPage() {
       const response = await fetch(
         `${apiUrl}/api/v1/ml/comprehensive-pattern-detection?start_date=${startDate}&end_date=${endDate}`,
         {
-          method: 'POST',
+          method: 'GET',
           headers: {
             'Content-Type': 'application/json'
           }

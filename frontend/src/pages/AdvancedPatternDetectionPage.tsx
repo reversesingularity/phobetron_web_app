@@ -98,8 +98,8 @@ export default function AdvancedPatternDetectionPage() {
     setError(null)
     
     try {
-      // Backend is running on port 8000
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      // Backend is running on Railway production
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://phobetronwebapp-production.up.railway.app'
       
       const startDate = `${startYear}-01-01`
       const endDate = `${endYear}-12-31`

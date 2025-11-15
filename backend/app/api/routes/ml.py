@@ -304,7 +304,7 @@ async def get_enhanced_alerts(
                 alert_id=alert.alert_id,
                 event_type=alert.event_type,
                 event_date=alert.event_date.isoformat(),
-                description=alert.description,
+                description=event.get('description', 'No description available'),
                 severity_score=alert.severity_score,
                 prophetic_significance=alert.prophetic_significance,
                 cluster_id=alert.cluster_id,

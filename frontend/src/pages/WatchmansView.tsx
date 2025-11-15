@@ -10,7 +10,7 @@
  * - Theological framework: Literal premillennial eschatology
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Calendar, AlertTriangle, Star, Activity, TrendingUp, Sparkles } from 'lucide-react'
 import { mlClient } from '../lib/api/mlClient'
 import { getFeastsInRange, formatFeastDateRange } from '../lib/utils/hebrewCalendar'
@@ -38,10 +38,10 @@ const WatchmansView = () => {
   const [mlAlerts, setMlAlerts] = useState<PropheticAlert[]>([])
   const [filterByFeast, setFilterByFeast] = useState(false)
 
-  const dateRange = {
+  const dateRange = useMemo(() => ({
     start: new Date(new Date().getFullYear(), 0, 1),
     end: new Date(new Date().getFullYear(), 11, 31),
-  }
+  }), []) // Empty dependency array since it only depends on current year
 
   useEffect(() => {
     loadAllData()
