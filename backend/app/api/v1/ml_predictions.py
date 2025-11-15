@@ -10,7 +10,7 @@ Production API endpoints for ML predictions:
 - GET /api/v1/ml/model-status - Model health and metrics
 """
 
-from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 from datetime import datetime, timedelta
@@ -492,25 +492,3 @@ async def get_model_status():
         "total_predictions_today": 47,  # Mock data
         "average_response_time_ms": 23
     }
-
-
-@router.get("/comprehensive-pattern-detection")
-async def comprehensive_pattern_detection(
-    start_date: str = Query(..., description="Start date (YYYY-MM-DD)"),
-    end_date: str = Query(..., description="End date (YYYY-MM-DD)"),
-    event_types: Optional[str] = Query("earthquake,hurricane,tsunami,volcanic", description="Comma-separated event types"),
-    min_magnitude: Optional[float] = Query(5.0, description="Minimum magnitude for earthquakes"),
-    time_window_days: Optional[int] = Query(14, description="Days before/after feast day to look for events"),
-    include_historical: Optional[bool] = Query(True, description="Include historical analysis")
-):
-    """
-    Comprehensive pattern detection analyzing correlations between biblical feast days and natural disasters.
-    """
-    try:
-        # Very simple test response
-        return {"status": "ok", "message": "Endpoint working", "start_date": start_date, "end_date": end_date}
-    except Exception as e:
-        import traceback
-        print(f"Comprehensive pattern detection error: {e}")
-        print(traceback.format_exc())
-        raise HTTPException(status_code=500, detail=f"Pattern detection failed: {str(e)}")
