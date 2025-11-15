@@ -13,20 +13,14 @@ echo "Python version: $(python3 --version)"
 echo ""
 
 # Set default PORT if not provided by Railway
-PORT="8020"
+PORT="${PORT:-8080}"
 echo "Using PORT: $PORT"
 
 echo "Starting uvicorn on 0.0.0.0:$PORT..."
 echo "Environment variables:"
 echo "  PORT=$PORT"
-echo "  DATABASE_URL=[HIDDEN FOR SECURITY]"
+echo "  DATABASE_URL=${DATABASE_URL:0:30}... (truncated)"
 echo "  RAILWAY_ENVIRONMENT=${RAILWAY_ENVIRONMENT:-not set}"
-echo ""
-
-# Run database migrations before starting the server
-echo "Running database migrations..."
-alembic upgrade head || echo "Warning: Migration failed, continuing anyway"
-echo "Migrations complete"
 echo ""
 
 # Start uvicorn - the /health endpoint will respond immediately
