@@ -507,7 +507,11 @@ async def comprehensive_pattern_detection(
     Comprehensive pattern detection analyzing correlations between biblical feast days and natural disasters.
     """
     try:
+        # First check if we can connect to database
         from app.db.session import SessionLocal
+        db = SessionLocal()
+        db.close()
+        
         from app.ml.pattern_detection import pattern_detection_service
         
         db = SessionLocal()
@@ -597,6 +601,22 @@ async def comprehensive_pattern_detection(
         
     except Exception as e:
         import traceback
+        error_details = traceback.format_exc()
         print(f"Comprehensive pattern detection error: {e}")
-        print(traceback.format_exc())
-        raise HTTPException(status_code=500, detail=f"Pattern detection failed: {str(e)}")
+        print(f"Full traceback: {error_details}")
+        
+        # Return a basic error response for debugging
+        return {
+            'success': False,
+            'error': str(e),
+            'error_type': type(e).__name__,
+            'patterns': [],
+            'statistics': {
+                'total_patterns': 0,
+                'high_correlation_count': 0,
+                'average_correlation': 0.0,
+                'total_events_analyzed': 0,
+                'feast_days_in_range': 0,
+                'anomaly_count': 0
+            }
+        }
