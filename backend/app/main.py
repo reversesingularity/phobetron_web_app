@@ -80,7 +80,7 @@ app.add_middleware(
 # Include API routers
 app.include_router(api_router, prefix=settings.API_V1_STR)
 app.include_router(ml_router)  # ML/AI routes (legacy)
-app.include_router(ml_enhanced_router)  # Enhanced ML/AI routes (new)
+# app.include_router(ml_enhanced_router)  # Enhanced ML/AI routes (new) - temporarily disabled
 app.include_router(data_sources_router)  # Data sources with ESA/NASA fallback
 app.include_router(ml_predictions_router)  # Production ML predictions
 app.include_router(verification_router)  # Database verification and testing
