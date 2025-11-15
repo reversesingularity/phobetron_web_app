@@ -16,11 +16,6 @@ echo ""
 PORT="${PORT:-8080}"
 echo "Using PORT: $PORT"
 
-# Check if database needs population (run only once)
-echo "Populating production database with recent data..."
-python scripts/populate_all.py --earthquake-days 365 --min-magnitude 4.0
-echo "Database population complete!"
-
 echo "Starting uvicorn on 0.0.0.0:$PORT..."
 echo "Environment variables:"
 echo "  PORT=$PORT"
