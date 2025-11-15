@@ -2686,31 +2686,31 @@ function addEarthFeatures(earthMesh: THREE.Mesh, planetSize: number) {
   // Load texture loader for overlays
   const textureLoader = new THREE.TextureLoader();
   
-  // Add subtle overlay using Earth.png for enhanced detail only
-  const overlayRadius = planetSize * 1.003; // Very close to surface
-  if (overlayRadius > 0) {
-    const overlayGeometry = new THREE.SphereGeometry(overlayRadius, 32, 32);
-    textureLoader.load(
-      '/Earth.png',
-      (texture) => {
-        const overlayMaterial = new THREE.MeshStandardMaterial({
-          map: texture,
-          transparent: true,
-          opacity: 0.15, // Very subtle overlay - just for detail enhancement
-          blending: THREE.NormalBlending, // Normal blending instead of additive
-          side: THREE.FrontSide,
-          depthWrite: false
-        });
-        const overlay = new THREE.Mesh(overlayGeometry, overlayMaterial);
-        earthMesh.add(overlay);
-        console.log('🌍 Earth detail overlay (Earth.png) applied - subtle enhancement');
-      },
-      undefined,
-      (error) => {
-        console.warn('Failed to load Earth.png overlay:', error);
-      }
-    );
-  }
+  // TODO: Add subtle overlay using Earth.png for enhanced detail only (image file missing)
+  // const overlayRadius = planetSize * 1.003; // Very close to surface
+  // if (overlayRadius > 0) {
+  //   const overlayGeometry = new THREE.SphereGeometry(overlayRadius, 32, 32);
+  //   textureLoader.load(
+  //     '/Earth.png',
+  //     (texture) => {
+  //       const overlayMaterial = new THREE.MeshStandardMaterial({
+  //         map: texture,
+  //         transparent: true,
+  //         opacity: 0.15, // Very subtle overlay - just for detail enhancement
+  //         blending: THREE.NormalBlending, // Normal blending instead of additive
+  //         side: THREE.FrontSide,
+  //         depthWrite: false
+  //       });
+  //       const overlay = new THREE.Mesh(overlayGeometry, overlayMaterial);
+  //       earthMesh.add(overlay);
+  //       console.log('🌍 Earth detail overlay (Earth.png) applied - subtle enhancement');
+  //     },
+  //     undefined,
+  //     (error) => {
+  //       console.warn('Failed to load Earth.png overlay:', error);
+  //     }
+  //   );
+  // }
 
   // Add polar ice caps with bright white material
   const iceCapRadius = planetSize * 0.25;
