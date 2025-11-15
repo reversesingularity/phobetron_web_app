@@ -3,7 +3,7 @@
 from datetime import datetime
 from uuid import uuid4
 from sqlalchemy import (
-    Column, String, Float, DateTime, Integer, Boolean,
+    Column, String, Float, DateTime, Integer, Boolean, Text,
     CheckConstraint, UniqueConstraint, Index, Computed
 )
 from sqlalchemy.dialects.postgresql import UUID
@@ -224,3 +224,73 @@ class NeoCloseApproaches(Base):
     
     def __repr__(self):
         return f"<NeoCloseApproaches(object={self.object_name}, date={self.approach_date}, dist={self.miss_distance_au:.4f} AU)>"
+
+
+class CelestialEvents(Base):
+    """
+    Celestial events like eclipses, conjunctions, and astronomical phenomena.
+    
+    Stores astronomical events that may have prophetic significance,
+    including eclipses, planetary conjunctions, and other celestial phenomena.
+    """
+    __tablename__ = "celestial_events"
+    
+    # Primary Key
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    
+    # Event identification
+    event_type = Column(String(50), nullable=False, index=True,
+                       comment="Type: blood_moon, lunar_eclipse, solar_eclipse, conjunction, tetrad")
+    
+    # Temporal data
+    event_date = Column(DateTime, nullable=False, index=True,
+                       comment="Date and time of the celestial event")
+    
+    # Event properties
+    magnitude = Column(Float, nullable=True,
+                      comment="Magnitude or intensity of the event")
+    duration_hours = Column(Float, nullable=True,
+                           comment="Duration of the event in hours")
+    
+    # Visibility and significance
+    jerusalem_visible = Column(Boolean, default=False,
+                              comment="Whether the event is visible from Jerusalem")
+    feast_day = Column(String(100), nullable=True,
+                      comment="Associated biblical feast day if any")
+    
+    # Location (for events with geographic relevance)
+    latitude = Column(Float, nullable=True,
+                     comment="Latitude in decimal degrees (-90 to 90)")
+    longitude = Column(Float, nullable=True,
+                      comment="Longitude in decimal degrees (-180 to 180)")
+    
+    # Significance scores
+    significance_score = Column(Float, default=0.5,
+                               comment="Historical significance score (0-1)")
+    prophecy_correlation_score = Column(Float, default=0.5,
+                                       comment="Prophecy correlation score (0-1)")
+    
+    # Description and metadata
+    description = Column(Text, nullable=True,
+                        comment="Detailed description of the event")
+    
+    # Celestial bodies involved
+    celestial_bodies = Column(ARRAY(String), nullable=True,
+                             comment="List of celestial bodies involved")
+    
+    # Metadata
+    data_source = Column(String(100), nullable=True,
+                        comment="Source of the event data")
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    
+    # Constraints
+    __table_args__ = (
+        CheckConstraint('magnitude >= 0 AND magnitude <= 10', name='ck_event_magnitude_range'),
+        CheckConstraint('significance_score >= 0 AND significance_score <= 1', name='ck_significance_range'),
+        CheckConstraint('prophecy_correlation_score >= 0 AND prophecy_correlation_score <= 1', name='ck_prophecy_range'),
+        Index('idx_celestial_event_date', 'event_date'),
+        Index('idx_celestial_event_type', 'event_type'),
+    )
+    
+    def __repr__(self):
+        return f"<CelestialEvents(type={self.event_type}, date={self.event_date}, desc={self.description[:50]}...)>"
