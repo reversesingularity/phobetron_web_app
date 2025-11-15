@@ -94,6 +94,7 @@ All should return JSON with data (not errors).
 - ✅ **Fixed watchman-alerts endpoint** - Resolved "'EnhancedAlert' object has no attribute 'description'" error
 - ✅ **Fixed Pattern Detection page** - Corrected API method (POST→GET) and URLs, fixed infinite loop in Watchman's View
 - ✅ **Fixed frontend nginx healthcheck** - Simplified nginx config and removed conflicting Dockerfile HEALTHCHECK
+- ✅ **Fixed missing Earth.png 404 errors** - Removed missing texture reference from CelestialCanvas
 - ✅ Created 3 new UI pages (Celestial Signs, Orbital Elements, ML Models)
 - ✅ Fixed all API endpoint prefixes (/api/v1)
 - ✅ Fixed default API URLs (production Railway)
