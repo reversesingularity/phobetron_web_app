@@ -25,20 +25,11 @@ FROM nginx:alpine AS runner
 # Copy built assets from builder
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Create nginx configuration for SPA routing (no API proxy needed for Railway multi-service)
-RUN echo 'server { \
-    listen 80; \
-    server_name localhost; \
-    root /usr/share/nginx/html; \
-    index index.html; \
-    location / { \
-        try_files $uri $uri/ /index.html; \
-    } \
-    gzip on; \
-    gzip_vary on; \
-    gzip_min_length 1024; \
-    gzip_types text/plain text/css text/xml text/javascript application/x-javascript application/xml+rss application/javascript application/json; \
-}' > /etc/nginx/conf.d/default.conf
+# Copy custom nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Remove default nginx config to avoid conflicts
+RUN rm -f /etc/nginx/conf.d/default.conf.backup
 
 # Expose port 80
 EXPOSE 80
