@@ -91,13 +91,15 @@ All should return JSON with data (not errors).
 - ✅ **Implemented comprehensive-pattern-detection endpoint** - Advanced Pattern Detection page now functional
 - ✅ **Re-enabled health checks** - Deployment stability confirmed
 - ✅ **Fixed frontend Dockerfile for Railway multi-service** - Removed incorrect API proxy, fixed VITE_API_URL
+- ✅ **Fixed watchman-alerts endpoint** - Resolved "'EnhancedAlert' object has no attribute 'description'" error
+- ✅ **Fixed Pattern Detection page** - Corrected API method (POST→GET) and URLs, fixed infinite loop in Watchman's View
 - ✅ Created 3 new UI pages (Celestial Signs, Orbital Elements, ML Models)
 - ✅ Fixed all API endpoint prefixes (/api/v1)
 - ✅ Fixed default API URLs (production Railway)
 - ✅ Fixed Orbital Elements field mappings (semi_major_axis_au, inclination_deg, etc.)
 - ✅ Updated ProphecyCodex with live API integration
 - ✅ Navigation scrollbar made visible with thin purple indicator
-- ✅ All 12 pages functional (10 fully working, 2 with fallback)
+- ✅ All 14 pages functional (12 fully working, 2 with fallback)
 - ✅ Database populated: 6 orbital elements, 10 celestial signs, 40 prophecies
 
 **Previous Fixes (15+ Hours of Debugging)**:
@@ -148,10 +150,11 @@ The others are obsolete - this is the ONLY verified production stable config.
 10. ✅ Celestial Signs - 10 Revelation signs
 11. ✅ Orbital Elements - 6 objects with Keplerian parameters
 12. ✅ ML Models - 4 models (79% avg accuracy)
+13. ✅ Pattern Detection - Feast day correlation analysis
+14. ✅ AI Pattern Detection - Advanced ML-powered pattern analysis
 
 ### Known Issues
-- ⚠️ **Advanced Pattern Detection page** - Backend endpoint implemented, frontend integration pending
-- ML Watchman Alerts endpoint returns 500 error ('EnhancedAlert' object has no attribute 'description')
+- ML Watchman Alerts endpoint returns 500 error ('EnhancedAlert' object has no attribute 'description') - **FIXED**
 - Both affected pages (Alerts, Watchman's View) use fallback mock data
 
 ---
