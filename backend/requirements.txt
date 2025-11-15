@@ -2,7 +2,7 @@
 alembic>=1.13.0
 sqlalchemy>=2.0.35
 psycopg2-binary>=2.9.9
-geoalchemy2>=0.14.2  # PostGIS support enabled with postgis/postgis Docker image
+# geoalchemy2>=0.14.2  # Removed - PostGIS not available on Railway PostgreSQL
 python-dotenv>=1.0.0
 
 # Testing Dependencies
@@ -20,7 +20,6 @@ pydantic-settings>=2.0.0
 numpy>=1.26.0
 pandas>=2.2.0
 scikit-learn>=1.5.0
-scipy>=1.11.0
 
 # Phase 2: Deep Learning (LSTM)
 tensorflow>=2.15.0  # or tensorflow-cpu for non-GPU systems
@@ -42,5 +41,3 @@ httpx>=0.27.0  # For async requests
 # Additional Utilities
 python-dateutil>=2.8.2
 pytz>=2024.1
-ephem>=4.1.5  # PyEphem for astronomical calculations (eclipses)
-convertdate>=2.4.0  # Hebrew calendar conversions
