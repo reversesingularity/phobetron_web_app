@@ -17,7 +17,7 @@ from contextlib import asynccontextmanager
 from app.db.session import get_db, get_engine
 from app.api.v1.api import api_router
 from app.api.routes.ml_routes import router as ml_router
-from app.api.routes.ml import router as ml_enhanced_router  # Enhanced ML routes
+# from app.api.routes.ml import router as ml_enhanced_router  # Enhanced ML routes - temporarily disabled
 from app.api.routes.data_sources import router as data_sources_router  # ESA/NASA fallback routes
 from app.api.v1.ml_predictions import router as ml_predictions_router  # Production ML predictions
 from app.api.routes.verification import router as verification_router  # Database verification endpoints
