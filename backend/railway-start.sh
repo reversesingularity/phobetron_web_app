@@ -16,6 +16,16 @@ echo ""
 PORT="${PORT:-8080}"
 echo "Using PORT: $PORT"
 
+# Check if database needs population (run only once)
+if [ ! -f "/tmp/db_populated" ]; then
+    echo "Populating production database..."
+    python scripts/populate_production_data.py
+    touch /tmp/db_populated
+    echo "Database population complete!"
+else
+    echo "Database already populated, skipping..."
+fi
+
 echo "Starting uvicorn on 0.0.0.0:$PORT..."
 echo "Environment variables:"
 echo "  PORT=$PORT"
