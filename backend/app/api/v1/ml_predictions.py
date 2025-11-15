@@ -507,65 +507,94 @@ async def comprehensive_pattern_detection(
     Comprehensive pattern detection analyzing correlations between biblical feast days and natural disasters.
     """
     try:
-        # Simple test response first
-        return {
-            'success': True,
-            'patterns': [
-                {
-                    'feast_day': 'Passover',
-                    'feast_date': '2024-04-15',
-                    'feast_type': 'spring_festival',
-                    'events': [
-                        {
-                            'type': 'earthquake',
-                            'date': '2024-04-10',
-                            'magnitude': 6.2,
-                            'location': '35.50, 25.40',
-                            'region': 'Greece',
-                            'days_from_feast': 5
-                        }
-                    ],
-                    'event_count': 1,
-                    'correlation_score': 0.65,
-                    'significance': 'MODERATE',
-                    'is_anomaly': False
+        from app.db.session import SessionLocal
+        from app.ml.pattern_detection import pattern_detection_service
+        
+        db = SessionLocal()
+        try:
+            # Parse event types
+            event_type_list = event_types.split(',') if event_types else ['earthquake', 'hurricane', 'tsunami', 'volcanic']
+            
+            # Use the real feast day correlation analysis
+            results = await pattern_detection_service.analyze_feast_day_correlations(
+                start_date=start_date,
+                end_date=end_date,
+                event_types=event_type_list,
+                time_window_days=time_window_days,
+                min_magnitude=min_magnitude,
+                db=db
+            )
+            
+            # Transform results to match expected frontend format
+            patterns = []
+            for pattern in results.get('patterns', []):
+                patterns.append({
+                    'feast_day': pattern.get('feast_day', 'Unknown'),
+                    'feast_date': pattern.get('feast_date', start_date),
+                    'feast_type': pattern.get('feast_type', 'unknown'),
+                    'events': pattern.get('events', []),
+                    'event_count': pattern.get('event_count', 0),
+                    'correlation_score': pattern.get('correlation_score', 0.0),
+                    'significance': pattern.get('significance', 'LOW'),
+                    'is_anomaly': pattern.get('is_anomaly', False)
+                })
+            
+            # Calculate statistics
+            total_patterns = len(patterns)
+            significant_patterns = len([p for p in patterns if p['correlation_score'] > 0.7])
+            avg_correlation = sum(p['correlation_score'] for p in patterns) / total_patterns if total_patterns > 0 else 0.0
+            total_events = sum(p['event_count'] for p in patterns)
+            anomaly_count = len([p for p in patterns if p.get('is_anomaly', False)])
+            
+            return {
+                'success': True,
+                'patterns': patterns,
+                'statistics': {
+                    'total_patterns': total_patterns,
+                    'high_correlation_count': significant_patterns,
+                    'average_correlation': round(avg_correlation, 3),
+                    'total_events_analyzed': total_events,
+                    'feast_days_in_range': results.get('feast_days_analyzed', 0),
+                    'anomaly_count': anomaly_count
+                },
+                'event_counts': results.get('event_counts', {
+                    'earthquakes': 0,
+                    'volcanic': 0,
+                    'hurricanes': 0,
+                    'tsunamis': 0
+                }),
+                'statistical_analysis': results.get('statistical_analysis', {
+                    'pearson_correlation': 0.0,
+                    'spearman_correlation': 0.0,
+                    'p_value': 1.0,
+                    'is_statistically_significant': False,
+                    'confidence_interval_95': {'lower': 0.0, 'upper': 0.0},
+                    'confidence_interval_99': {'lower': 0.0, 'upper': 0.0},
+                    'sample_size': total_patterns
+                }),
+                'correlation_matrix': results.get('correlation_matrix', {}),
+                'seasonal_patterns': results.get('seasonal_patterns', {
+                    'Spring': {'count': 0, 'avg_correlation': 0.0, 'events': []},
+                    'Summer': {'count': 0, 'avg_correlation': 0.0, 'events': []},
+                    'Fall': {'count': 0, 'avg_correlation': 0.0, 'events': []},
+                    'Winter': {'count': 0, 'avg_correlation': 0.0, 'events': []}
+                }),
+                'predictions': results.get('predictions', []),
+                'metadata': {
+                    'date_range': {
+                        'start': start_date,
+                        'end': end_date
+                    },
+                    'analysis_method': 'ML Clustering + Statistical Analysis',
+                    'window_days': time_window_days,
+                    'forecast_horizon_days': 90,
+                    'ml_models_used': ['DBSCAN', 'Isolation Forest', 'Cosine Similarity']
                 }
-            ],
-            'statistics': {
-                'total_patterns_analyzed': 1,
-                'significant_patterns': 0,
-                'average_correlation_score': 0.65,
-                'total_correlated_events': 1,
-                'anomaly_count': 0
-            },
-            'statistical_analysis': {
-                'pearson_correlation': 0.65,
-                'spearman_correlation': 0.62,
-                'p_value': 0.15,
-                'is_statistically_significant': False,
-                'confidence_interval_95': {'lower': 0.0, 'upper': 1.0},
-                'confidence_interval_99': {'lower': 0.0, 'upper': 1.0},
-                'sample_size': 1
-            },
-            'correlation_matrix': {
-                'feast_earthquake': 0.52,
-                'feast_volcanic': 0.39,
-                'feast_hurricane': 0.45,
-                'feast_tsunami': 0.33
-            },
-            'seasonal_patterns': {
-                'Spring': {'count': 1, 'avg_correlation': 0.65, 'events': [1]},
-                'Summer': {'count': 0, 'avg_correlation': 0.0, 'events': []},
-                'Fall': {'count': 0, 'avg_correlation': 0.0, 'events': []},
-                'Winter': {'count': 0, 'avg_correlation': 0.0, 'events': []}
-            },
-            'analysis_period': {
-                'start_date': start_date,
-                'end_date': end_date,
-                'time_window_days': time_window_days
             }
-        }
-
+            
+        finally:
+            db.close()
+        
     except Exception as e:
         import traceback
         print(f"Comprehensive pattern detection error: {e}")

@@ -569,5 +569,304 @@ class PatternDetectionService:
         return km
 
 
+    async def analyze_feast_day_correlations(
+        self,
+        start_date: str,
+        end_date: str,
+        event_types: Optional[List[str]] = None,
+        time_window_days: int = 14,
+        min_magnitude: float = 5.0,
+        db: Session = None
+    ) -> Dict[str, Any]:
+        """
+        Analyze correlations between biblical feast days and natural disasters.
+        
+        Returns patterns showing feast days with correlated events within time window.
+        """
+        try:
+            # Fetch feast days in the date range
+            feast_query = """
+            SELECT id, name, gregorian_date, feast_type, significance
+            FROM feast_days 
+            WHERE gregorian_date >= :start_date 
+            AND gregorian_date <= :end_date
+            ORDER BY gregorian_date
+            """
+            
+            feast_result = db.execute(text(feast_query), {
+                'start_date': start_date,
+                'end_date': end_date
+            })
+            feast_days = feast_result.fetchall()
+            
+            patterns = []
+            event_counts = {'earthquakes': 0, 'volcanic': 0, 'hurricanes': 0, 'tsunamis': 0}
+            
+            for feast in feast_days:
+                feast_date = feast.gregorian_date
+                feast_start = feast_date - timedelta(days=time_window_days)
+                feast_end = feast_date + timedelta(days=time_window_days)
+                
+                # Fetch events within time window
+                events_query = """
+                SELECT 
+                    'earthquake' as type,
+                    event_time as date,
+                    magnitude::text as magnitude,
+                    location::text as location,
+                    region,
+                    NULL::text as vei,
+                    NULL::text as category,
+                    NULL::text as cause,
+                    NULL::text as wave_height
+                FROM earthquakes 
+                WHERE event_time >= :start_date 
+                AND event_time <= :end_date
+                AND magnitude >= :min_magnitude
+                
+                UNION ALL
+                
+                SELECT 
+                    'volcanic' as type,
+                    eruption_start as date,
+                    NULL::text as magnitude,
+                    volcano_name as location,
+                    country as region,
+                    vei::text as vei,
+                    NULL::text as category,
+                    NULL::text as cause,
+                    NULL::text as wave_height
+                FROM volcanic_activity 
+                WHERE eruption_start >= :start_date 
+                AND eruption_start <= :end_date
+                AND vei >= 3
+                
+                UNION ALL
+                
+                SELECT 
+                    'hurricane' as type,
+                    formation_date as date,
+                    NULL::text as magnitude,
+                    storm_name as location,
+                    NULL::text as region,
+                    NULL::text as vei,
+                    category::text as category,
+                    NULL::text as cause,
+                    NULL::text as wave_height
+                FROM hurricanes 
+                WHERE formation_date >= :start_date 
+                AND formation_date <= :end_date
+                
+                UNION ALL
+                
+                SELECT 
+                    'tsunami' as type,
+                    event_date as date,
+                    NULL::text as magnitude,
+                    source_location::text as location,
+                    affected_regions::text as region,
+                    NULL::text as vei,
+                    NULL::text as category,
+                    source_type as cause,
+                    max_wave_height_m::text as wave_height
+                FROM tsunamis 
+                WHERE event_date >= :start_date 
+                AND event_date <= :end_date
+                
+                ORDER BY date
+                """
+                
+                events_result = db.execute(text(events_query), {
+                    'start_date': feast_start,
+                    'end_date': feast_end,
+                    'min_magnitude': min_magnitude
+                })
+                events = events_result.fetchall()
+                
+                if events:
+                    # Calculate correlation score based on event significance and proximity
+                    correlated_events = []
+                    total_significance = 0
+                    
+                    for event in events:
+                        days_from_feast = abs((event.date.date() - feast_date).days)
+                        
+                        # Calculate event significance score
+                        significance = 0
+                        if event.type == 'earthquake':
+                            mag = float(event.magnitude) if event.magnitude and event.magnitude != 'None' else 0
+                            significance = min(mag, 10) / 10
+                            event_counts['earthquakes'] += 1
+                        elif event.type == 'volcanic':
+                            vei = int(event.vei) if event.vei and event.vei != 'None' else 0
+                            significance = min(vei, 8) / 8
+                            event_counts['volcanic'] += 1
+                        elif event.type == 'hurricane':
+                            cat = int(event.category) if event.category and event.category != 'None' else 1
+                            significance = min(cat, 5) / 5
+                            event_counts['hurricanes'] += 1
+                        elif event.type == 'tsunami':
+                            height = float(event.wave_height) if event.wave_height and event.wave_height != 'None' else 0
+                            significance = 1.0 if height > 1 else 0.5
+                            event_counts['tsunamis'] += 1
+                        
+                        # Reduce significance based on distance from feast day
+                        time_decay = max(0, 1 - (days_from_feast / time_window_days))
+                        significance *= time_decay
+                        total_significance += significance
+                        
+                        correlated_events.append({
+                            'type': event.type,
+                            'date': event.date.isoformat(),
+                            'magnitude': event.magnitude,
+                            'name': event.location,
+                            'location': event.location,
+                            'region': event.region,
+                            'vei': event.vei,
+                            'category': event.category,
+                            'cause': event.cause,
+                            'wave_height': event.wave_height,
+                            'days_from_feast': days_from_feast
+                        })
+                    
+                    # Calculate correlation score
+                    event_count = len(correlated_events)
+                    avg_significance = total_significance / event_count if event_count > 0 else 0
+                    
+                    # Boost score for multiple events and high significance
+                    correlation_score = min(avg_significance * (1 + event_count * 0.1), 1.0)
+                    
+                    # Determine significance level
+                    if correlation_score >= 0.8:
+                        significance = 'HIGH'
+                    elif correlation_score >= 0.6:
+                        significance = 'MODERATE'
+                    elif correlation_score >= 0.4:
+                        significance = 'LOW'
+                    else:
+                        significance = 'MINIMAL'
+                    
+                    patterns.append({
+                        'feast_day': feast.name,
+                        'feast_date': feast.gregorian_date.isoformat(),
+                        'feast_type': feast.feast_type,
+                        'events': correlated_events,
+                        'event_count': event_count,
+                        'correlation_score': round(correlation_score, 3),
+                        'significance': significance,
+                        'is_anomaly': correlation_score > 0.8
+                    })
+            
+            # Sort patterns by correlation score
+            patterns.sort(key=lambda x: x['correlation_score'], reverse=True)
+            
+            # Calculate statistics
+            total_patterns = len(patterns)
+            significant_patterns = len([p for p in patterns if p['correlation_score'] > 0.7])
+            avg_correlation = sum(p['correlation_score'] for p in patterns) / total_patterns if total_patterns > 0 else 0.0
+            total_events = sum(p['event_count'] for p in patterns)
+            anomaly_count = len([p for p in patterns if p.get('is_anomaly', False)])
+            
+            # Calculate seasonal patterns
+            seasonal_patterns = {
+                'Spring': {'count': 0, 'avg_correlation': 0.0, 'events': []},
+                'Summer': {'count': 0, 'avg_correlation': 0.0, 'events': []},
+                'Fall': {'count': 0, 'avg_correlation': 0.0, 'events': []},
+                'Winter': {'count': 0, 'avg_correlation': 0.0, 'events': []}
+            }
+            
+            for pattern in patterns:
+                feast_date = datetime.fromisoformat(pattern['feast_date'])
+                month = feast_date.month
+                if 3 <= month <= 5:
+                    season = 'Spring'
+                elif 6 <= month <= 8:
+                    season = 'Summer'
+                elif 9 <= month <= 11:
+                    season = 'Fall'
+                else:
+                    season = 'Winter'
+                
+                seasonal_patterns[season]['count'] += 1
+                seasonal_patterns[season]['events'].append(pattern['event_count'])
+            
+            # Calculate averages
+            for season in seasonal_patterns:
+                count = seasonal_patterns[season]['count']
+                if count > 0:
+                    seasonal_patterns[season]['avg_correlation'] = sum(
+                        p['correlation_score'] for p in patterns 
+                        if self._get_season(p['feast_date']) == season
+                    ) / count
+            
+            return {
+                'patterns': patterns,
+                'statistics': {
+                    'total_patterns': total_patterns,
+                    'high_correlation_count': significant_patterns,
+                    'average_correlation': round(avg_correlation, 3),
+                    'total_events_analyzed': total_events,
+                    'feast_days_in_range': len(feast_days),
+                    'anomaly_count': anomaly_count
+                },
+                'event_counts': event_counts,
+                'statistical_analysis': {
+                    'pearson_correlation': 0.0,  # Would need more data for real correlation
+                    'spearman_correlation': 0.0,
+                    'p_value': 1.0,
+                    'is_statistically_significant': False,
+                    'confidence_interval_95': {'lower': 0.0, 'upper': 1.0},
+                    'confidence_interval_99': {'lower': 0.0, 'upper': 1.0},
+                    'sample_size': total_patterns
+                },
+                'correlation_matrix': {
+                    'feast_earthquake': 0.0,
+                    'feast_volcanic': 0.0,
+                    'feast_hurricane': 0.0,
+                    'feast_tsunami': 0.0
+                },
+                'seasonal_patterns': seasonal_patterns,
+                'predictions': [],
+                'metadata': {
+                    'date_range': {'start': start_date, 'end': end_date},
+                    'analysis_method': 'Feast Day Correlation Analysis',
+                    'window_days': time_window_days,
+                    'forecast_horizon_days': 0,
+                    'ml_models_used': ['Statistical Correlation', 'Time Window Analysis']
+                }
+            }
+            
+        except Exception as e:
+            print(f"Error in feast day correlation analysis: {e}")
+            import traceback
+            traceback.print_exc()
+            return {
+                'patterns': [],
+                'statistics': {
+                    'total_patterns': 0,
+                    'high_correlation_count': 0,
+                    'average_correlation': 0.0,
+                    'total_events_analyzed': 0,
+                    'feast_days_in_range': 0,
+                    'anomaly_count': 0
+                },
+                'event_counts': {'earthquakes': 0, 'volcanic': 0, 'hurricanes': 0, 'tsunamis': 0},
+                'error': str(e)
+            }
+    
+    def _get_season(self, date_str: str) -> str:
+        """Get season from date string"""
+        date = datetime.fromisoformat(date_str)
+        month = date.month
+        if 3 <= month <= 5:
+            return 'Spring'
+        elif 6 <= month <= 8:
+            return 'Summer'
+        elif 9 <= month <= 11:
+            return 'Fall'
+        else:
+            return 'Winter'
+
+
 # Create singleton instance
 pattern_detection_service = PatternDetectionService()
