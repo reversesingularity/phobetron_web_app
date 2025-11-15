@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     
     # Database configuration - Railway provides DATABASE_URL
     # Default for local development
-    DATABASE_URL: str = "postgresql+psycopg2://celestial_app:Hx3$oTc8Ja9^tL2w@localhost:5432/celestial_signs"
+    DATABASE_URL: str = "postgresql+psycopg2://celestial_app@127.0.0.1:5432/celestial_signs"
     
     @computed_field
     @property
@@ -37,9 +37,13 @@ class Settings(BaseSettings):
     
     # CORS origins - will be loaded from environment or use defaults
     BACKEND_CORS_ORIGINS: List[str] = [
-        "http://localhost:3000",  # React dev server
+        "http://localhost:3000",  # React dev server (old)
+        "http://localhost:3001",  # React dev server (new port)
+        "http://localhost:5173",  # Vite dev server (new)
         "http://localhost:8000",  # FastAPI dev server
         "http://127.0.0.1:3000",
+        "http://127.0.0.1:3001",  # React dev server (new port)
+        "http://127.0.0.1:5173",
         "http://127.0.0.1:8000",
         "https://phobetronwebapp-production.up.railway.app",  # Railway backend
         "https://phobetronwebapp-production-d69a.up.railway.app",  # Railway frontend (NEW)

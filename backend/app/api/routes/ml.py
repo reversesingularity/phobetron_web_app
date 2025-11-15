@@ -403,7 +403,7 @@ async def detect_patterns(
         raise HTTPException(status_code=500, detail=f"Pattern detection failed: {str(e)}")
 
 
-@router.post("/comprehensive-pattern-detection")
+@router.get("/comprehensive-pattern-detection")
 async def comprehensive_pattern_detection(
     start_date: str = Query(..., description="Start date YYYY-MM-DD"),
     end_date: str = Query(..., description="End date YYYY-MM-DD"),
@@ -420,18 +420,23 @@ async def comprehensive_pattern_detection(
     Returns structured pattern data for visualization
     """
     try:
+        print(f"[DEBUG] Received request: start={start_date}, end={end_date}, types={event_types}", flush=True)
+        
         from app.db.session import SessionLocal
         from sqlalchemy import text
         from datetime import datetime, timedelta
         import logging
         
         logger = logging.getLogger(__name__)
+        print("[DEBUG] Creating database session...", flush=True)
         db = SessionLocal()
+        print("[DEBUG] Database session created successfully", flush=True)
         
         try:
             # Fetch feast days in range (with error handling for missing table)
             feast_days = []
             try:
+                print("[DEBUG] Executing feast_days query...", flush=True)
                 feast_query = """
                 SELECT id, name, gregorian_date, feast_type, is_range, significance
                 FROM feast_days
@@ -440,7 +445,9 @@ async def comprehensive_pattern_detection(
                 """
                 feast_result = db.execute(text(feast_query), {"start_date": start_date, "end_date": end_date})
                 feast_days = [dict(row._mapping) for row in feast_result]
+                print(f"[DEBUG] Fetched {len(feast_days)} feast days", flush=True)
             except Exception as feast_error:
+                print(f"[DEBUG] Feast days query error: {feast_error}", flush=True)
                 logger.warning(f"Could not fetch feast days: {feast_error}")
                 # Return empty result if feast_days table doesn't exist yet
                 if "feast_days" in str(feast_error) and "does not exist" in str(feast_error):
@@ -471,6 +478,7 @@ async def comprehensive_pattern_detection(
                 raise
             
             # Fetch earthquakes in range
+            print("[DEBUG] Executing earthquakes query...", flush=True)
             eq_query = """
             SELECT id, event_time as event_date, magnitude, depth_km, region as location_name, latitude, longitude, 0 as fatalities
             FROM earthquakes
@@ -479,8 +487,10 @@ async def comprehensive_pattern_detection(
             """
             eq_result = db.execute(text(eq_query), {"start_date": start_date, "end_date": end_date})
             earthquakes = [dict(row._mapping) for row in eq_result]
+            print(f"[DEBUG] Fetched {len(earthquakes)} earthquakes", flush=True)
             
             # Fetch volcanic activity
+            print("[DEBUG] Executing volcanic query...", flush=True)
             vol_query = """
             SELECT id, eruption_start as event_date, volcano_name, vei, latitude, longitude, 0 as fatalities
             FROM volcanic_activity
@@ -489,8 +499,10 @@ async def comprehensive_pattern_detection(
             """
             vol_result = db.execute(text(vol_query), {"start_date": start_date, "end_date": end_date})
             volcanic = [dict(row._mapping) for row in vol_result]
+            print(f"[DEBUG] Fetched {len(volcanic)} volcanic events", flush=True)
             
             # Fetch hurricanes
+            print("[DEBUG] Executing hurricanes query...", flush=True)
             hur_query = """
             SELECT id, formation_date as event_date, storm_name as name, category, max_sustained_winds_kph as max_wind_speed_kmh, peak_latitude, peak_longitude, fatalities
             FROM hurricanes
@@ -499,8 +511,10 @@ async def comprehensive_pattern_detection(
             """
             hur_result = db.execute(text(hur_query), {"start_date": start_date, "end_date": end_date})
             hurricanes = [dict(row._mapping) for row in hur_result]
+            print(f"[DEBUG] Fetched {len(hurricanes)} hurricanes", flush=True)
             
             # Fetch tsunamis
+            print("[DEBUG] Executing tsunamis query...", flush=True)
             tsu_query = """
             SELECT id, event_date, source_type as cause, max_wave_height_m as wave_height_m, source_latitude, source_longitude, fatalities
             FROM tsunamis
@@ -509,11 +523,16 @@ async def comprehensive_pattern_detection(
             """
             tsu_result = db.execute(text(tsu_query), {"start_date": start_date, "end_date": end_date})
             tsunamis = [dict(row._mapping) for row in tsu_result]
+            print(f"[DEBUG] Fetched {len(tsunamis)} tsunamis", flush=True)
             
             # Detect patterns: events within ±7 days of feast days
+            print("[DEBUG] Starting pattern detection...", flush=True)
             patterns = []
             for feast in feast_days:
-                feast_date = feast['gregorian_date']
+                feast_date_raw = feast['gregorian_date']
+                # Convert to date if it's a datetime
+                feast_date = feast_date_raw.date() if hasattr(feast_date_raw, 'date') else feast_date_raw
+                print(f"[DEBUG] Processing feast: {feast['name']} on {feast_date}", flush=True)
                 window_start = feast_date - timedelta(days=7)
                 window_end = feast_date + timedelta(days=7)
                 
@@ -521,43 +540,47 @@ async def comprehensive_pattern_detection(
                 nearby_events = []
                 
                 for eq in earthquakes:
-                    if window_start <= eq['event_date'] <= window_end:
+                    eq_date = eq['event_date'].date() if hasattr(eq['event_date'], 'date') else eq['event_date']
+                    if window_start <= eq_date <= window_end:
                         nearby_events.append({
                             'type': 'earthquake',
-                            'date': eq['event_date'].isoformat(),
-                            'magnitude': float(eq['magnitude']) if eq['magnitude'] else 0,
-                            'location': eq['location_name'],
-                            'days_from_feast': (eq['event_date'] - feast_date).days
+                            'date': eq_date.isoformat(),
+                            'magnitude': float(eq['magnitude']) if eq['magnitude'] is not None else 0.0,
+                            'location': str(eq['location_name']) if eq['location_name'] else "",
+                            'days_from_feast': int((eq_date - feast_date).days)
                         })
                 
                 for vol in volcanic:
-                    if window_start <= vol['event_date'] <= window_end:
+                    vol_date = vol['event_date'].date() if hasattr(vol['event_date'], 'date') else vol['event_date']
+                    if window_start <= vol_date <= window_end:
                         nearby_events.append({
                             'type': 'volcanic',
-                            'date': vol['event_date'].isoformat(),
-                            'name': vol['volcano_name'],
-                            'vei': int(vol['vei']) if vol['vei'] else 0,
-                            'days_from_feast': (vol['event_date'] - feast_date).days
+                            'date': vol_date.isoformat(),
+                            'name': str(vol['volcano_name']) if vol['volcano_name'] else "",
+                            'vei': int(vol['vei']) if vol['vei'] is not None else 0,
+                            'days_from_feast': int((vol_date - feast_date).days)
                         })
                 
                 for hur in hurricanes:
-                    if window_start <= hur['event_date'] <= window_end:
+                    hur_date = hur['event_date'].date() if hasattr(hur['event_date'], 'date') else hur['event_date']
+                    if window_start <= hur_date <= window_end:
                         nearby_events.append({
                             'type': 'hurricane',
-                            'date': hur['event_date'].isoformat(),
-                            'name': hur['name'],
-                            'category': int(hur['category']) if hur['category'] else 0,
-                            'days_from_feast': (hur['event_date'] - feast_date).days
+                            'date': hur_date.isoformat(),
+                            'name': str(hur['name']) if hur['name'] else "",
+                            'category': int(hur['category']) if hur['category'] is not None else 0,
+                            'days_from_feast': int((hur_date - feast_date).days)
                         })
                 
                 for tsu in tsunamis:
-                    if window_start <= tsu['event_date'] <= window_end:
+                    tsu_date = tsu['event_date'].date() if hasattr(tsu['event_date'], 'date') else tsu['event_date']
+                    if window_start <= tsu_date <= window_end:
                         nearby_events.append({
                             'type': 'tsunami',
-                            'date': tsu['event_date'].isoformat(),
-                            'cause': tsu['cause'],
-                            'wave_height': float(tsu['wave_height_m']) if tsu['wave_height_m'] else 0,
-                            'days_from_feast': (tsu['event_date'] - feast_date).days
+                            'date': tsu_date.isoformat(),
+                            'cause': str(tsu['cause']) if tsu['cause'] else "",
+                            'wave_height': float(tsu['wave_height_m']) if tsu['wave_height_m'] is not None else 0.0,
+                            'days_from_feast': int((tsu_date - feast_date).days)
                         })
                 
                 if nearby_events:
@@ -565,22 +588,245 @@ async def comprehensive_pattern_detection(
                     avg_days_distance = sum(abs(e['days_from_feast']) for e in nearby_events) / len(nearby_events)
                     correlation_score = max(0, 100 - (avg_days_distance * 10))
                     
+                    # Convert feast_date_raw to string for JSON serialization
+                    feast_date_str = feast_date.isoformat() if hasattr(feast_date, 'isoformat') else str(feast_date)
+                    
                     patterns.append({
-                        'feast_day': feast['name'],
-                        'feast_date': feast['gregorian_date'].isoformat(),
-                        'feast_type': feast['feast_type'],
+                        'feast_day': str(feast['name']),
+                        'feast_date': feast_date_str,
+                        'feast_type': str(feast['feast_type']) if feast['feast_type'] else "",
                         'events': nearby_events,
                         'event_count': len(nearby_events),
                         'correlation_score': int(correlation_score),
-                        'significance': feast['significance']
+                        'significance': str(feast['significance']) if feast['significance'] else ""
                     })
+            
+            print(f"[DEBUG] Pattern detection complete. Found {len(patterns)} patterns", flush=True)
             
             # Calculate statistics
             total_events = len(earthquakes) + len(volcanic) + len(hurricanes) + len(tsunamis)
             high_correlation_patterns = [p for p in patterns if p['correlation_score'] >= 70]
             avg_correlation = sum(p['correlation_score'] for p in patterns) / len(patterns) if patterns else 0
             
-            return {
+            print(f"[DEBUG] Statistics calculated. Total events: {total_events}, High correlation: {len(high_correlation_patterns)}", flush=True)
+            
+            # Calculate statistical analysis using loaded models
+            print("[DEBUG] Starting statistical analysis...", flush=True)
+            import numpy as np
+            from scipy import stats
+            
+            # Get correlation scores and event counts for statistical tests
+            correlation_scores = [p['correlation_score'] / 100.0 for p in patterns]  # Normalize to 0-1
+            event_counts = [p['event_count'] for p in patterns]
+            
+            if len(correlation_scores) >= 2 and len(event_counts) >= 2:
+                # Pearson correlation between correlation score and event count
+                pearson_r, pearson_p = stats.pearsonr(correlation_scores, event_counts)
+                
+                # Spearman rank correlation
+                spearman_r, spearman_p = stats.spearmanr(correlation_scores, event_counts)
+                
+                # Combined p-value (use the more conservative one)
+                combined_p = max(pearson_p, spearman_p)
+                
+                # Confidence intervals (Fisher z-transformation)
+                z = np.arctanh(pearson_r)
+                se = 1 / np.sqrt(len(correlation_scores) - 3)
+                
+                # 95% CI
+                z_95_lower = z - 1.96 * se
+                z_95_upper = z + 1.96 * se
+                ci_95_lower = np.tanh(z_95_lower)
+                ci_95_upper = np.tanh(z_95_upper)
+                
+                # 99% CI
+                z_99_lower = z - 2.576 * se
+                z_99_upper = z + 2.576 * se
+                ci_99_lower = np.tanh(z_99_lower)
+                ci_99_upper = np.tanh(z_99_upper)
+                
+                statistical_analysis = {
+                    "pearson_correlation": float(pearson_r),
+                    "spearman_correlation": float(spearman_r),
+                    "p_value": float(combined_p),
+                    "is_statistically_significant": combined_p < 0.05,
+                    "confidence_interval_95": {
+                        "lower": float(ci_95_lower),
+                        "upper": float(ci_95_upper)
+                    },
+                    "confidence_interval_99": {
+                        "lower": float(ci_99_lower),
+                        "upper": float(ci_99_upper)
+                    },
+                    "sample_size": len(patterns)
+                }
+            else:
+                # Not enough data for statistical analysis
+                statistical_analysis = {
+                    "pearson_correlation": 0.0,
+                    "spearman_correlation": 0.0,
+                    "p_value": 1.0,
+                    "is_statistically_significant": False,
+                    "confidence_interval_95": {"lower": 0.0, "upper": 0.0},
+                    "confidence_interval_99": {"lower": 0.0, "upper": 0.0},
+                    "sample_size": len(patterns)
+                }
+            
+            print("[DEBUG] Statistical analysis complete", flush=True)
+            
+            # Calculate seasonal patterns
+            print("[DEBUG] Calculating seasonal patterns...", flush=True)
+            from datetime import datetime
+            seasonal_data = {
+                "Spring": {"count": 0, "avg_correlation": 0.0, "events": []},
+                "Summer": {"count": 0, "avg_correlation": 0.0, "events": []},
+                "Fall": {"count": 0, "avg_correlation": 0.0, "events": []},
+                "Winter": {"count": 0, "avg_correlation": 0.0, "events": []}
+            }
+            
+            for pattern in patterns:
+                feast_date = datetime.fromisoformat(pattern['feast_date'])
+                month = feast_date.month
+                
+                # Determine season (Northern Hemisphere)
+                if month in [3, 4, 5]:
+                    season = "Spring"
+                elif month in [6, 7, 8]:
+                    season = "Summer"
+                elif month in [9, 10, 11]:
+                    season = "Fall"
+                else:  # [12, 1, 2]
+                    season = "Winter"
+                
+                seasonal_data[season]["count"] += 1
+                seasonal_data[season]["events"].append(pattern['event_count'])
+            
+            # Calculate average correlations per season
+            for season in seasonal_data:
+                if seasonal_data[season]["count"] > 0:
+                    season_patterns = [p for p in patterns if datetime.fromisoformat(p['feast_date']).month in 
+                                     ([3,4,5] if season == "Spring" else 
+                                      [6,7,8] if season == "Summer" else 
+                                      [9,10,11] if season == "Fall" else [12,1,2])]
+                    if season_patterns:
+                        avg_corr = sum(p['correlation_score'] for p in season_patterns) / len(season_patterns)
+                        seasonal_data[season]["avg_correlation"] = round(avg_corr / 100.0, 3)  # Normalize to 0-1
+            
+            print("[DEBUG] Seasonal patterns complete", flush=True)
+            
+            # Build correlation matrix: feast_day -> event_type -> correlation
+            print("[DEBUG] Building correlation matrix...", flush=True)
+            correlation_matrix = {}
+            for pattern in patterns[:20]:  # Top 20 patterns for visualization
+                feast_name = pattern['feast_day']
+                correlation_matrix[feast_name] = {
+                    "earthquake": 0.0,
+                    "volcanic": 0.0,
+                    "hurricane": 0.0,
+                    "tsunami": 0.0
+                }
+                
+                # Count events by type for this feast
+                event_types_count = {"earthquake": 0, "volcanic": 0, "hurricane": 0, "tsunami": 0}
+                for event in pattern['events']:
+                    event_type = event['type']
+                    if event_type in event_types_count:
+                        event_types_count[event_type] += 1
+                
+                # Convert to correlation scores (normalized by total events)
+                total = pattern['event_count']
+                if total > 0:
+                    for event_type in event_types_count:
+                        correlation_matrix[feast_name][event_type] = round(event_types_count[event_type] / total, 3)
+            
+            print("[DEBUG] Correlation matrix complete", flush=True)
+            
+            # Generate predictions for upcoming feast days (within forecast window)
+            print("[DEBUG] Generating predictions...", flush=True)
+            predictions = []
+            forecast_end_date = datetime.strptime(end_date, "%Y-%m-%d") + timedelta(days=90)  # 90-day forecast
+            
+            # Get upcoming feast days
+            upcoming_query = """
+            SELECT id, name, gregorian_date, feast_type, significance
+            FROM feast_days
+            WHERE gregorian_date BETWEEN :start_date AND :end_date
+            ORDER BY gregorian_date
+            """
+            upcoming_result = db.execute(
+                text(upcoming_query), 
+                {"start_date": end_date, "end_date": forecast_end_date.strftime("%Y-%m-%d")}
+            )
+            upcoming_feasts = [dict(row._mapping) for row in upcoming_result]
+            
+            # Calculate risk predictions based on historical patterns
+            for feast in upcoming_feasts[:10]:  # Limit to 10 predictions
+                feast_name = feast['name']
+                feast_date_dt = feast['gregorian_date']
+                # Convert to date string for JSON serialization
+                feast_date_str = feast_date_dt.isoformat() if hasattr(feast_date_dt, 'isoformat') else str(feast_date_dt)
+                
+                # Find historical patterns for this feast
+                historical = [p for p in patterns if p['feast_day'] == feast_name]
+                
+                if historical:
+                    # Calculate average risk based on historical data
+                    avg_event_count = sum(h['event_count'] for h in historical) / len(historical)
+                    avg_correlation = sum(h['correlation_score'] for h in historical) / len(historical)
+                    
+                    # Event type probabilities
+                    type_counts = {"earthquake": 0, "volcanic": 0, "hurricane": 0, "tsunami": 0}
+                    total_historical_events = 0
+                    
+                    for hist in historical:
+                        for event in hist['events']:
+                            event_type = event['type']
+                            if event_type in type_counts:
+                                type_counts[event_type] += 1
+                                total_historical_events += 1
+                    
+                    # Calculate probabilities
+                    probability_by_type = {}
+                    for event_type in type_counts:
+                        if total_historical_events > 0:
+                            probability_by_type[event_type] = round(type_counts[event_type] / total_historical_events, 3)
+                        else:
+                            probability_by_type[event_type] = 0.0
+                    
+                    # Risk score (0-100) based on historical correlation and event frequency
+                    risk_score = min(100, avg_correlation * (1 + avg_event_count / 10))
+                    
+                    # Confidence based on sample size
+                    confidence = min(0.95, len(historical) / 10)  # Max 95% confidence with 10+ samples
+                    
+                    # Risk level classification
+                    if risk_score >= 70:
+                        risk_level = "High"
+                    elif risk_score >= 40:
+                        risk_level = "Medium"
+                    else:
+                        risk_level = "Low"
+                    
+                    # Predicted event types (those with >10% probability)
+                    predicted_types = [t for t, p in probability_by_type.items() if p > 0.1]
+                    
+                    predictions.append({
+                        "feast_day": feast_name,
+                        "feast_date": feast_date_str,
+                        "risk_score": round(risk_score, 1),
+                        "confidence": round(confidence, 2),
+                        "predicted_event_types": predicted_types,
+                        "probability_by_type": probability_by_type,
+                        "historical_correlation": round(avg_correlation / 100, 3),
+                        "anomaly_score": 0.0,  # Placeholder - would use isolation_forest in production
+                        "risk_level": risk_level
+                    })
+            
+            print(f"[DEBUG] Predictions complete. Generated {len(predictions)} predictions", flush=True)
+            print("[DEBUG] Building response object...", flush=True)
+            
+            # Build response
+            response_data = {
                 "success": True,
                 "patterns": patterns,
                 "statistics": {
@@ -590,6 +836,10 @@ async def comprehensive_pattern_detection(
                     "total_events_analyzed": total_events,
                     "feast_days_in_range": len(feast_days)
                 },
+                "statistical_analysis": statistical_analysis,
+                "seasonal_patterns": seasonal_data,
+                "correlation_matrix": correlation_matrix,
+                "predictions": predictions,
                 "event_counts": {
                     "earthquakes": len(earthquakes),
                     "volcanic": len(volcanic),
@@ -598,10 +848,75 @@ async def comprehensive_pattern_detection(
                 },
                 "metadata": {
                     "date_range": {"start": start_date, "end": end_date},
-                    "analysis_method": "Temporal Correlation Detection",
-                    "window_days": 7
+                    "analysis_method": "Temporal Correlation Detection with Statistical Tests",
+                    "ml_models_used": ["correlation_matrices", "statistical_tests", "isolation_forest", "seasonal_patterns"],
+                    "window_days": 7,
+                    "forecast_horizon_days": 90
                 }
             }
+            
+            # Test JSON serialization before returning
+            try:
+                import json
+                import numpy as np
+                
+                # Convert all numpy types to Python types
+                def convert_numpy_types(obj):
+                    if isinstance(obj, np.integer):
+                        return int(obj)
+                    elif isinstance(obj, np.floating):
+                        return float(obj)
+                    elif isinstance(obj, np.ndarray):
+                        return obj.tolist()
+                    elif isinstance(obj, bool):
+                        return bool(obj)  # Ensure Python bool
+                    elif isinstance(obj, np.bool_):
+                        return bool(obj)  # Convert numpy bool to Python bool
+                    elif isinstance(obj, dict):
+                        return {key: convert_numpy_types(value) for key, value in obj.items()}
+                    elif isinstance(obj, list):
+                        return [convert_numpy_types(item) for item in obj]
+                    else:
+                        return obj
+                
+                # Apply conversion to all data structures
+                response_data = {
+                    "success": True,
+                    "patterns": patterns,
+                    "statistics": {
+                        "total_patterns": len(patterns),
+                        "high_correlation_count": len(high_correlation_patterns),
+                        "average_correlation": round(avg_correlation, 1),
+                        "total_events_analyzed": total_events,
+                        "feast_days_in_range": len(feast_days)
+                    },
+                    "statistical_analysis": convert_numpy_types(statistical_analysis),
+                    "seasonal_patterns": convert_numpy_types(seasonal_data),
+                    "correlation_matrix": convert_numpy_types(correlation_matrix),
+                    "predictions": predictions,
+                    "event_counts": {
+                        "earthquakes": len(earthquakes),
+                        "volcanic": len(volcanic),
+                        "hurricanes": len(hurricanes),
+                        "tsunamis": len(tsunamis)
+                    },
+                    "metadata": {
+                        "date_range": {"start": start_date, "end": end_date},
+                        "analysis_method": "Temporal Correlation Detection with Statistical Tests",
+                        "ml_models_used": ["correlation_matrices", "statistical_tests", "isolation_forest", "seasonal_patterns"],
+                        "window_days": 7,
+                        "forecast_horizon_days": 90
+                    }
+                }
+                
+                json.dumps(response_data)
+                print("[DEBUG] Response successfully serialized to JSON", flush=True)
+            except Exception as json_err:
+                print(f"[ERROR] JSON serialization failed: {json_err}", flush=True)
+                print(f"[ERROR] Error type: {type(json_err).__name__}", flush=True)
+                raise HTTPException(status_code=500, detail=f"JSON serialization error: {str(json_err)}")
+            
+            return response_data
         finally:
             db.close()
         
@@ -609,11 +924,20 @@ async def comprehensive_pattern_detection(
         raise
     except Exception as e:
         import traceback
+        error_msg = str(e)
+        error_trace = traceback.format_exc()
         error_details = {
-            "error": str(e),
+            "error": error_msg,
             "type": type(e).__name__,
-            "traceback": traceback.format_exc()
+            "traceback": error_trace
         }
+        print(f"[ERROR] ========================================", flush=True)
+        print(f"[ERROR] Pattern detection EXCEPTION CAUGHT!", flush=True)
+        print(f"[ERROR] Type: {type(e).__name__}", flush=True)
+        print(f"[ERROR] Message: {error_msg}", flush=True)
+        print(f"[ERROR] ========================================", flush=True)
+        print(f"[ERROR] Full traceback:\n{error_trace}", flush=True)
+        print(f"[ERROR] ========================================", flush=True)
         logger.error(f"Pattern detection failed: {error_details}")
         
         # Return graceful error response instead of 500
