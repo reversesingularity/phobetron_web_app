@@ -18,8 +18,8 @@ echo "Using PORT: $PORT"
 
 # Check if database needs population (run only once)
 if [ ! -f "/tmp/db_populated" ]; then
-    echo "Populating production database..."
-    python scripts/populate_production_data.py
+    echo "Populating production database with recent data..."
+    python scripts/populate_all.py --earthquake-days 365 --min-magnitude 4.0
     touch /tmp/db_populated
     echo "Database population complete!"
 else
