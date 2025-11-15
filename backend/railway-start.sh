@@ -13,7 +13,7 @@ echo "Python version: $(python3 --version)"
 echo ""
 
 # Set default PORT if not provided by Railway
-PORT="8080"
+PORT="8020"
 echo "Using PORT: $PORT"
 
 echo "Starting uvicorn on 0.0.0.0:$PORT..."
