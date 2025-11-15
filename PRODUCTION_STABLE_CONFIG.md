@@ -1,7 +1,5 @@
-# 🎯 PRODUCTION STABLE CONFIGURATION
-
 **Status**: ✅ **FULLY OPERATIONAL**  
-**Verified**: November 16, 2025 15:00 UTC  
+**Verified**: November 16, 2025 16:30 UTC  
 **Backup Location**: `backups/PRODUCTION_STABLE_20251113_225505/`  
 
 ---
@@ -91,6 +89,7 @@ All should return JSON with data (not errors).
 - ✅ **Implemented comprehensive-pattern-detection endpoint** - Advanced Pattern Detection page now functional
 - ✅ **Re-enabled health checks** - Deployment stability confirmed
 - ✅ **Fixed frontend Dockerfile for Railway multi-service** - Removed incorrect API proxy, fixed VITE_API_URL
+- ✅ **Fixed frontend nginx port configuration** - Removed PORT variable causing "invalid port" errors
 - ✅ **Fixed watchman-alerts endpoint** - Resolved "'EnhancedAlert' object has no attribute 'description'" error
 - ✅ **Fixed Pattern Detection page** - Corrected API method (POST→GET) and URLs, fixed infinite loop in Watchman's View
 - ✅ **Fixed frontend nginx healthcheck** - Simplified nginx config and removed conflicting Dockerfile HEALTHCHECK
@@ -156,11 +155,12 @@ The others are obsolete - this is the ONLY verified production stable config.
 14. ✅ AI Pattern Detection - Advanced ML-powered pattern analysis
 
 ### Known Issues
+- **Pattern Detection Database**: API functional but returns 0 patterns (Railway database lacks 2024 event data)
 - ML Watchman Alerts endpoint returns 500 error ('EnhancedAlert' object has no attribute 'description') - **FIXED**
 - Both affected pages (Alerts, Watchman's View) use fallback mock data
 
 ---
 
-**Last Updated**: November 16, 2025 14:20:05  
+**Last Updated**: November 16, 2025 16:30 UTC  
 **Constitution Version**: 1.4.0  
 **Deployment Notes**: See `backups/PRODUCTION_STABLE_20251113_225505/DEPLOYMENT_NOTES.md`  
