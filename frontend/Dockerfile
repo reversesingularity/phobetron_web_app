@@ -35,9 +35,6 @@ RUN rm -f /etc/nginx/conf.d/default.conf.backup
 # Expose port 80
 EXPOSE 80
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD wget --quiet --tries=1 --spider http://localhost:80 || exit 1
-
 # Start nginx
+CMD ["nginx", "-g", "daemon off;"]
 CMD ["nginx", "-g", "daemon off;"]
