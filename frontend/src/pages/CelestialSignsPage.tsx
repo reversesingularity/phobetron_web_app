@@ -16,6 +16,8 @@ interface CelestialSign {
   sign_type: string
   sign_description: string
   scripture_reference: string
+  primary_scripture: string
+  related_scriptures: string[]
   theological_interpretation: string
   created_at: string
 }
@@ -175,13 +177,33 @@ const CelestialSignsPage = () => {
               <Star className="w-6 h-6 text-purple-400 flex-shrink-0" />
             </div>
 
-            {/* Scripture Reference */}
+            {/* Scripture References */}
             <div className="bg-gray-900/50 rounded-lg p-3 mb-4 border border-gray-700/50">
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center gap-2 mb-2">
                 <BookOpen className="w-4 h-4 text-blue-400" />
-                <span className="text-sm font-semibold text-blue-300">Scripture Reference</span>
+                <span className="text-sm font-semibold text-blue-300">Scripture References</span>
               </div>
-              <p className="text-gray-300 text-sm">{sign.scripture_reference}</p>
+              <div className="space-y-2">
+                <div>
+                  <span className="text-xs text-gray-500 font-medium">Primary:</span>
+                  <p className="text-gray-300 text-sm font-medium">{sign.primary_scripture}</p>
+                </div>
+                {sign.related_scriptures && sign.related_scriptures.length > 0 && (
+                  <div>
+                    <span className="text-xs text-gray-500 font-medium">Related:</span>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {sign.related_scriptures.map((scripture, index) => (
+                        <span
+                          key={index}
+                          className="inline-block px-2 py-1 bg-blue-900/30 text-blue-200 text-xs rounded border border-blue-700/50"
+                        >
+                          {scripture}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Description */}
