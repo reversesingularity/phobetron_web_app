@@ -558,7 +558,7 @@ async def comprehensive_pattern_detection(
                     'high_correlation_count': significant_patterns,
                     'average_correlation': round(avg_correlation, 3),
                     'total_events_analyzed': total_events,
-                    'feast_days_in_range': results.get('feast_days_analyzed', 0),
+                    'feast_days_in_range': results.get('statistics', {}).get('feast_days_in_range', 0),
                     'anomaly_count': anomaly_count
                 },
                 'event_counts': results.get('event_counts', {
