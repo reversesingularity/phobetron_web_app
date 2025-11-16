@@ -1,0 +1,6 @@
+# Database backups are stored here
+# Do not commit backup files to git
+*.sql
+*.sql.gz
+*.log
+*.txt

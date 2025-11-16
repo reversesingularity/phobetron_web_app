@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+/* Leaflet map fixes */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  z-index: 0;
+}
+
+.leaflet-popup-content-wrapper {
+  @apply rounded-lg shadow-lg;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-600 rounded;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-500;
+}
+
+/* Thin scrollbar for navigation */
+.scrollbar-thin {
+  scrollbar-width: thin;  /* Firefox */
+  scrollbar-color: rgba(139, 92, 246, 0.5) transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  height: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.5);
+  border-radius: 2px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.8);
+}

@@ -1,6 +1,6 @@
 **Status**: ✅ **FULLY OPERATIONAL**  
-**Verified**: November 16, 2025 16:30 UTC  
-**Backup Location**: `backups/PRODUCTION_STABLE_20251113_225505/`  
+**Verified**: November 16, 2025 19:00 UTC  
+**Backup Location**: `backups/PRODUCTION_STABLE_20251116_180000/`  
 
 ---
 
@@ -24,20 +24,20 @@ If production breaks, restore from backup:
 
 ```powershell
 # 1. Copy backend files
-Copy-Item -Path "backups\PRODUCTION_STABLE_20251116_170000\backend\*" `
+Copy-Item -Path "backups\PRODUCTION_STABLE_20251116_180000\backend\*" `
           -Destination "backend\" -Recurse -Force
 
 # 2. Copy railway.toml
-Copy-Item -Path "backups\PRODUCTION_STABLE_20251116_170000\railway.toml" `
+Copy-Item -Path "backups\PRODUCTION_STABLE_20251116_180000\railway.toml" `
           -Destination "railway.toml" -Force
 
 # 3. Copy frontend files  
-Copy-Item -Path "backups\PRODUCTION_STABLE_20251116_170000\frontend\*" `
+Copy-Item -Path "backups\PRODUCTION_STABLE_20251116_180000\frontend\*" `
           -Destination "frontend\" -Recurse -Force
 
 # 4. Commit and push
 git add .
-git commit -m "Restore from PRODUCTION_STABLE_20251116_170000"
+git commit -m "Restore from PRODUCTION_STABLE_20251116_180000"
 git push origin 001-database-schema
 ```
 
@@ -117,12 +117,13 @@ All should return JSON with data (not errors).
 ## 🎯 BACKUP HIERARCHY (NEWEST FIRST)
 
 **USE THIS BACKUP** when restoring:
-1. ✅ **PRODUCTION_STABLE_20251116_170000** ← **USE THIS** (AI Pattern Detection UI, Railway fixes)
-2. PRODUCTION_STABLE_20251113_225505 (Previous stable - Navigation fixes, scrollable UI)
-3. PRODUCTION_STABLE_20251112_183253 (Previous stable - API endpoints working)
-4. solar_system_stable_20251110_211532
-5. solar_system_stable_20251110_211522
-6. solar_system_integration_20251109_213132
+1. ✅ **PRODUCTION_STABLE_20251116_180000** ← **USE THIS** (Latest stable - Railway deployment fixes, formatMagnitude working)
+2. PRODUCTION_STABLE_20251116_170000 (Previous stable - AI Pattern Detection UI, Railway fixes)
+3. PRODUCTION_STABLE_20251113_225505 (Previous stable - Navigation fixes, scrollable UI)
+4. PRODUCTION_STABLE_20251112_183253 (Previous stable - API endpoints working)
+5. solar_system_stable_20251110_211532
+6. solar_system_stable_20251110_211522
+7. solar_system_integration_20251109_213132
 
 The others are obsolete - this is the ONLY verified production stable config.
 
@@ -160,6 +161,6 @@ The others are obsolete - this is the ONLY verified production stable config.
 
 ---
 
-**Last Updated**: November 16, 2025 17:00 UTC  
+**Last Updated**: November 16, 2025 19:00 UTC  
 **Constitution Version**: 1.4.0  
-**Deployment Notes**: See `backups/PRODUCTION_STABLE_20251116_170000/DEPLOYMENT_NOTES.md`  
+**Deployment Notes**: See `backups/PRODUCTION_STABLE_20251116_180000/DEPLOYMENT_NOTES.md`  
