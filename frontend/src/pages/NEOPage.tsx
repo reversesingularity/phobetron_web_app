@@ -128,10 +128,10 @@ const NEOPage = () => {
                 <div>
                   <p className="text-gray-400 text-xs">Miss Distance</p>
                   <p className={`font-bold text-lg ${getDistanceColor(neo.miss_distance_lunar)}`}>
-                    {neo.miss_distance_lunar.toFixed(2)} LD
+                    {Number(neo.miss_distance_lunar).toFixed(2)} LD
                   </p>
                   <p className="text-gray-400 text-xs">
-                    {neo.miss_distance_au.toFixed(4)} AU
+                    {Number(neo.miss_distance_au).toFixed(4)} AU
                   </p>
                 </div>
 
@@ -141,17 +141,17 @@ const NEOPage = () => {
                     Velocity
                   </p>
                   <p className="text-white font-medium">
-                    {neo.relative_velocity_km_s.toFixed(2)} km/s
+                    {Number(neo.relative_velocity_km_s).toFixed(2)} km/s
                   </p>
                   <p className="text-gray-400 text-xs">
-                    {(neo.relative_velocity_km_s * 3600).toFixed(0)} km/h
+                    {(Number(neo.relative_velocity_km_s) * 3600).toFixed(0)} km/h
                   </p>
                 </div>
 
                 <div>
                   <p className="text-gray-400 text-xs">Estimated Size</p>
                   <p className="text-white font-medium">
-                    ~{neo.estimated_diameter_m.toFixed(0)} m
+                    ~{Number(neo.estimated_diameter_m).toFixed(0)} m
                   </p>
                   <p className="text-gray-400 text-xs">
                     {getSizeCategory(neo.estimated_diameter_m)}

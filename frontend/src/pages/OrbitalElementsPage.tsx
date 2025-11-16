@@ -211,15 +211,15 @@ const OrbitalElementsPage = () => {
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div>
                     <span className="text-gray-400">Semi-major Axis (a)</span>
-                    <p className="text-white font-semibold">{element.semi_major_axis_au.toFixed(3)} AU</p>
+                    <p className="text-white font-semibold">{Number(element.semi_major_axis_au).toFixed(3)} AU</p>
                   </div>
                   <div>
                     <span className="text-gray-400">Eccentricity (e)</span>
-                    <p className="text-white font-semibold">{element.eccentricity.toFixed(3)}</p>
+                    <p className="text-white font-semibold">{Number(element.eccentricity).toFixed(3)}</p>
                   </div>
                   <div>
                     <span className="text-gray-400">Inclination (i)</span>
-                    <p className="text-white font-semibold">{element.inclination_deg.toFixed(2)}°</p>
+                    <p className="text-white font-semibold">{Number(element.inclination_deg).toFixed(2)}°</p>
                   </div>
                   <div>
                     <span className="text-gray-400">Interstellar</span>
@@ -236,13 +236,13 @@ const OrbitalElementsPage = () => {
                     {element.longitude_ascending_node_deg !== null && (
                       <div>
                         <span className="text-gray-400">Longitude Ω</span>
-                        <p className="text-white font-semibold">{element.longitude_ascending_node_deg.toFixed(2)}°</p>
+                        <p className="text-white font-semibold">{Number(element.longitude_ascending_node_deg).toFixed(2)}°</p>
                       </div>
                     )}
                     {element.argument_perihelion_deg !== null && (
                       <div>
                         <span className="text-gray-400">Argument ω</span>
-                        <p className="text-white font-semibold">{element.argument_perihelion_deg.toFixed(2)}°</p>
+                        <p className="text-white font-semibold">{Number(element.argument_perihelion_deg).toFixed(2)}°</p>
                       </div>
                     )}
                   </div>

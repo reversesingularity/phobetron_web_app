@@ -273,7 +273,7 @@ export default function PatternDetectionPage() {
                   <Activity className="w-5 h-5 text-orange-400" />
                 </div>
                 <p className="text-3xl font-bold text-white">
-                  {patternData.statistics.average_correlation.toFixed(1)}
+                  {Number(patternData.statistics.average_correlation).toFixed(1)}
                 </p>
                 <p className="text-sm text-gray-400 mt-1">Across all patterns</p>
               </div>
@@ -377,8 +377,8 @@ export default function PatternDetectionPage() {
                                   <span className="capitalize text-gray-300">{event.type}</span>
                                   {event.name && <span className="text-white font-medium">{event.name}</span>}
                                   {event.location && <span className="text-gray-400">{event.location}</span>}
-                                  {event.magnitude && (
-                                    <span className="text-orange-400">M{event.magnitude.toFixed(1)}</span>
+                                  {event.magnitude && !isNaN(Number(event.magnitude)) && (
+                                    <span className="text-orange-400">M{Number(event.magnitude).toFixed(1)}</span>
                                   )}
                                   {event.vei && (
                                     <span className="text-red-400">VEI {event.vei}</span>

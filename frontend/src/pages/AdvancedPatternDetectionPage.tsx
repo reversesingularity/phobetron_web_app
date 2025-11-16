@@ -83,6 +83,14 @@ interface AdvancedPatternData {
 export default function AdvancedPatternDetectionPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  
+  // Safe number formatting function
+  const formatMagnitude = (magnitude: any): string | null => {
+    if (magnitude === null || magnitude === undefined) return null
+    const num = Number(magnitude)
+    if (isNaN(num)) return null
+    return `M${num.toFixed(1)}`
+  }
   const [patternData, setPatternData] = useState<AdvancedPatternData | null>(null)
   const [startYear, setStartYear] = useState(2020)
   const [endYear, setEndYear] = useState(2030)
@@ -381,7 +389,7 @@ export default function AdvancedPatternDetectionPage() {
                       {patternData.statistical_analysis.is_statistically_significant ? 'YES' : 'NO'}
                     </p>
                     <p className="text-sm text-gray-400">
-                      p-value: {patternData.statistical_analysis.p_value.toFixed(4)}
+                      p-value: {Number(patternData.statistical_analysis.p_value).toFixed(4)}
                     </p>
                   </div>
 
@@ -440,9 +448,10 @@ export default function AdvancedPatternDetectionPage() {
                                     className="flex items-center gap-2 text-sm bg-gray-800/50 rounded px-3 py-2"
                                   >
                                     <span className="capitalize text-gray-300">{event.type}</span>
-                                    {event.magnitude && (
-                                      <span className="text-orange-400">M{event.magnitude.toFixed(1)}</span>
-                                    )}
+                                    {(() => {
+                                      const mag = formatMagnitude(event.magnitude)
+                                      return mag && <span className="text-orange-400">{mag}</span>
+                                    })()}
                                     <span className="ml-auto text-xs text-gray-500">
                                       {event.days_from_feast > 0 ? '+' : ''}{event.days_from_feast}d
                                     </span>
@@ -454,7 +463,7 @@ export default function AdvancedPatternDetectionPage() {
 
                           <div className="text-right ml-4">
                             <p className="text-3xl font-bold text-white">
-                              {pattern.correlation_score.toFixed(0)}
+                              {Number(pattern.correlation_score).toFixed(0)}
                             </p>
                             <p className="text-xs text-gray-400 mt-1">
                               {pattern.event_count} events
@@ -510,7 +519,7 @@ export default function AdvancedPatternDetectionPage() {
                               {Object.entries(pred.probability_by_type).map(([type, prob]) => (
                                 <div key={type} className="bg-gray-800/50 rounded p-3">
                                   <p className="text-xs text-gray-400 capitalize mb-1">{type}</p>
-                                  <p className="text-lg font-bold text-white">{(prob * 100).toFixed(0)}%</p>
+                                  <p className="text-lg font-bold text-white">{(Number(prob) * 100).toFixed(0)}%</p>
                                   <div className="mt-2 w-full bg-gray-700 rounded-full h-1.5">
                                     <div 
                                       className={`h-1.5 rounded-full ${
@@ -530,10 +539,10 @@ export default function AdvancedPatternDetectionPage() {
                           <div className="text-right ml-6">
                             <p className="text-sm text-gray-400 mb-1">Risk Score</p>
                             <p className="text-5xl font-black text-white mb-2">
-                              {pred.risk_score.toFixed(0)}
+                              {Number(pred.risk_score).toFixed(0)}
                             </p>
                             <p className="text-xs text-gray-500">
-                              {(pred.confidence * 100).toFixed(0)}% confidence
+                              {(Number(pred.confidence) * 100).toFixed(0)}% confidence
                             </p>
                           </div>
                         </div>
@@ -558,19 +567,19 @@ export default function AdvancedPatternDetectionPage() {
                       <div className="flex justify-between items-center">
                         <span className="text-gray-400">Pearson Coefficient</span>
                         <span className="text-xl font-bold text-white">
-                          {patternData.statistical_analysis.pearson_correlation.toFixed(3)}
+                          {Number(patternData.statistical_analysis.pearson_correlation).toFixed(3)}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-gray-400">Spearman Coefficient</span>
                         <span className="text-xl font-bold text-white">
-                          {patternData.statistical_analysis.spearman_correlation.toFixed(3)}
+                          {Number(patternData.statistical_analysis.spearman_correlation).toFixed(3)}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-gray-400">P-Value</span>
                         <span className="text-xl font-bold text-white">
-                          {patternData.statistical_analysis.p_value.toFixed(4)}
+                          {Number(patternData.statistical_analysis.p_value).toFixed(4)}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
@@ -593,11 +602,11 @@ export default function AdvancedPatternDetectionPage() {
                         <p className="text-sm text-gray-400 mb-2">95% Confidence Interval</p>
                         <div className="flex items-center gap-2">
                           <span className="text-lg font-bold text-white">
-                            {patternData.statistical_analysis.confidence_interval_95.lower.toFixed(2)}
+                            {Number(patternData.statistical_analysis.confidence_interval_95.lower).toFixed(2)}
                           </span>
                           <span className="text-gray-500">→</span>
                           <span className="text-lg font-bold text-white">
-                            {patternData.statistical_analysis.confidence_interval_95.upper.toFixed(2)}
+                            {Number(patternData.statistical_analysis.confidence_interval_95.upper).toFixed(2)}
                           </span>
                         </div>
                       </div>
@@ -605,11 +614,11 @@ export default function AdvancedPatternDetectionPage() {
                         <p className="text-sm text-gray-400 mb-2">99% Confidence Interval</p>
                         <div className="flex items-center gap-2">
                           <span className="text-lg font-bold text-white">
-                            {patternData.statistical_analysis.confidence_interval_99.lower.toFixed(2)}
+                            {Number(patternData.statistical_analysis.confidence_interval_99.lower).toFixed(2)}
                           </span>
                           <span className="text-gray-500">→</span>
                           <span className="text-lg font-bold text-white">
-                            {patternData.statistical_analysis.confidence_interval_99.upper.toFixed(2)}
+                            {Number(patternData.statistical_analysis.confidence_interval_99.upper).toFixed(2)}
                           </span>
                         </div>
                       </div>

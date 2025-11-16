@@ -116,7 +116,7 @@ const MapPage = () => {
                   <h3 className="font-bold text-lg">M{eq.magnitude} Earthquake</h3>
                   <p className="text-sm text-gray-600 mt-1">{eq.region}</p>
                   <div className="mt-2 space-y-1 text-sm">
-                    <p><strong>Depth:</strong> {eq.depth_km.toFixed(1)} km</p>
+                    <p><strong>Depth:</strong> {Number(eq.depth_km).toFixed(1)} km</p>
                     <p><strong>Time:</strong> {new Date(eq.event_time).toLocaleString()}</p>
                     <p><strong>Type:</strong> {eq.magnitude_type.toUpperCase()}</p>
                     <p><strong>Source:</strong> {eq.data_source}</p>

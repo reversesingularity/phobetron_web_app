@@ -89,7 +89,7 @@ const EarthquakesPage = () => {
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
                     <span className={`text-3xl font-bold ${getMagnitudeColor(eq.magnitude)}`}>
-                      M{eq.magnitude.toFixed(1)}
+                      M{Number(eq.magnitude).toFixed(1)}
                     </span>
                     <div>
                       <h3 className="text-white font-semibold text-lg">{eq.region}</h3>
@@ -103,23 +103,23 @@ const EarthquakesPage = () => {
                     <div className="flex items-center gap-2 text-gray-300">
                       <Gauge size={16} className="text-gray-400" />
                       <span className="text-sm">
-                        <span className="text-gray-400">Depth:</span> {eq.depth_km.toFixed(1)} km
+                        <span className="text-gray-400">Depth:</span> {eq.depth_km ? Number(eq.depth_km).toFixed(1) : 'N/A'} km
                       </span>
                     </div>
                     <div className="flex items-center gap-2 text-gray-300">
                       <MapPin size={16} className="text-gray-400" />
                       <span className="text-sm">
-                        <span className="text-gray-400">Lat:</span> {eq.latitude.toFixed(3)}°
+                        <span className="text-gray-400">Lat:</span> {Number(eq.latitude).toFixed(3)}°
                       </span>
                     </div>
                     <div className="flex items-center gap-2 text-gray-300">
                       <MapPin size={16} className="text-gray-400" />
                       <span className="text-sm">
-                        <span className="text-gray-400">Lon:</span> {eq.longitude.toFixed(3)}°
+                        <span className="text-gray-400">Lon:</span> {Number(eq.longitude).toFixed(3)}°
                       </span>
                     </div>
                     <div className="text-gray-300 text-sm">
-                      <span className="text-gray-400">Type:</span> {eq.magnitude_type.toUpperCase()}
+                      <span className="text-gray-400">Type:</span> {eq.magnitude_type?.toUpperCase() || 'N/A'}
                     </div>
                   </div>
 

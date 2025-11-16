@@ -137,7 +137,7 @@ const VolcanicPage = () => {
               </div>
 
               <div className="mt-3 text-xs text-gray-500">
-                Location: {vol.latitude.toFixed(4)}°, {vol.longitude.toFixed(4)}°
+                Location: {Number(vol.latitude).toFixed(4)}°, {Number(vol.longitude).toFixed(4)}°
               </div>
             </div>
           ))}

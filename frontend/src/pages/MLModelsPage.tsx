@@ -138,7 +138,7 @@ const MLModelsPage = () => {
           </div>
           <div className="bg-gray-800/50 rounded p-3">
             <div className="text-gray-400 text-sm">Average Accuracy</div>
-            <div className="text-2xl font-bold text-green-400">{averageAccuracy.toFixed(1)}%</div>
+            <div className="text-2xl font-bold text-green-400">{Number(averageAccuracy).toFixed(1)}%</div>
           </div>
           <div className="bg-gray-800/50 rounded p-3">
             <div className="text-gray-400 text-sm">Deployed</div>

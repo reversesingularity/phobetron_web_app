@@ -159,13 +159,13 @@ const Dashboard = () => {
                   className="flex justify-between items-start p-3 bg-gray-700/50 rounded hover:bg-gray-700 transition-colors"
                 >
                   <div>
-                    <p className="text-white font-medium">M{eq.magnitude.toFixed(1)}</p>
+                    <p className="text-white font-medium">M{Number(eq.magnitude).toFixed(1)}</p>
                     <p className="text-gray-400 text-sm">{eq.region}</p>
                     <p className="text-gray-500 text-xs mt-1">
                       {new Date(eq.event_time).toLocaleString()}
                     </p>
                   </div>
-                  <span className="text-gray-400 text-sm">{eq.depth_km.toFixed(0)} km deep</span>
+                  <span className="text-gray-400 text-sm">{eq.depth_km ? Number(eq.depth_km).toFixed(0) : 'N/A'} km deep</span>
                 </div>
               ))
             )}
@@ -198,14 +198,14 @@ const Dashboard = () => {
                   <div>
                     <p className="text-white font-medium">{neo.object_name.split('(')[0].trim()}</p>
                     <p className="text-gray-400 text-sm">
-                      {neo.miss_distance_lunar.toFixed(1)} lunar distances
+                      {Number(neo.miss_distance_lunar).toFixed(1)} lunar distances
                     </p>
                     <p className="text-gray-500 text-xs mt-1">
                       {new Date(neo.approach_date).toLocaleDateString()}
                     </p>
                   </div>
                   <span className="text-gray-400 text-sm">
-                    ~{neo.estimated_diameter_m.toFixed(0)}m
+                    ~{Number(neo.estimated_diameter_m).toFixed(0)}m
                   </span>
                 </div>
               ))
