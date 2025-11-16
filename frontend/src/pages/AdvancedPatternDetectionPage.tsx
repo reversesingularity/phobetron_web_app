@@ -84,7 +84,7 @@ export default function AdvancedPatternDetectionPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   
-  // Safe number formatting function
+  // Safe number formatting function - Force Railway redeploy #4
   const formatMagnitude = (magnitude: any): string | null => {
     if (magnitude === null || magnitude === undefined) return null
     const num = Number(magnitude)
