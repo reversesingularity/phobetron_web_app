@@ -151,11 +151,9 @@ The others are obsolete - this is the ONLY verified production stable config.
 10. ✅ Celestial Signs - 10 Revelation signs
 11. ✅ Orbital Elements - 6 objects with Keplerian parameters
 12. ✅ ML Models - 4 models (79% avg accuracy)
-13. ✅ Pattern Detection - Feast day correlation analysis
-14. ✅ AI Pattern Detection - Advanced ML-powered pattern analysis (UI ready, data pending)
+13. ✅ AI Pattern Detection - Advanced ML-powered pattern analysis (UI ready, data pending)
 
 ### Known Issues
-- **Pattern Detection Database**: API functional but returns 0 patterns (Railway database lacks 2024 event data)
 - **AI Pattern Detection**: UI fully implemented but data fetching still elusive (API returns empty results)
 - ML Watchman Alerts endpoint returns 500 error ('EnhancedAlert' object has no attribute 'description') - **FIXED**
 - Both affected pages (Alerts, Watchman's View) use fallback mock data
