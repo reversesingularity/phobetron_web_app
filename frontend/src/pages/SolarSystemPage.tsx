@@ -14,41 +14,30 @@ export default function SolarSystemPage() {
   const [isPaused, setIsPaused] = useState(false);
   const [speedMultiplier, setSpeedMultiplier] = useState(1);
   const [currentTime, setCurrentTime] = useState(() => Date.now());
-  const lastFrameTimeRef = useRef<number>(0);
-  const animationFrameRef = useRef<number | null>(null);
 
   // Time progression effect - continuously advance time when not paused
   useEffect(() => {
-    const animate = () => {
-      const currentFrameTime = performance.now();
+    let animationId: number;
+    let lastTime = performance.now();
 
-      // Initialize lastFrameTime on first frame
-      if (lastFrameTimeRef.current === 0) {
-        lastFrameTimeRef.current = currentFrameTime;
-        animationFrameRef.current = requestAnimationFrame(animate);
-        return;
-      }
-
-      const deltaTime = currentFrameTime - lastFrameTimeRef.current;
-      lastFrameTimeRef.current = currentFrameTime;
+    const animate = (currentFrameTime: number) => {
+      const deltaTime = currentFrameTime - lastTime;
+      lastTime = currentFrameTime;
 
       // Advance time only when not paused and deltaTime is reasonable
       if (!isPaused && deltaTime > 0 && deltaTime < 1000) {
         setCurrentTime(prevTime => prevTime + (deltaTime * speedMultiplier));
       }
 
-      animationFrameRef.current = requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
     };
 
     // Start the animation loop
-    animationFrameRef.current = requestAnimationFrame(animate);
+    animationId = requestAnimationFrame(animate);
 
     // Cleanup function
     return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-        animationFrameRef.current = null;
-      }
+      cancelAnimationFrame(animationId);
     };
   }, [isPaused, speedMultiplier]); // Re-run when pause state or speed changes
   const [isCameraControlsOpen, setIsCameraControlsOpen] = useState(false);
