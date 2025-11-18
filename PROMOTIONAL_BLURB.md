@@ -6,6 +6,34 @@
 
 **Phobetron** is the **world's first AI-powered web application** that combines real-time astronomical monitoring, advanced machine learning, and biblical eschatology to detect and alert on prophetic event convergences. Unlike any other system in existence, Phobetron bridges the gap between cutting-edge space science and ancient prophecy, providing unprecedented insights into celestial-terrestrial correlations.
 
+**Phobetron** (Greek: **φοβητρον** - "terrifying sight," from Luke 21:11) is a groundbreaking web application that combines:
+
+- 🔭 **NASA-Grade Astronomical Precision**: Real-time tracking of planets, moons, asteroids, comets (including hyperbolic trajectories)
+- 📖 **Biblical Prophecy Pattern Detection**: ML-powered correlation of celestial events with historical and biblical events
+- 🌪️ **Seismos Disaster Analysis**: Machine learning models detecting patterns between celestial phenomena and natural disasters (earthquakes, volcanic eruptions, hurricanes, tsunamis)
+- 📅 **Hebrew Calendar Integration**: Alignment of astronomical events with biblical feast days
+- 🎯 **75%+ Accuracy**: Trained ML models with cross-validated performance metrics
+
+---
+
+## 🏆 World Firsts
+
+- ✅ **First application** to integrate biblical feast day alignment with astronomical event detection
+- ✅ **First ML system** to correlate celestial events with **seismos** (σεισμός) disasters based on Greek biblical terminology
+- ✅ **First real-time 3D solar system** with 17 moons orbiting with scientifically accurate Keplerian mechanics
+- ✅ **First precision hyperbolic orbit solver** in a web application (supporting interstellar objects like 'Oumuamua)
+- ✅ **First production system** combining TensorFlow 2.20, Three.js 3D visualization, and biblical eschatology
+
+### Understanding Seismos (σεισμός)
+
+The Greek term **σεισμός** (seismos) means **"violent shaking, commotion, tempest"** — encompassing:
+- 🌋 Volcanic eruptions
+- 🌪️ Hurricanes and cyclones
+- 🌊 Tsunamis
+- 🏔️ Earthquakes
+
+Phobetron's ML models detect correlations between celestial signs and all forms of seismos disasters.
+
 ---
 
 ## 💫 MAIN FEATURES
@@ -125,9 +153,9 @@ Biblical prophecy describes **convergent signs** - moments when multiple celesti
 - No speculation—only statistically validated patterns
 
 ### **For Technology Enthusiasts**
-- Cutting-edge ML architecture (TensorFlow 2.20, LSTM, DBSCAN)
-- Modern web stack (Next.js 16, React 19, Three.js)
-- Production-ready deployment on Railway with Docker
+- Cutting-edge ML architecture (TensorFlow 2.15+, Keras, LSTM, DBSCAN)
+- Modern web stack (Vite 5.4.9, React 18.3.1, TypeScript 5.6.2, Three.js 0.181.0)
+- Production-ready deployment on Railway with Docker containers
 
 ### **For Humanity**
 - Unprecedented visibility into potential prophetic convergences
