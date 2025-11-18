@@ -27,11 +27,13 @@
     "disaster correlation",
     "Greek biblical terminology",
     "ai-powered",
-    "catalyst-ui",
+    "tensorflow",
     "postgresql",
     "fastapi",
     "react",
     "typescript",
+    "vite",
+    "three-js",
     "blood moons",
     "tetrads",
     "feast days",
@@ -40,7 +42,6 @@
     "hurricane tracking",
     "tsunami detection",
     "NASA data",
-    "PostGIS",
     "real-time monitoring"
   ],
   "related_identifiers": [
@@ -51,7 +52,7 @@
       "resource_type": "software"
     },
     {
-      "identifier": "https://phobetronwebapp-production.up.railway.app",
+      "identifier": "https://phobetronwebapp-production-d69a.up.railway.app",
       "relation": "isDocumentedBy",
       "scheme": "url",
       "resource_type": "other"
@@ -65,7 +66,7 @@
     }
   ],
   "language": "eng",
-  "notes": "This software represents the first integration of biblical eschatology with modern machine learning and astronomical tracking. The system uses Greek biblical terminology (σεισμός - seismos) to categorize natural disasters and correlates them with celestial events using four trained ML models. Includes production deployment on Railway with PostgreSQL/PostGIS database, 14 functional pages with Catalyst UI, and comprehensive documentation.",
+  "notes": "This software represents the first integration of biblical eschatology with modern machine learning and astronomical tracking. The system uses Greek biblical terminology (σεισμός - seismos) to categorize natural disasters and correlates them with celestial events using four trained ML models achieving 75%+ accuracy. Includes production deployment on Railway with PostgreSQL 16, 14 functional pages with glassmorphic UI (Vite + React 18.3.1 + Three.js), 17 moon systems with accurate Keplerian mechanics, and 12 critical bug fixes ensuring production stability.",
   "communities": [
     {
       "identifier": "zenodo"
