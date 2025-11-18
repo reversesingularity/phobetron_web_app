@@ -142,8 +142,8 @@ git checkout -b feature/your-feature-name
 ## 🚀 DEPLOYMENT INFORMATION
 
 **Railway Production:**
-- **Backend URL:** https://phobetronwebapp-production.up.railway.app
-- **Health Check:** https://phobetronwebapp-production.up.railway.app/health
+- **Backend URL:** https://phobetronwebapp-production-d69a.up.railway.app
+- **Health Check:** https://phobetronwebapp-production-d69a.up.railway.app/health
 - **Auto-Deploy:** Enabled on push to 001-database-schema
 - **Environment:** Production
 - **Database:** Railway PostgreSQL 16
@@ -200,7 +200,7 @@ git log -1 --oneline
 # Should show: 485b58b
 
 # Check backend health
-curl https://phobetronwebapp-production.up.railway.app/health
+curl https://phobetronwebapp-production-d69a.up.railway.app/health
 # Should return: {"status":"healthy","version":"1.0.0","service":"phobetron-api"}
 
 # Check for uncommitted changes

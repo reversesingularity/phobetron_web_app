@@ -2,12 +2,12 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17558316.svg)](https://doi.org/10.5281/zenodo.17558316)
 [![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](https://github.com/reversesingularity/phobetron_web_app/releases/tag/v1.2.0)
-[![Status](https://img.shields.io/badge/status-production-brightgreen.svg)](https://phobetronwebapp-production.up.railway.app)
+[![Status](https://img.shields.io/badge/status-production-brightgreen.svg)](https://phobetronwebapp-production-d69a.up.railway.app)
 
 **Phobetron v1.2.0** is the first production-ready release of the world's first AI-powered biblical prophecy and celestial pattern detection system.
 
 ### 🚀 Live Demo
-**https://phobetronwebapp-production.up.railway.app**
+**https://phobetronwebapp-production-d69a.up.railway.app**
 
 ### ✨ What's New in v1.2.0
 
@@ -42,7 +42,7 @@
 - **40 Prophecies**: Canonical, apocryphal, and pseudepigraphal sources
 
 #### 🚢 Deployment
-- **Railway Production**: Live at phobetronwebapp-production.up.railway.app
+- **Railway Production**: Live at phobetronwebapp-production-d69a.up.railway.app
 - **Nginx Configuration**: Port 8080, SPA routing
 - **Environment Variables**: Secure configuration management
 - **Backup System**: Automated backups with restore scripts
@@ -80,7 +80,7 @@ Visit http://localhost:3000 to see the app running locally.
 
 ### 🔗 Links
 
-- **Live Demo**: https://phobetronwebapp-production.up.railway.app
+- **Live Demo**: https://phobetronwebapp-production-d69a.up.railway.app
 - **Zenodo DOI**: https://doi.org/10.5281/zenodo.17558316
 - **GitHub Repo**: https://github.com/reversesingularity/phobetron_web_app
 - **Issues**: https://github.com/reversesingularity/phobetron_web_app/issues
@@ -99,7 +99,7 @@ If you use Phobetron in your research:
   publisher    = {Zenodo},
   version      = {1.2.0},
   doi          = {10.5281/zenodo.17558316},
-  url          = {https://phobetronwebapp-production.up.railway.app}
+  url          = {https://phobetronwebapp-production-d69a.up.railway.app}
 }
 ```
 

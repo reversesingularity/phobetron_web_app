@@ -164,7 +164,7 @@ Phobetron represents a **paradigm shift** in how we approach biblical prophecy. 
 
 ## 🌐 EXPERIENCE IT NOW
 
-**Live Demo:** https://phobetronwebapp-production.up.railway.app
+**Live Demo:** https://phobetronwebapp-production-d69a.up.railway.app
 
 **GitHub:** https://github.com/reversesingularity/phobetron_web_app
 
