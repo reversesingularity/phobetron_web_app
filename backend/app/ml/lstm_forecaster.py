@@ -44,7 +44,8 @@ class LSTMSeismicForecaster:
         sequence_length: int = 30,
         forecast_horizon: int = 7,
         lstm_units: int = 128,
-        dropout_rate: float = 0.3
+        dropout_rate: float = 0.3,
+        n_features: Optional[int] = None
     ):
         """
         Initialize LSTM forecaster.
@@ -54,6 +55,7 @@ class LSTMSeismicForecaster:
             forecast_horizon: Number of days ahead to predict
             lstm_units: Number of LSTM units in each layer
             dropout_rate: Dropout rate for regularization
+            n_features: Number of input features (if None, model built on first fit)
         """
         if not TENSORFLOW_AVAILABLE:
             raise ImportError("TensorFlow is required for LSTM forecasting")
@@ -62,18 +64,24 @@ class LSTMSeismicForecaster:
         self.forecast_horizon = forecast_horizon
         self.lstm_units = lstm_units
         self.dropout_rate = dropout_rate
+        self.n_features = n_features
         
         self.model: Optional[Model] = None
         self.feature_scaler = None
         self.target_scaler = None
         self.feature_names = []
         
-        self._build_model()
+        # Only build model if n_features is provided
+        if self.n_features is not None:
+            self._build_model()
     
     def _build_model(self):
         """Build the LSTM architecture with attention mechanism."""
+        if self.n_features is None:
+            raise ValueError("n_features must be set before building model")
+            
         # Input layer
-        inputs = keras.Input(shape=(self.sequence_length, None))  # Variable feature count
+        inputs = keras.Input(shape=(self.sequence_length, self.n_features))
         
         # First Bidirectional LSTM layer
         lstm1 = layers.Bidirectional(
@@ -286,6 +294,12 @@ class LSTMSeismicForecaster:
         X, y = self.create_sequences(features_normalized, targets)
         
         logger.info(f"Created {len(X)} sequences of shape {X.shape}")
+        
+        # Build model if not already built
+        if self.model is None:
+            self.n_features = X.shape[2]  # Number of features
+            self._build_model()
+            logger.info(f"Built model with input shape ({self.sequence_length}, {self.n_features})")
         
         # Callbacks
         callbacks = [

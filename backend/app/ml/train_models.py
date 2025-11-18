@@ -28,7 +28,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from app.ml.training_data_expanded import TRAINING_DATA_EXPANDED
 from app.ml.lstm_forecaster import LSTMSeismicForecaster
 from app.ml.neo_trajectory_predictor import NEOTrajectoryPredictor
-from app.ml.pattern_detection import AnomalyDetector
+from app.ml.advanced_pattern_detector import AdvancedPatternDetector
 
 # Create models directory
 MODELS_DIR = Path(__file__).parent / "models"
@@ -280,13 +280,13 @@ def train_anomaly_detector(X_normal: np.ndarray, X_anomaly: np.ndarray) -> Dict[
     print("=" * 60)
     
     try:
-        detector = AnomalyDetector(contamination=0.1)
+        detector = AdvancedPatternDetector()
         
         # Combine normal and anomalous data
         X_combined = np.vstack([X_normal, X_anomaly])
         
         # Train detector
-        detector.fit(X_combined)
+        detector.anomaly_detector.fit(X_combined)
         
         # Save model
         model_path = MODELS_DIR / "anomaly_detector.pkl"

@@ -31,6 +31,9 @@ import { constellationBoundaries, constellationConnections, celestialToCartesian
 import { getPlanetInfo, type PlanetInfo } from '../../lib/planetData';
 import PlanetInfoPanel from './PlanetInfoPanel';
 
+// Import AI canvas service
+import aiCanvasService, { CanvasUpdate } from '../../services/aiCanvasService';
+
 // Scale factor: Convert AU to THREE.js units (10 units = 1 AU for better visibility)
 const AU_SCALE = 10;
 
@@ -235,6 +238,188 @@ async function fetchOrbitalElements(): Promise<CelestialObject[]> {
     console.error('Failed to fetch orbital elements from API, using fallback data:', error);
     // Return full fallback data for development
     return getFallbackOrbitalData();
+  }
+}
+
+// AI Canvas Update Functions
+async function fetchAiCanvasUpdates(currentTime: Date): Promise<CanvasUpdate[]> {
+  try {
+    const response = await aiCanvasService.getCanvasUpdates(currentTime, false, 50);
+    return response.updates;
+  } catch (error) {
+    console.error('Failed to fetch AI canvas updates:', error);
+    return [];
+  }
+}
+
+function applyAiCanvasUpdates(updates: CanvasUpdate[], scene: THREE.Scene, planetsRef: Map<string, THREE.Mesh>) {
+  // Process different types of updates
+  updates.forEach(update => {
+    switch (update.update_type) {
+      case 'neo':
+        applyNeoUpdate(update, scene, planetsRef);
+        break;
+      case 'interstellar':
+        applyInterstellarUpdate(update, scene, planetsRef);
+        break;
+      case 'solar_flare':
+        applySolarFlareUpdate(update, scene);
+        break;
+      case 'conjunction':
+        applyConjunctionUpdate(update, scene);
+        break;
+      case 'anomaly':
+        applyAnomalyUpdate(update, scene, planetsRef);
+        break;
+    }
+  });
+}
+
+function applyNeoUpdate(update: CanvasUpdate, scene: THREE.Scene, planetsRef: Map<string, THREE.Mesh>) {
+  const [x, y, z] = update.position;
+  const scaledPosition: [number, number, number] = [x * AU_SCALE, y * AU_SCALE, z * AU_SCALE];
+
+  // Check if NEO already exists
+  let neoMesh = planetsRef.get(update.object_id);
+
+  if (!neoMesh) {
+    // Create new NEO mesh
+    const geometry = new THREE.SphereGeometry(0.02, 8, 8);
+    const material = new THREE.MeshPhongMaterial({
+      color: NEO_COLORS.default,
+      emissive: update.metadata?.hazardous ? 0x330000 : 0x000000
+    });
+
+    neoMesh = new THREE.Mesh(geometry, material);
+    neoMesh.position.set(...scaledPosition);
+    neoMesh.userData = {
+      type: 'neo',
+      name: update.metadata?.name || update.object_id,
+      hazardous: update.metadata?.hazardous || false,
+      magnitude: update.metadata?.magnitude,
+      diameter: update.metadata?.diameter
+    };
+
+    scene.add(neoMesh);
+    planetsRef.set(update.object_id, neoMesh);
+  } else {
+    // Update existing NEO position
+    neoMesh.position.set(...scaledPosition);
+  }
+}
+
+function applyInterstellarUpdate(update: CanvasUpdate, scene: THREE.Scene, planetsRef: Map<string, THREE.Mesh>) {
+  const [x, y, z] = update.position;
+  const scaledPosition: [number, number, number] = [x * AU_SCALE, y * AU_SCALE, z * AU_SCALE];
+
+  // Check if interstellar object already exists
+  let interstellarMesh = planetsRef.get(update.object_id);
+
+  if (!interstellarMesh) {
+    // Create new interstellar object mesh
+    const geometry = new THREE.SphereGeometry(0.03, 8, 8);
+    const material = new THREE.MeshPhongMaterial({
+      color: INTERSTELLAR_COLORS[update.object_id as keyof typeof INTERSTELLAR_COLORS] || INTERSTELLAR_COLORS.default,
+      emissive: 0x001122
+    });
+
+    interstellarMesh = new THREE.Mesh(geometry, material);
+    interstellarMesh.position.set(...scaledPosition);
+    interstellarMesh.userData = {
+      type: 'interstellar',
+      name: update.metadata?.name || update.object_id,
+      discovery_date: update.metadata?.discovery_date,
+      trajectory: update.metadata?.trajectory,
+      first_interstellar: update.metadata?.first_interstellar
+    };
+
+    scene.add(interstellarMesh);
+    planetsRef.set(update.object_id, interstellarMesh);
+  } else {
+    // Update existing interstellar object position
+    interstellarMesh.position.set(...scaledPosition);
+  }
+}
+
+function applySolarFlareUpdate(update: CanvasUpdate, scene: THREE.Scene) {
+  // Create visual effect for solar flare at sun's position
+  const flareGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+  const flareMaterial = new THREE.MeshBasicMaterial({
+    color: 0xffaa00,
+    transparent: true,
+    opacity: 0.7
+  });
+
+  const flareMesh = new THREE.Mesh(flareGeometry, flareMaterial);
+  flareMesh.position.set(0, 0, 0); // Sun's position
+  flareMesh.userData = {
+    type: 'solar_flare',
+    classification: update.metadata?.classification,
+    intensity: update.metadata?.intensity,
+    temporary: true
+  };
+
+  scene.add(flareMesh);
+
+  // Remove after 5 seconds
+  setTimeout(() => {
+    scene.remove(flareMesh);
+  }, 5000);
+}
+
+function applyConjunctionUpdate(update: CanvasUpdate, scene: THREE.Scene) {
+  // Create visual indicator for planetary conjunction
+  const conjunctionGeometry = new THREE.RingGeometry(0.05, 0.08, 16);
+  const conjunctionMaterial = new THREE.MeshBasicMaterial({
+    color: 0x00ffaa,
+    transparent: true,
+    opacity: 0.6,
+    side: THREE.DoubleSide
+  });
+
+  const conjunctionMesh = new THREE.Mesh(conjunctionGeometry, conjunctionMaterial);
+  conjunctionMesh.position.set(0, 0, 0); // Central position
+  conjunctionMesh.userData = {
+    type: 'conjunction',
+    planets: update.metadata?.planets,
+    separation: update.metadata?.separation,
+    temporary: true
+  };
+
+  scene.add(conjunctionMesh);
+
+  // Remove after 10 seconds
+  setTimeout(() => {
+    scene.remove(conjunctionMesh);
+  }, 10000);
+}
+
+function applyAnomalyUpdate(update: CanvasUpdate, scene: THREE.Scene, planetsRef: Map<string, THREE.Mesh>) {
+  // Highlight anomalous objects with special visual effect
+  const targetObject = planetsRef.get(update.metadata?.original_update || '');
+  if (targetObject) {
+    // Add anomaly glow effect
+    const anomalyGeometry = new THREE.SphereGeometry(0.05, 16, 16);
+    const anomalyMaterial = new THREE.MeshBasicMaterial({
+      color: 0xff0000,
+      transparent: true,
+      opacity: 0.3
+    });
+
+    const anomalyMesh = new THREE.Mesh(anomalyGeometry, anomalyMaterial);
+    anomalyMesh.position.copy(targetObject.position);
+    anomalyMesh.userData = {
+      type: 'anomaly_indicator',
+      target: update.metadata?.original_update,
+      temporary: true
+    };
+
+    scene.add(anomalyMesh);
+
+    // Remove after 15 seconds
+    setTimeout(() => {
+      scene.remove(anomalyMesh);
+    }, 15000);
   }
 }// Fallback data in case API is unavailable
 function getFallbackOrbitalData(): CelestialObject[] {
@@ -566,8 +751,10 @@ interface CelestialCanvasProps {
   showMoons?: boolean;
   speedMultiplier?: number;
   isPaused?: boolean;
+  currentTime?: number;
   onPlanetSelect?: (planetName: string) => void;
   onTimeUpdate?: (time: number) => void;
+  onAlertsUpdate?: (alerts: CanvasUpdate[]) => void;
   onCameraControlsReady?: (controls: {
     setTopView: () => void;
     setSideView: () => void;
@@ -592,8 +779,10 @@ export default function CelestialCanvas({
   showMoons = true,
   speedMultiplier = 1,
   isPaused = false,
+  currentTime,
   onPlanetSelect,
   onTimeUpdate,
+  onAlertsUpdate,
   onCameraControlsReady
 }: CelestialCanvasProps = {}) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -618,6 +807,9 @@ export default function CelestialCanvas({
   const [orbitalData, setOrbitalData] = useState<CelestialObject[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [aiUpdates, setAiUpdates] = useState<CanvasUpdate[]>([]);
+  const [activeAlerts, setActiveAlerts] = useState<CanvasUpdate[]>([]);
+  const lastAiUpdateRef = useRef<number>(0);
 
   // Fetch orbital data on component mount
   useEffect(() => {
@@ -647,8 +839,8 @@ export default function CelestialCanvas({
   useEffect(() => {
     if (!containerRef.current || orbitalData.length === 0) return;
 
-    // Initialize time ref
-    timeRef.current = Date.now();
+    // Initialize time ref - use currentTime prop if provided, otherwise use current time
+    timeRef.current = currentTime || Date.now();
 
     const container = containerRef.current;
     const WIDTH = container.clientWidth;
@@ -810,19 +1002,47 @@ export default function CelestialCanvas({
       controls.update();
 
       // Update time (only if not paused)
-      // Realtime at 1x: simulation time advances at same rate as real time
-      // speedMultiplier allows acceleration (e.g., 24x = 1 day per real hour)
-      if (!isPaused && deltaTime > 0 && deltaTime < 1000) { // Safeguard: ignore first frame and large gaps
+      // If currentTime is provided from props, use it; otherwise increment simulation time
+      if (currentTime !== undefined) {
+        // Use time from TimeControlsPanel
+        timeRef.current = currentTime;
+      } else if (!isPaused && deltaTime > 0 && deltaTime < 1000) { // Safeguard: ignore first frame and large gaps
+        // Realtime at 1x: simulation time advances at same rate as real time
+        // speedMultiplier allows acceleration (e.g., 24x = 1 day per real hour)
         timeRef.current += deltaTime * speedMultiplier; // deltaTime in ms, speedMultiplier is acceleration factor
-        
-        // Notify parent of time updates (throttled to avoid excessive calls)
-        if (onTimeUpdate && Math.random() < 0.1) { // Update ~10% of frames
-          onTimeUpdate(timeRef.current);
-        }
+      }
+
+      // Notify parent of time updates only when not receiving time from props (throttled to avoid excessive calls)
+      if (onTimeUpdate && currentTime === undefined && Math.random() < 0.1) { // Update ~10% of frames only when managing own time
+        onTimeUpdate(timeRef.current);
+      }
+
+      // Fetch AI canvas updates periodically (every 30 seconds)
+      if (currentTime - lastAiUpdateRef.current > 30000) {
+        lastAiUpdateRef.current = currentTime;
+        fetchAiCanvasUpdates(new Date(timeRef.current)).then(updates => {
+          setAiUpdates(updates);
+          // Apply updates to the scene
+          if (sceneRef.current) {
+            applyAiCanvasUpdates(updates, sceneRef.current, planetsRef.current);
+          }
+          // Update alerts
+          const alerts = updates.filter(u => u.priority >= 3);
+          setActiveAlerts(alerts);
+          // Notify parent of alerts
+          if (onAlertsUpdate) {
+            onAlertsUpdate(alerts);
+          }
+        }).catch(error => {
+          console.error('Failed to fetch AI updates:', error);
+        });
       }
 
       // Update planet positions
       updatePlanetPositions(timeRef.current, planetsRef, orbitalData);
+      
+      // Update moon positions
+      updateMoonPositions(timeRef.current, moonsRef, planetsRef);
       
       // Apply planetary perturbations (N-body effects)
       // Only apply every 10th frame to reduce computational cost
@@ -913,17 +1133,28 @@ export default function CelestialCanvas({
         console.log('✅ resetView complete - camera at:', camera.position);
       },
       jumpTime: (milliseconds: number) => {
-        timeRef.current += milliseconds;
-        updatePlanetPositions(timeRef.current, planetsRef, orbitalData);
-        if (onTimeUpdate) {
-          onTimeUpdate(timeRef.current);
+        if (currentTime !== undefined) {
+          // When time is controlled externally, notify parent to update time
+          if (onTimeUpdate) {
+            onTimeUpdate(currentTime + milliseconds);
+          }
+        } else {
+          // When managing own time, update directly
+          timeRef.current += milliseconds;
+          updatePlanetPositions(timeRef.current, planetsRef, orbitalData);
         }
       },
       resetToToday: () => {
-        timeRef.current = Date.now();
-        updatePlanetPositions(timeRef.current, planetsRef, orbitalData);
-        if (onTimeUpdate) {
-          onTimeUpdate(timeRef.current);
+        const now = Date.now();
+        if (currentTime !== undefined) {
+          // When time is controlled externally, notify parent to update time
+          if (onTimeUpdate) {
+            onTimeUpdate(now);
+          }
+        } else {
+          // When managing own time, update directly
+          timeRef.current = now;
+          updatePlanetPositions(timeRef.current, planetsRef, orbitalData);
         }
       },
       startRecording: () => {

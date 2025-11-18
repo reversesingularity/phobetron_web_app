@@ -6,6 +6,7 @@ Combines all API endpoint routers into a single router for the application.
 from fastapi import APIRouter
 
 from app.api.v1.endpoints import scientific, events, theological, alerts, correlations, astronomical
+from app.api.v1 import ml_training, ai_canvas
 
 # Create main API router
 api_router = APIRouter()
@@ -45,4 +46,16 @@ api_router.include_router(
     correlations.router,
     prefix="/correlations",
     tags=["correlations"],
+)
+
+api_router.include_router(
+    ml_training.router,
+    prefix="",
+    tags=["ml-training"],
+)
+
+api_router.include_router(
+    ai_canvas.router,
+    prefix="",
+    tags=["ai-canvas"],
 )

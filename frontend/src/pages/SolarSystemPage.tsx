@@ -1,7 +1,9 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import CelestialCanvas from '../components/visualization/CelestialCanvas';
 import CameraControlsPanel from '../components/visualization/CameraControlsPanel';
-import { Play, Pause, RotateCcw, Zap, Grid3x3, Tag, Moon, Star } from 'lucide-react';
+import TimeControlsPanel from '../components/visualization/TimeControlsPanel';
+import { Play, Pause, RotateCcw, Zap, Grid3x3, Tag, Moon, Star, AlertTriangle } from 'lucide-react';
+import aiCanvasService, { CanvasUpdate } from '../services/aiCanvasService';
 
 export default function SolarSystemPage() {
   const [showGrid, setShowGrid] = useState(true);
@@ -11,7 +13,47 @@ export default function SolarSystemPage() {
   const [showMoons, setShowMoons] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
   const [speedMultiplier, setSpeedMultiplier] = useState(1);
+  const [currentTime, setCurrentTime] = useState(() => Date.now());
+  const lastFrameTimeRef = useRef<number>(0);
+  const animationFrameRef = useRef<number | null>(null);
+
+  // Time progression effect - continuously advance time when not paused
+  useEffect(() => {
+    const animate = () => {
+      const currentFrameTime = performance.now();
+
+      // Initialize lastFrameTime on first frame
+      if (lastFrameTimeRef.current === 0) {
+        lastFrameTimeRef.current = currentFrameTime;
+        animationFrameRef.current = requestAnimationFrame(animate);
+        return;
+      }
+
+      const deltaTime = currentFrameTime - lastFrameTimeRef.current;
+      lastFrameTimeRef.current = currentFrameTime;
+
+      // Advance time only when not paused and deltaTime is reasonable
+      if (!isPaused && deltaTime > 0 && deltaTime < 1000) {
+        setCurrentTime(prevTime => prevTime + (deltaTime * speedMultiplier));
+      }
+
+      animationFrameRef.current = requestAnimationFrame(animate);
+    };
+
+    // Start the animation loop
+    animationFrameRef.current = requestAnimationFrame(animate);
+
+    // Cleanup function
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
+      }
+    };
+  }, [isPaused, speedMultiplier]); // Re-run when pause state or speed changes
   const [isCameraControlsOpen, setIsCameraControlsOpen] = useState(false);
+  const [aiAlerts, setAiAlerts] = useState<CanvasUpdate[]>([]);
+  const [showAiAlerts, setShowAiAlerts] = useState(false);
   const [cameraControls, setCameraControls] = useState<{
     setTopView: () => void;
     setSideView: () => void;
@@ -24,6 +66,42 @@ export default function SolarSystemPage() {
     focusObject: (objectName: string) => void;
     getAvailableObjects: () => string[];
   } | null>(null);
+
+  // Time control functions
+  const handlePlayPause = useCallback(() => {
+    setIsPaused(!isPaused);
+  }, [isPaused]);
+
+  const handleSpeedChange = useCallback((speed: number) => {
+    setSpeedMultiplier(speed);
+  }, []);
+
+  const handleTimeJump = useCallback((milliseconds: number) => {
+    setCurrentTime(prev => {
+      const newTime = prev + milliseconds;
+      return newTime > 0 ? newTime : Date.now();
+    });
+    if (cameraControls?.jumpTime) {
+      cameraControls.jumpTime(milliseconds);
+    }
+  }, [cameraControls]);
+
+  const handleDateChange = useCallback((date: Date) => {
+    const newTime = date.getTime();
+    setCurrentTime(newTime > 0 ? newTime : Date.now());
+    if (cameraControls?.jumpTime) {
+      const diff = date.getTime() - Date.now();
+      cameraControls.jumpTime(diff);
+    }
+  }, [cameraControls]);
+
+  const handleAlertsUpdate = useCallback((alerts: CanvasUpdate[]) => {
+    setAiAlerts(alerts);
+  }, []);
+
+  const handleTimeUpdate = useCallback((time: number) => {
+    setCurrentTime(time);
+  }, []);
 
   const handleCameraControlsReady = useCallback((controls: {
     setTopView: () => void;
@@ -95,14 +173,13 @@ export default function SolarSystemPage() {
               aria-label="Simulation speed multiplier"
               className="bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
-              <option value={0.1}>0.1x</option>
-              <option value={0.5}>0.5x</option>
+              <option value={0.1}>0.1x (Very Slow)</option>
               <option value={1}>1x (Real-time)</option>
-              <option value={2}>2x</option>
-              <option value={5}>5x</option>
-              <option value={10}>10x</option>
-              <option value={100}>100x</option>
-              <option value={1000}>1000x</option>
+              <option value={24}>24x (1 Day/Hour)</option>
+              <option value={168}>168x (1 Week/Hour)</option>
+              <option value={720}>720x (1 Month/Hour)</option>
+              <option value={8760}>8760x (1 Year/Hour)</option>
+              <option value={100000}>100,000x (Extreme)</option>
             </select>
           </div>
 
@@ -184,6 +261,9 @@ export default function SolarSystemPage() {
           showMoons={showMoons}
           isPaused={isPaused}
           speedMultiplier={speedMultiplier}
+          currentTime={currentTime}
+          onTimeUpdate={handleTimeUpdate}
+          onAlertsUpdate={handleAlertsUpdate}
           onCameraControlsReady={handleCameraControlsReady}
         />
         
@@ -193,6 +273,72 @@ export default function SolarSystemPage() {
           isOpen={isCameraControlsOpen}
           onToggle={() => setIsCameraControlsOpen(!isCameraControlsOpen)}
         />
+        
+        {/* Time Controls Panel */}
+        <TimeControlsPanel
+          currentTime={currentTime}
+          isPaused={isPaused}
+          speedMultiplier={speedMultiplier}
+          onPlayPause={handlePlayPause}
+          onSpeedChange={handleSpeedChange}
+          onTimeJump={handleTimeJump}
+          onDateChange={handleDateChange}
+        />
+
+        {/* AI Alerts Panel */}
+        {aiAlerts.length > 0 && (
+          <div className="fixed top-4 right-4 z-30 bg-red-900/95 backdrop-blur-sm border border-red-800 rounded-lg shadow-2xl p-4 w-80 max-h-96 overflow-y-auto">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-red-300 flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4" />
+                AI Alerts ({aiAlerts.length})
+              </h3>
+              <button
+                onClick={() => setShowAiAlerts(!showAiAlerts)}
+                className="text-red-400 hover:text-red-300 text-xs"
+              >
+                {showAiAlerts ? 'Collapse' : 'Expand'}
+              </button>
+            </div>
+
+            {showAiAlerts && (
+              <div className="space-y-2">
+                {aiAlerts.map((alert, index) => (
+                  <div
+                    key={`${alert.object_id}-${index}`}
+                    className={`p-2 rounded border ${
+                      alert.priority >= 4
+                        ? 'bg-red-950 border-red-700'
+                        : alert.priority >= 3
+                        ? 'bg-orange-950 border-orange-700'
+                        : 'bg-yellow-950 border-yellow-700'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="text-xs font-medium text-white">
+                          {aiCanvasService.formatUpdateForDisplay(alert)}
+                        </div>
+                        <div className="text-xs text-gray-400 mt-1">
+                          {new Date(alert.timestamp).toLocaleTimeString()}
+                        </div>
+                      </div>
+                      <div className={`text-xs px-1 py-0.5 rounded ${
+                        alert.priority >= 4
+                          ? 'bg-red-700 text-red-200'
+                          : alert.priority >= 3
+                          ? 'bg-orange-700 text-orange-200'
+                          : 'bg-yellow-700 text-yellow-200'
+                      }`}>
+                        P{alert.priority}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Info Footer */}

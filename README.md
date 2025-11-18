@@ -6,8 +6,12 @@
 [![Next.js 16.0](https://img.shields.io/badge/Next.js-16.0-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791)](https://www.postgresql.org/)
+[![Version](https://img.shields.io/badge/version-1.2.0-brightgreen)](https://github.com/reversesingularity/phobetron_web_app/releases)
+[![Production](https://img.shields.io/badge/status-production%20ready-success)](https://phobetronwebapp-production.up.railway.app)
 
-> **World's First Integration of Biblical Prophecy Analysis, NASA-Grade Astronomical Tracking, and Seismos Disaster Correlation ML Models**
+> **World's First Integration of Biblical Prophecy Analysis, NASA-Grade Astronomical Tracking, and Seismic Disaster Correlation ML Models**
+
+**🚀 Live Demo**: [https://phobetronwebapp-production.up.railway.app](https://phobetronwebapp-production.up.railway.app)
 
 ---
 
@@ -558,6 +562,15 @@ See [12_MONTH_ROADMAP_DETAILED.md](docs/12_MONTH_ROADMAP_DETAILED.md) for comple
 
 ---
 
+## 👤 Author
+
+**Christopher Modina**  
+📧 Email: cmodina70@gmail.com  
+🔗 GitHub: [@reversesingularity](https://github.com/reversesingularity)  
+🆔 ORCID: [0009-0004-9525-0631](https://orcid.org/0009-0004-9525-0631)
+
+---
+
 ## 🌟 Star History
 
 If you find this project valuable for your research or ministry, please consider:
@@ -574,8 +587,8 @@ If you find this project valuable for your research or ministry, please consider
 
 ---
 
-**© 2025 Phobetron Development Team. All rights reserved.**
+**© 2025 Christopher Modina. All rights reserved.**
 
-**Version**: 1.0.0  
-**Last Updated**: November 8, 2025  
+**Version**: 1.2.0  
+**Last Updated**: November 18, 2025  
 **Status**: Production Ready ✅

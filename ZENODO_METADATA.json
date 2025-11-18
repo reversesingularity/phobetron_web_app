@@ -1,0 +1,90 @@
+{
+  "title": "Phobetron: Biblical Prophecy & Celestial Pattern Detection System",
+  "version": "1.2.0",
+  "publication_date": "2025-11-18",
+  "upload_type": "software",
+  "description": "World's first AI-powered web application integrating biblical prophecy analysis, NASA-grade astronomical tracking, and seismic disaster correlation using machine learning. Features real-time 3D solar system visualization with hyperbolic orbit support, ML models achieving 75%+ accuracy in predicting earthquake clusters, volcanic eruptions, hurricanes, and tsunamis based on celestial events, and Hebrew calendar integration for feast day alignment. Includes comprehensive PostgreSQL database schema, FastAPI REST API with 50+ endpoints, and modern React/TypeScript frontend with interactive visualizations.",
+  "access_right": "open",
+  "license": "MIT",
+  "keywords": [
+    "biblical-prophecy",
+    "astronomical-tracking",
+    "machine-learning",
+    "disaster-prediction",
+    "celestial-mechanics",
+    "seismology",
+    "nasa-data",
+    "3d-visualization",
+    "hebrew-calendar",
+    "postgresql",
+    "fastapi",
+    "react",
+    "typescript",
+    "hyperbolic-orbits",
+    "pattern-detection",
+    "ai-correlation",
+    "feast-days",
+    "blood-moons",
+    "eclipses",
+    "planetary-conjunctions"
+  ],
+  "subjects": [
+    {
+      "term": "Astronomy",
+      "scheme": "http://id.loc.gov/authorities/subjects"
+    },
+    {
+      "term": "Machine Learning",
+      "scheme": "http://id.loc.gov/authorities/subjects"
+    },
+    {
+      "term": "Seismology",
+      "scheme": "http://id.loc.gov/authorities/subjects"
+    },
+    {
+      "term": "Religious Studies",
+      "scheme": "http://id.loc.gov/authorities/subjects"
+    }
+  ],
+  "creators": [
+    {
+      "name": "Modina, Christopher",
+      "affiliation": "Independent Research",
+      "orcid": "0009-0004-9525-0631"
+    }
+  ],
+  "contributors": [
+    {
+      "name": "GitHub Copilot",
+      "type": "Other",
+      "affiliation": "Microsoft/OpenAI"
+    }
+  ],
+  "language": "eng",
+  "related_identifiers": [
+    {
+      "relation": "isSupplementTo",
+      "identifier": "https://github.com/reversesingularity/phobetron_web_app",
+      "scheme": "url"
+    },
+    {
+      "relation": "isDocumentedBy",
+      "identifier": "https://phobetronwebapp-production.up.railway.app",
+      "scheme": "url"
+    }
+  ],
+  "notes": "Production-ready web application with 14 functional pages, 4 trained ML models (78-89% accuracy), real-time API integration, PostgreSQL database with PostGIS, and Railway deployment configuration. Includes comprehensive documentation, backup procedures, and emergency restore scripts.",
+  "references": [
+    "Luke 21:25 (NIV) - Signs in sun, moon, and stars",
+    "Matthew 24:7 (NIV) - Earthquakes in various places",
+    "Revelation 6:12 (NIV) - Great earthquake and celestial signs",
+    "NASA JPL Horizons System API - https://ssd.jpl.nasa.gov/horizons/",
+    "USGS Earthquake Catalog - https://earthquake.usgs.gov/",
+    "Space Weather Prediction Center - https://www.swpc.noaa.gov/"
+  ],
+  "communities": [
+    {
+      "identifier": "zenodo"
+    }
+  ]
+}

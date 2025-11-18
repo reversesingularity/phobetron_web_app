@@ -6,20 +6,22 @@ abstract: >-
   Phobetron is the world's first integration of biblical prophecy analysis, 
   NASA-grade astronomical precision tracking, and machine learning correlation 
   models for seismos (σεισμός) natural disasters. The system combines real-time 
-  3D solar system visualization, Hebrew calendar integration, and four trained 
-  ML models achieving 75%+ accuracy in detecting patterns between celestial 
-  events and terrestrial disasters (earthquakes, volcanic eruptions, hurricanes, 
-  tsunamis) based on Greek biblical terminology. Version 1.1.0 includes live 
-  database integration with 6 orbital elements (Mercury, Venus, Earth, Mars, 
-  'Oumuamua, Borisov), 10 celestial signs from Revelation and Joel, and 40 
-  biblical prophecies from canonical, apocryphal, and pseudepigraphal sources.
+  3D solar system visualization with hyperbolic orbit support, Hebrew calendar 
+  integration, and four trained ML models achieving 75%+ accuracy in detecting 
+  patterns between celestial events and terrestrial disasters (earthquakes, 
+  volcanic eruptions, hurricanes, tsunamis) based on Greek biblical terminology. 
+  Version 1.2.0 includes 14 functional pages, production-ready deployment on 
+  Railway, live database integration with comprehensive astronomical data, 
+  40+ biblical prophecies, Catalyst UI with 2025 design trends, and PostgreSQL 
+  database with PostGIS spatial support.
 authors:
-  - family-names: "MODINA"
-    given-names: "CHRIS"
-    email: "cmodina70@kermangildpublishing.org"
+  - family-names: "Modina"
+    given-names: "Christopher"
+    email: "cmodina70@gmail.com"
     affiliation: "Independent Research"
+    orcid: "https://orcid.org/0009-0004-9525-0631"
 repository-code: "https://github.com/reversesingularity/phobetron_web_app"
-url: "https://reversesingularity.github.io/phobetron_web_app/"
+url: "https://phobetronwebapp-production.up.railway.app"
 keywords:
   - biblical prophecy
   - eschatology
@@ -30,13 +32,18 @@ keywords:
   - celestial events
   - pattern detection
   - Hebrew calendar
-  - three-body problem
   - hyperbolic orbits
   - disaster correlation
   - Greek biblical terminology
+  - ai-powered
+  - catalyst-ui
+  - postgresql
+  - fastapi
+  - react
+  - typescript
 license: MIT
-version: 1.1.0
-date-released: "2025-11-13"
+version: 1.2.0
+date-released: "2025-11-18"
 identifiers:
   - type: doi
     value: "10.5281/zenodo.17558316"
@@ -47,6 +54,7 @@ preferred-citation:
   authors:
     - family-names: "MODINA"
       given-names: "CHRIS"
+  version: 1.2.0
   year: 2025
   url: "https://reversesingularity.github.io/phobetron_web_app/"
   license: MIT
