@@ -34,7 +34,7 @@ export default function TimeControlsPanel({
   const [showSpeedInput, setShowSpeedInput] = useState(false);
   const [customSpeed, setCustomSpeed] = useState(speedMultiplier.toString());
   const [dateTimeValue, setDateTimeValue] = useState('');
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true); // Start minimized by default
 
   // Set initial datetime value after mount to prevent hydration mismatch
   useEffect(() => {
@@ -154,18 +154,21 @@ export default function TimeControlsPanel({
   };
 
   return (
-    <div className="fixed bottom-4 left-64 z-20 bg-zinc-900/95 backdrop-blur-sm border border-zinc-800 rounded-lg shadow-2xl p-4 w-96">
+    <div className="fixed bottom-4 left-64 z-20 w-96 rounded-lg border border-cyan-500/30 bg-zinc-900/95 shadow-xl backdrop-blur-md">
       {/* Header with collapse toggle */}
-      <div className="flex items-center justify-between mb-4 cursor-pointer" onClick={() => setIsCollapsed(!isCollapsed)}>
-        <h3 className="text-sm font-semibold text-zinc-300">Time Controls</h3>
-        <button className="text-zinc-400 hover:text-zinc-300 transition-colors">
-          {isCollapsed ? <ChevronUpIcon className="w-4 h-4" /> : <ChevronDownIcon className="w-4 h-4" />}
+      <div 
+        className="flex items-center justify-between p-4 cursor-pointer"
+        onClick={() => setIsCollapsed(!isCollapsed)}
+      >
+        <h3 className="text-lg font-semibold text-cyan-400">Time Controls</h3>
+        <button className="text-zinc-400 hover:text-white transition-colors">
+          {isCollapsed ? <ChevronUpIcon className="w-5 h-5" /> : <ChevronDownIcon className="w-5 h-5" />}
         </button>
       </div>
 
       {/* Collapsible content */}
       {!isCollapsed && (
-        <>
+        <div className="px-4 pb-4">
           <div className="mb-4">
             <div className="flex items-center justify-between">
               <div>
@@ -345,9 +348,9 @@ export default function TimeControlsPanel({
       </div>
 
       {/* Keyboard shortcuts hint */}
-      <div className="mt-4 pt-4 border-t border-zinc-800">
-        <div className="text-xs text-zinc-500">
-          <div className="font-semibold mb-1">Keyboard Shortcuts:</div>
+      <div className="mt-4 pt-4 border-t border-cyan-500/20">
+        <div className="text-xs text-zinc-400">
+          <div className="font-semibold mb-1 text-zinc-300">Keyboard Shortcuts:</div>
           <div className="grid grid-cols-2 gap-1">
             <div><kbd className="bg-zinc-800 px-1 rounded">Space</kbd> Play/Pause</div>
             <div><kbd className="bg-zinc-800 px-1 rounded">←/→</kbd> Hour</div>
@@ -356,7 +359,7 @@ export default function TimeControlsPanel({
           </div>
         </div>
       </div>
-        </>
+        </div>
       )}
     </div>
   );
