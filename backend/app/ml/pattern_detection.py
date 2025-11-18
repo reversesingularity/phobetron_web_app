@@ -819,12 +819,7 @@ class PatternDetectionService:
                     'confidence_interval_99': {'lower': 0.0, 'upper': 1.0},
                     'sample_size': total_patterns
                 },
-                'correlation_matrix': {
-                    'feast_earthquake': 0.0,
-                    'feast_volcanic': 0.0,
-                    'feast_hurricane': 0.0,
-                    'feast_tsunami': 0.0
-                },
+                'correlation_matrix': self.advanced_detector.generate_correlation_matrix(patterns) if patterns else {},
                 'seasonal_patterns': seasonal_patterns,
                 'predictions': [],
                 'metadata': {
