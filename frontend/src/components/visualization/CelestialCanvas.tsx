@@ -3535,10 +3535,18 @@ function addMoonSystems(
   planetsRef: React.MutableRefObject<Map<string, THREE.Mesh>>,
   currentTime: number
 ) {
-  // Clear existing moons
-  moonsRef.current.forEach((moonArray) => {
+  // Clear existing moons and orbit lines
+  moonsRef.current.forEach((moonArray, planetName) => {
+    const planet = planetsRef.current.get(planetName);
     moonArray.forEach((moon) => {
-      scene.remove(moon);
+      // Remove moons from scene
+      if (moon instanceof THREE.Mesh && moon.geometry.type === 'SphereGeometry') {
+        scene.remove(moon);
+      }
+      // Remove orbit lines from planet (they're parented to planets, not scene)
+      else if (moon instanceof THREE.Line && planet) {
+        planet.remove(moon);
+      }
     });
   });
   moonsRef.current.clear();
@@ -3711,6 +3719,7 @@ function addMoonSystems(
       totalMoons++;
 
       // Add moon orbit path (elliptical with inclination)
+      // Create orbit in LOCAL coordinates relative to planet
       const orbitGeometry = new THREE.BufferGeometry();
       const orbitPoints: number[] = [];
       const numSegments = 64;
@@ -3718,7 +3727,7 @@ function addMoonSystems(
       for (let i = 0; i <= numSegments; i++) {
         const theta = (i / numSegments) * Math.PI * 2;
         
-        // Calculate elliptical orbit position
+        // Calculate elliptical orbit position in LOCAL space
         const r = semiMajorAxis * (1 - eccentricity * eccentricity) / (1 + eccentricity * Math.cos(theta));
         let x = r * Math.cos(theta);
         let y = 0;
@@ -3734,10 +3743,8 @@ function addMoonSystems(
           z = newZ;
         }
         
-        // Translate to planet position
-        x += planet.position.x;
-        y += planet.position.y;
-        z += planet.position.z;
+        // Keep in local coordinates - do NOT add planet position
+        // The orbit line will be parented to the planet
         
         // Validate orbit points before adding
         if (!isNaN(x) && !isNaN(y) && !isNaN(z)) {
@@ -3755,7 +3762,8 @@ function addMoonSystems(
         });
 
         const orbitLine = new THREE.Line(orbitGeometry, orbitMaterial);
-        scene.add(orbitLine);
+        // CRITICAL: Parent orbit line to planet so it moves with the planet
+        planet.add(orbitLine);
         // Store orbit line reference for cleanup (typed as Mesh for array compatibility)
         planetMoons.push(orbitLine as unknown as THREE.Mesh);
       }
