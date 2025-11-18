@@ -3538,16 +3538,12 @@ function addMoonSystems(
   // Clear existing moons and orbit lines
   moonsRef.current.forEach((moonArray, planetName) => {
     const planet = planetsRef.current.get(planetName);
-    moonArray.forEach((moon) => {
-      // Remove moons from scene
-      if (moon instanceof THREE.Mesh && moon.geometry.type === 'SphereGeometry') {
-        scene.remove(moon);
-      }
-      // Remove orbit lines from planet (they're parented to planets, not scene)
-      else if (moon instanceof THREE.Line && planet) {
+    if (planet) {
+      moonArray.forEach((moon) => {
+        // Both moons and orbit lines are now children of planets
         planet.remove(moon);
-      }
-    });
+      });
+    }
   });
   moonsRef.current.clear();
 
@@ -3631,7 +3627,7 @@ function addMoonSystems(
       // Calculate distance from planet using elliptical orbit formula
       const radius = semiMajorAxis * (1 - eccentricity * eccentricity) / (1 + eccentricity * Math.cos(trueAnomaly));
       
-      // Calculate position in orbital plane (XZ plane initially)
+      // Calculate position in orbital plane (XZ plane initially) - LOCAL coordinates
       let moonX = radius * Math.cos(trueAnomaly);
       let moonY = 0;
       let moonZ = radius * Math.sin(trueAnomaly);
@@ -3646,10 +3642,8 @@ function addMoonSystems(
         moonZ = newZ;
       }
       
-      // Translate to planet position
-      moonX += planet.position.x;
-      moonY += planet.position.y;
-      moonZ += planet.position.z;
+      // Keep in LOCAL coordinates - moon is parented to planet
+      // Do NOT add planet position - the scene graph handles this
 
       // Validate calculated positions
       if (isNaN(moonX) || isNaN(moonY) || isNaN(moonZ)) {
@@ -3714,7 +3708,8 @@ function addMoonSystems(
       moonLabel.position.set(0, labelOffset, 0);
       moon.add(moonLabel);
 
-      scene.add(moon);
+      // CRITICAL: Parent moon to planet so it moves in local space
+      planet.add(moon);
       planetMoons.push(moon);
       totalMoons++;
 
@@ -3830,7 +3825,7 @@ function updateMoonPositions(
       // Calculate distance from planet using elliptical orbit formula
       const radius = semiMajorAxis * (1 - eccentricity * eccentricity) / (1 + eccentricity * Math.cos(trueAnomaly));
       
-      // Calculate position in orbital plane (XZ plane initially)
+      // Calculate position in orbital plane (XZ plane initially) - LOCAL coordinates
       let moonX = radius * Math.cos(trueAnomaly);
       let moonY = 0;
       let moonZ = radius * Math.sin(trueAnomaly);
@@ -3845,10 +3840,8 @@ function updateMoonPositions(
         moonZ = newZ;
       }
       
-      // Translate to planet position
-      moonX += planet.position.x;
-      moonY += planet.position.y;
-      moonZ += planet.position.z;
+      // Keep in LOCAL coordinates - moon is parented to planet
+      // Do NOT add planet position
 
       // Validate calculated positions before assigning
       if (!isNaN(moonX) && !isNaN(moonY) && !isNaN(moonZ)) {
@@ -3856,8 +3849,8 @@ function updateMoonPositions(
         moon.position.y = moonY;
         moon.position.z = moonZ;
         
-        // Apply tidal locking - moon always shows same face to planet
-        const moonToplanet = new THREE.Vector3().subVectors(planet.position, moon.position).normalize();
+        // Apply tidal locking - moon always shows same face to planet (at origin in local space)
+        const moonToplanet = new THREE.Vector3(0, 0, 0).sub(moon.position).normalize();
         const defaultForward = new THREE.Vector3(0, 0, 1);
         const quaternion = new THREE.Quaternion();
         quaternion.setFromUnitVectors(defaultForward, moonToplanet);
@@ -3865,9 +3858,13 @@ function updateMoonPositions(
         
         // Update lunar phase for Earth's Moon
         if (planetName === 'Earth' && moonData.name === 'Moon') {
+          // Get moon position in world space for Sun calculations
+          const moonWorldPos = new THREE.Vector3();
+          moon.getWorldPosition(moonWorldPos);
+          
           // Sun is at origin (0, 0, 0)
           const sunPos = new THREE.Vector3(0, 0, 0);
-          const moonPos = new THREE.Vector3(moonX, moonY, moonZ);
+          const moonPos = moonWorldPos;
           const earthPos = planet.position.clone();
           
           // Calculate Sun-Moon and Earth-Moon vectors
