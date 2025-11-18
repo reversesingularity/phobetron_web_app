@@ -1041,9 +1041,6 @@ export default function CelestialCanvas({
       // Update planet positions
       updatePlanetPositions(timeRef.current, planetsRef, orbitalData);
       
-      // Update moon positions
-      updateMoonPositions(timeRef.current, moonsRef, planetsRef);
-      
       // Apply planetary perturbations (N-body effects)
       // Only apply every 10th frame to reduce computational cost
       if (Math.random() < 0.1 && deltaTime > 0 && deltaTime < 1000) {
@@ -1051,7 +1048,7 @@ export default function CelestialCanvas({
         applyPlanetaryPerturbations(planetsRef, timeStepDays);
       }
 
-      // Update moon positions around their parent planets
+      // Update moon positions around their parent planets (after planet positions are finalized)
       updateMoonPositions(timeRef.current, moonsRef, planetsRef);
 
       // Update object magnitudes based on distance from Earth
