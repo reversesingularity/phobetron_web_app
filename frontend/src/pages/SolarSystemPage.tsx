@@ -14,19 +14,28 @@ export default function SolarSystemPage() {
   const [isPaused, setIsPaused] = useState(false);
   const [speedMultiplier, setSpeedMultiplier] = useState(1);
   const [currentTime, setCurrentTime] = useState(() => Date.now());
+  const timeResetRef = useRef<number | null>(null); // Track manual time changes
 
   // Time progression effect - continuously advance time when not paused
   useEffect(() => {
     let animationId: number;
     let lastTime = performance.now();
+    let localCurrentTime = currentTime; // Local copy for animation loop
 
     const animate = (currentFrameTime: number) => {
       const deltaTime = currentFrameTime - lastTime;
       lastTime = currentFrameTime;
 
+      // Check if time was manually reset
+      if (timeResetRef.current !== null) {
+        localCurrentTime = timeResetRef.current;
+        timeResetRef.current = null;
+      }
+
       // Advance time only when not paused and deltaTime is reasonable
       if (!isPaused && deltaTime > 0 && deltaTime < 1000) {
-        setCurrentTime(prevTime => prevTime + (deltaTime * speedMultiplier));
+        localCurrentTime += (deltaTime * speedMultiplier);
+        setCurrentTime(localCurrentTime);
       }
 
       animationId = requestAnimationFrame(animate);
@@ -68,7 +77,11 @@ export default function SolarSystemPage() {
   const handleTimeJump = useCallback((milliseconds: number) => {
     setCurrentTime(prev => {
       const newTime = prev + milliseconds;
-      return newTime > 0 ? newTime : Date.now();
+      const validTime = newTime > 0 ? newTime : Date.now();
+      
+      // Signal the animation loop to reset time
+      timeResetRef.current = validTime;
+      return validTime;
     });
     if (cameraControls?.jumpTime) {
       cameraControls.jumpTime(milliseconds);
@@ -77,7 +90,12 @@ export default function SolarSystemPage() {
 
   const handleDateChange = useCallback((date: Date) => {
     const newTime = date.getTime();
-    setCurrentTime(newTime > 0 ? newTime : Date.now());
+    const validTime = newTime > 0 ? newTime : Date.now();
+    
+    // Signal the animation loop to reset time
+    timeResetRef.current = validTime;
+    setCurrentTime(validTime);
+    
     if (cameraControls?.jumpTime) {
       const diff = date.getTime() - Date.now();
       cameraControls.jumpTime(diff);
