@@ -26,9 +26,10 @@ export default function SolarSystemPage() {
       const deltaTime = currentFrameTime - lastTime;
       lastTime = currentFrameTime;
 
-      // Check if time was manually reset
+      // Check if time was manually reset (do this BEFORE pause check)
       if (timeResetRef.current !== null) {
         localCurrentTime = timeResetRef.current;
+        setCurrentTime(localCurrentTime); // Apply immediately even if paused
         timeResetRef.current = null;
       }
 
