@@ -37,6 +37,7 @@ newsapi-python>=0.2.7  # NewsAPI wrapper
 tweepy>=4.14.0  # Twitter/X API v2
 requests>=2.31.0
 httpx>=0.27.0  # For async requests
+aiohttp>=3.9.0  # Async HTTP client for AI Canvas updates
 
 # Additional Utilities
 python-dateutil>=2.8.2
