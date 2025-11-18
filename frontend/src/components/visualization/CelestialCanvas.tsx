@@ -836,6 +836,13 @@ export default function CelestialCanvas({
     loadOrbitalData();
   }, []);
 
+  // Sync currentTime prop to timeRef (separate effect to avoid rebuilding scene)
+  useEffect(() => {
+    if (currentTime !== undefined) {
+      timeRef.current = currentTime;
+    }
+  }, [currentTime]);
+
   useEffect(() => {
     if (!containerRef.current || orbitalData.length === 0) return;
 
@@ -1001,26 +1008,20 @@ export default function CelestialCanvas({
       // Update camera controls
       controls.update();
 
-      // Update time (only if not paused)
-      // If currentTime is provided from props, use it; otherwise increment simulation time
-      if (currentTime !== undefined) {
-        // Use time from TimeControlsPanel
-        timeRef.current = currentTime;
-      } else if (!isPaused && deltaTime > 0 && deltaTime < 1000) { // Safeguard: ignore first frame and large gaps
-        // Realtime at 1x: simulation time advances at same rate as real time
-        // speedMultiplier allows acceleration (e.g., 24x = 1 day per real hour)
-        timeRef.current += deltaTime * speedMultiplier; // deltaTime in ms, speedMultiplier is acceleration factor
-      }
+      // Time is now managed via timeRef.current which is synced from currentTime prop
+      // No need to update time here - it's handled by the parent component's time progression
 
-      // Notify parent of time updates only when not receiving time from props (throttled to avoid excessive calls)
-      if (onTimeUpdate && currentTime === undefined && Math.random() < 0.1) { // Update ~10% of frames only when managing own time
+      // Notify parent of time updates (throttled to avoid excessive calls)
+      // Only notify if we're managing our own time (currentTime prop not provided)
+      if (onTimeUpdate && currentTime === undefined && Math.random() < 0.1) {
         onTimeUpdate(timeRef.current);
       }
 
-      // Fetch AI canvas updates periodically (every 30 seconds)
-      if (currentTime - lastAiUpdateRef.current > 30000) {
-        lastAiUpdateRef.current = currentTime;
-        fetchAiCanvasUpdates(new Date(timeRef.current)).then(updates => {
+      // Fetch AI canvas updates periodically (every 30 seconds of simulation time)
+      const currentSimTime = timeRef.current;
+      if (currentSimTime - lastAiUpdateRef.current > 30000) {
+        lastAiUpdateRef.current = currentSimTime;
+        fetchAiCanvasUpdates(new Date(currentSimTime)).then(updates => {
           setAiUpdates(updates);
           // Apply updates to the scene
           if (sceneRef.current) {
