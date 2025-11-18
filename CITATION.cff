@@ -11,9 +11,9 @@ abstract: >-
   patterns between celestial events and terrestrial disasters (earthquakes, 
   volcanic eruptions, hurricanes, tsunamis) based on Greek biblical terminology. 
   Version 1.2.0 includes 14 functional pages, production-ready deployment on 
-  Railway, live database integration with comprehensive astronomical data, 
-  40+ biblical prophecies, Catalyst UI with 2025 design trends, and PostgreSQL 
-  database with PostGIS spatial support.
+  Railway with PostgreSQL 16, comprehensive astronomical data integration, 
+  40+ biblical prophecies, glassmorphic UI design with Vite + React 18.3.1, 
+  and 12 critical bug fixes ensuring production stability.
 authors:
   - family-names: "Modina"
     given-names: "Christopher"
@@ -21,7 +21,7 @@ authors:
     affiliation: "Independent Research"
     orcid: "https://orcid.org/0009-0004-9525-0631"
 repository-code: "https://github.com/reversesingularity/phobetron_web_app"
-url: "https://phobetronwebapp-production.up.railway.app"
+url: "https://phobetronwebapp-production-d69a.up.railway.app"
 keywords:
   - biblical prophecy
   - eschatology
@@ -36,11 +36,13 @@ keywords:
   - disaster correlation
   - Greek biblical terminology
   - ai-powered
-  - catalyst-ui
+  - tensorflow
   - postgresql
   - fastapi
   - react
   - typescript
+  - vite
+  - three-js
 license: MIT
 version: 1.2.0
 date-released: "2025-11-18"
