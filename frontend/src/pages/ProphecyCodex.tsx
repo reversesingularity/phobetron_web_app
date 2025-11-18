@@ -70,11 +70,22 @@ const ProphecyCodex = () => {
         // Use scripture_text if available, otherwise show placeholder
         const displayText = p.scripture_text || `[${p.event_name}] - Scripture text to be added`
         
+        // Map database categories to UI categories
+        const dbCategory = p.prophecy_category || 'OTHER'
+        let uiCategory = dbCategory.toLowerCase()
+        
+        // Map specific categories for filtering
+        if (dbCategory.includes('JUDGMENT')) {
+          uiCategory = 'judgment'
+        } else if (dbCategory === 'SECOND_COMING' || dbCategory === 'DAY_OF_LORD') {
+          uiCategory = 'end_times'
+        }
+        
         return {
           id: p.id.toString(),
           reference,
           text: displayText,
-          category: (p.prophecy_category || 'general').toLowerCase(),
+          category: uiCategory,
           keywords: p.event_name.split(' ').filter(w => w.length > 3),
           eschatologicalContext: p.theological_notes || p.event_description || '',
           fulfillmentStatus: 'future' as const, // Default to future
@@ -239,10 +250,9 @@ const ProphecyCodex = () => {
 
   const categories = [
     { value: 'all', label: 'All Prophecies', icon: Book },
-    { value: 'celestial', label: 'Celestial Signs', icon: Star },
-    { value: 'seismic', label: 'Seismic Events', icon: AlertTriangle },
-    { value: 'judgment', label: 'Judgment', icon: Calendar },
+    { value: 'judgment', label: 'Judgment', icon: AlertTriangle },
     { value: 'end_times', label: 'End Times', icon: Calendar },
+    { value: 'other', label: 'Other', icon: Star },
   ]
 
   const filteredProphecies = prophecies.filter(prophecy => {
@@ -258,8 +268,8 @@ const ProphecyCodex = () => {
 
   const stats = {
     total: prophecies.length,
-    celestial: prophecies.filter(p => p.category === 'celestial').length,
-    seismic: prophecies.filter(p => p.category === 'seismic').length,
+    judgment: prophecies.filter(p => p.category === 'judgment').length,
+    end_times: prophecies.filter(p => p.category === 'end_times').length,
     fulfilled: prophecies.filter(p => p.fulfillmentStatus === 'fulfilled').length,
     ongoing: prophecies.filter(p => p.fulfillmentStatus === 'ongoing').length,
     future: prophecies.filter(p => p.fulfillmentStatus === 'future').length,
@@ -295,11 +305,11 @@ const ProphecyCodex = () => {
         {/* Statistics */}
         <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
           <StatCard title="Total" value={stats.total} color="blue" />
-          <StatCard title="Celestial" value={stats.celestial} color="purple" />
-          <StatCard title="Seismic" value={stats.seismic} color="orange" />
+          <StatCard title="Judgment" value={stats.judgment} color="orange" />
+          <StatCard title="End Times" value={stats.end_times} color="red" />
           <StatCard title="Fulfilled" value={stats.fulfilled} color="green" />
           <StatCard title="Ongoing" value={stats.ongoing} color="yellow" />
-          <StatCard title="Future" value={stats.future} color="red" />
+          <StatCard title="Future" value={stats.future} color="purple" />
         </div>
 
         {/* Search and Filter */}
