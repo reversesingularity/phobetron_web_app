@@ -13,6 +13,7 @@ import pandas as pd
 from app.db.session import get_db
 from sqlalchemy.orm import Session
 from sqlalchemy import text
+from app.ml.advanced_pattern_detector import AdvancedPatternDetector
 
 
 class PatternDetectionService:
@@ -20,6 +21,7 @@ class PatternDetectionService:
     
     def __init__(self):
         self.feature_dim = 14  # Match existing 14-dimensional feature vectors
+        self.advanced_detector = AdvancedPatternDetector()  # For correlation matrix generation
         
     def extract_features(self, event: Dict[str, Any]) -> np.ndarray:
         """
