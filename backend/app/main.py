@@ -36,6 +36,14 @@ async def lifespan(app: FastAPI):
     print(f"Version: {settings.VERSION}", flush=True)
     print(f"Pool config: size=20, max_overflow=40, timeout=60s", flush=True)
     print(f"CORS Origins: {settings.BACKEND_CORS_ORIGINS}", flush=True)
+    
+    # Check for heavy ML dependencies
+    try:
+        import tensorflow
+        print(f"TensorFlow: {tensorflow.__version__}", flush=True)
+    except ImportError:
+        print("TensorFlow: Not installed (using lightweight ML only)", flush=True)
+    
     print("=" * 60, flush=True)
     print("Application startup complete!", flush=True)
     print("Database connection will be established on first request", flush=True)
