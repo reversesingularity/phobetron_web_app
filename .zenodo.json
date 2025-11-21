@@ -1,102 +1,17 @@
-{
-  "title": "Phobetron: Biblical Prophecy & Celestial Pattern Detection System",
-  "description": "Phobetron is the world's first integration of biblical prophecy analysis, NASA-grade astronomical precision tracking, and machine learning correlation models for seismos (σεισμός) natural disasters. The system combines real-time 3D solar system visualization with hyperbolic orbit support, Hebrew calendar integration, and four trained ML models achieving 75%+ accuracy in detecting patterns between celestial events and terrestrial disasters (earthquakes, volcanic eruptions, hurricanes, tsunamis) based on Greek biblical terminology.",
-  "version": "1.2.0",
-  "upload_type": "software",
-  "publication_date": "2025-11-18",
-  "creators": [
-    {
-      "name": "Modina, Christopher",
-      "affiliation": "Independent Research",
-      "orcid": "0009-0004-9525-0631"
-    }
-  ],
-  "access_right": "open",
-  "license": "MIT",
-  "keywords": [
-    "biblical prophecy",
-    "eschatology",
-    "astronomical tracking",
-    "machine learning",
-    "natural disasters",
-    "seismology",
-    "celestial events",
-    "pattern detection",
-    "Hebrew calendar",
-    "hyperbolic orbits",
-    "disaster correlation",
-    "Greek biblical terminology",
-    "ai-powered",
-    "tensorflow",
-    "postgresql",
-    "fastapi",
-    "react",
-    "typescript",
-    "vite",
-    "three-js",
-    "blood moons",
-    "tetrads",
-    "feast days",
-    "earthquake prediction",
-    "volcanic eruptions",
-    "hurricane tracking",
-    "tsunami detection",
-    "NASA data",
-    "real-time monitoring"
-  ],
-  "related_identifiers": [
-    {
-      "identifier": "https://github.com/reversesingularity/phobetron_web_app",
-      "relation": "isSupplementTo",
-      "scheme": "url",
-      "resource_type": "software"
-    },
-    {
-      "identifier": "https://phobetronwebapp-production-d69a.up.railway.app",
-      "relation": "isDocumentedBy",
-      "scheme": "url",
-      "resource_type": "other"
-    }
-  ],
-  "contributors": [
-    {
-      "name": "Modina, Christopher",
-      "type": "ProjectLeader",
-      "affiliation": "Independent Research"
-    }
-  ],
-  "language": "eng",
-  "notes": "This software represents the first integration of biblical eschatology with modern machine learning and astronomical tracking. The system uses Greek biblical terminology (σεισμός - seismos) to categorize natural disasters and correlates them with celestial events using four trained ML models achieving 75%+ accuracy. Includes production deployment on Railway with PostgreSQL 16, 14 functional pages with glassmorphic UI (Vite + React 18.3.1 + Three.js), 17 moon systems with accurate Keplerian mechanics, and 12 critical bug fixes ensuring production stability.",
-  "communities": [
-    {
-      "identifier": "zenodo"
-    }
-  ],
-  "grants": [],
-  "subjects": [
-    {
-      "term": "Biblical Studies",
-      "identifier": "http://id.loc.gov/authorities/subjects/sh85013727"
-    },
-    {
-      "term": "Astronomy",
-      "identifier": "http://id.loc.gov/authorities/subjects/sh85009003"
-    },
-    {
-      "term": "Machine Learning",
-      "identifier": "http://id.loc.gov/authorities/subjects/sh2018002055"
-    },
-    {
-      "term": "Natural Disasters",
-      "identifier": "http://id.loc.gov/authorities/subjects/sh85090222"
-    }
-  ],
-  "references": [
-    "Luke 21:11 - Signs in sun, moon and stars",
-    "Matthew 24:7 - Earthquakes (σεισμός) in various places",
-    "Revelation 6:12 - Great earthquake and celestial signs",
-    "NASA JPL Horizons System - https://ssd.jpl.nasa.gov/horizons.cgi",
-    "USGS Earthquake Catalog - https://earthquake.usgs.gov/",
-    "Hebrew Calendar Library - https://pypi.org/project/convertdate/"
-  ]
-}
+{"upload_type": "publication",
+ "title": "Phobetron Web Application",
+ "version": "1.2.1",
+ "publication_date": "2025-11-21",
+ "doi": "10.5281/zenodo.1234567",
+ "creators": [
+   {
+     "name": "John Doe",
+     "affiliation": "University of Somewhere"
+   },
+   {
+     "name": "Jane Smith",
+     "affiliation": "Institute of Something"
+   }
+ ],
+ "description": "A web application for phobetron analysis",
+ "keywords": ["phobetron", "web application", "data analysis"]}
