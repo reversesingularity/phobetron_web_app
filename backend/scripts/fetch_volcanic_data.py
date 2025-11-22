@@ -1,21 +1,15 @@
 """
-Volcanic Activity Data Collection Script
+Volcanic Activity Data Collection Script for GitHub Actions
 Fetches volcanic eruption data from Smithsonian Global Volcanism Program
+Standalone script - no FastAPI dependencies
 """
 
 import requests
-import sys
 import os
 from datetime import datetime
-from pathlib import Path
 from typing import List, Dict, Any
-
-# Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
-from app.db.session import get_db
-from app.models.events import VolcanicActivity
 
 
 # Smithsonian Global Volcanism Program API

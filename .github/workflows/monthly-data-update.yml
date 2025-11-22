@@ -23,15 +23,12 @@ jobs:
           python-version: '3.11'
       
       - name: Install dependencies
-        run: |
-          cd backend
-          pip install requests sqlalchemy psycopg2-binary python-dotenv
+        run: pip install requests sqlalchemy psycopg2-binary python-dotenv
       
       - name: Fetch USGS Earthquake Data
         env:
           DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
-        run: |
-          python backend/scripts/fetch_earthquake_data.py --days=30 --min-magnitude=4.0
+        run: python backend/scripts/fetch_earthquake_data.py --days=30 --min-magnitude=4.0
       
       - name: Log completion
         run: echo "✅ Earthquake data updated successfully"
@@ -50,15 +47,12 @@ jobs:
           python-version: '3.11'
       
       - name: Install dependencies
-        run: |
-          cd backend
-          pip install requests sqlalchemy psycopg2-binary python-dotenv
+        run: pip install requests sqlalchemy psycopg2-binary python-dotenv
       
       - name: Fetch Volcanic Activity Data
         env:
           DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
-        run: |
-          python backend/scripts/fetch_volcanic_data.py
+        run: python backend/scripts/fetch_volcanic_data_standalone.py
       
       - name: Log completion
         run: echo "✅ Volcanic data updated successfully"
@@ -77,16 +71,12 @@ jobs:
           python-version: '3.11'
       
       - name: Install dependencies
-        run: |
-          cd backend
-          pip install requests sqlalchemy psycopg2-binary python-dotenv
+        run: pip install requests sqlalchemy psycopg2-binary python-dotenv
       
       - name: Fetch NASA NEO Data
         env:
           DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
-          NASA_API_KEY: ${{ secrets.NASA_API_KEY }}
-        run: |
-          python backend/scripts/fetch_neo_data.py --days=90
+        run: python backend/scripts/fetch_neo_data.py --days=90
       
       - name: Log completion
         run: echo "✅ NEO data updated successfully"
@@ -105,15 +95,12 @@ jobs:
           python-version: '3.11'
       
       - name: Install dependencies
-        run: |
-          cd backend
-          pip install requests sqlalchemy psycopg2-binary python-dotenv
+        run: pip install requests sqlalchemy psycopg2-binary python-dotenv
       
       - name: Fetch Solar Event Data
         env:
           DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
-        run: |
-          python backend/scripts/fetch_solar_events.py --days=30
+        run: python backend/scripts/fetch_solar_events.py --days=30
       
       - name: Log completion
         run: echo "✅ Solar event data updated successfully"
@@ -133,15 +120,12 @@ jobs:
           python-version: '3.11'
       
       - name: Install dependencies
-        run: |
-          cd backend
-          pip install sqlalchemy psycopg2-binary python-dotenv numpy scikit-learn
+        run: pip install sqlalchemy psycopg2-binary python-dotenv numpy scikit-learn
       
       - name: Recalculate ML Correlations
         env:
           DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
-        run: |
-          python backend/scripts/recalculate_correlations.py
+        run: python backend/scripts/recalculate_correlations.py
       
       - name: Log completion
         run: echo "✅ ML correlations recalculated successfully"
