@@ -4,7 +4,7 @@
 [![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](https://github.com/reversesingularity/phobetron_web_app/releases/tag/v1.2.0)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![Next.js](https://img.shields.io/badge/next.js-16.0-black.svg)](https://nextjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-5.4.9-646CFF)](https://vitejs.dev/)
 [![TypeScript](https://img.shields.io/badge/typescript-5.0-blue.svg)](https://www.typescriptlang.org/)
 [![PostgreSQL](https://img.shields.io/badge/postgresql-16-blue.svg)](https://www.postgresql.org/)
 [![Status](https://img.shields.io/badge/status-production-brightgreen.svg)](https://phobetronwebapp-production-d69a.up.railway.app)
@@ -189,7 +189,7 @@ This release includes **12 critical fixes** that ensure production stability:
 - **pattern_detections** - ML-detected patterns with confidence scores
 - **correlations** - Statistical correlations between event types
 
-**Geographic Data**: All locations use PostGIS for accurate distance calculations from Jerusalem (31.7683°N, 35.2137°E)
+**Geographic Data**: All locations use PostGreSQL 16 for accurate distance calculations from Jerusalem (31.7683°N, 35.2137°E)
 
 ---
 
@@ -488,7 +488,7 @@ For academic/research use, please cite using the formats provided in the [Citati
 - **GitHub**: [@reversesingularity](https://github.com/reversesingularity)
 - **ORCID**: [0009-0004-9525-0631](https://orcid.org/0009-0004-9525-0631)
 - **Organization**: Kerman Gild Publishing
-- **Location**: United States
+- **Location**: New Zealand
 
 ### With Valuable Assistance From
 

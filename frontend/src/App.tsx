@@ -13,27 +13,39 @@ import CelestialSignsPage from './pages/CelestialSignsPage'
 import OrbitalElementsPage from './pages/OrbitalElementsPage'
 import MLModelsPage from './pages/MLModelsPage'
 import AdvancedPatternDetectionPage from './pages/AdvancedPatternDetectionPage'
+import AnalyticsPage from './pages/AnalyticsPage'
+import { usePageTracking } from './hooks/useAnalytics'
+
+function AppContent() {
+  // Track page visits automatically (must be inside Router)
+  usePageTracking()
+
+  return (
+    <Layout>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/earthquakes" element={<EarthquakesPage />} />
+        <Route path="/volcanic" element={<VolcanicPage />} />
+        <Route path="/neo" element={<NEOPage />} />
+        <Route path="/map" element={<MapPage />} />
+        <Route path="/solar-system" element={<SolarSystemPage />} />
+        <Route path="/watchmans-view" element={<WatchmansView />} />
+        <Route path="/alerts" element={<AlertsPage />} />
+        <Route path="/prophecy-codex" element={<ProphecyCodex />} />
+        <Route path="/celestial-signs" element={<CelestialSignsPage />} />
+        <Route path="/orbital-elements" element={<OrbitalElementsPage />} />
+        <Route path="/ml-models" element={<MLModelsPage />} />
+        <Route path="/advanced-pattern-detection" element={<AdvancedPatternDetectionPage />} />
+        <Route path="/analytics" element={<AnalyticsPage />} />
+      </Routes>
+    </Layout>
+  )
+}
 
 function App() {
   return (
     <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/earthquakes" element={<EarthquakesPage />} />
-          <Route path="/volcanic" element={<VolcanicPage />} />
-          <Route path="/neo" element={<NEOPage />} />
-          <Route path="/map" element={<MapPage />} />
-          <Route path="/solar-system" element={<SolarSystemPage />} />
-          <Route path="/watchmans-view" element={<WatchmansView />} />
-          <Route path="/alerts" element={<AlertsPage />} />
-          <Route path="/prophecy-codex" element={<ProphecyCodex />} />
-          <Route path="/celestial-signs" element={<CelestialSignsPage />} />
-          <Route path="/orbital-elements" element={<OrbitalElementsPage />} />
-          <Route path="/ml-models" element={<MLModelsPage />} />
-          <Route path="/advanced-pattern-detection" element={<AdvancedPatternDetectionPage />} />
-        </Routes>
-      </Layout>
+      <AppContent />
     </Router>
   )
 }

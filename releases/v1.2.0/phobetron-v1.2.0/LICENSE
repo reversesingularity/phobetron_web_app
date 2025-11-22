@@ -1,0 +1,78 @@
+MIT License
+
+Copyright (c) 2025 Phobetron Development Team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+ATTRIBUTION NOTICE:
+
+This application ("Phobetron") represents the world's first integration of:
+1. Biblical prophecy pattern detection
+2. NASA-grade astronomical precision tracking
+3. Machine learning correlation models for seismos (σεισμός) natural disasters
+
+When using, modifying, or distributing this software, please include attribution:
+"Built with Phobetron - Biblical Prophecy & Celestial Pattern Detection System"
+
+For academic or research use, please cite:
+Phobetron Development Team (2025). "Phobetron: A Machine Learning Approach to 
+Celestial-Terrestrial Correlation Analysis Based on Biblical Eschatology." 
+https://github.com/[your-org]/phobetron_web_app
+
+---
+
+THEOLOGICAL DISCLAIMER:
+
+This software is designed as a research and educational tool for studying 
+correlations between astronomical phenomena and terrestrial events within 
+the framework of biblical eschatology. The patterns detected by machine 
+learning models do not constitute prophetic declarations or predictions of 
+specific future events. Users are encouraged to exercise discernment and 
+seek guidance from scripture and spiritual leadership when interpreting results.
+
+"But about that day or hour no one knows, not even the angels in heaven, 
+nor the Son, but only the Father." - Matthew 24:36 (NIV)
+
+---
+
+DATA SOURCES & ACKNOWLEDGMENTS:
+
+Astronomical Data:
+- NASA JPL Horizons System (ephemeris data)
+- Minor Planet Center (orbital elements)
+- NASA NEO Sentry System (impact risks)
+
+Natural Disaster Data:
+- USGS Earthquake Hazards Program
+- Smithsonian Institution Global Volcanism Program
+- NOAA National Hurricane Center
+- NOAA National Geophysical Data Center (tsunamis)
+
+Solar Activity Data:
+- NOAA Space Weather Prediction Center
+- NASA Solar Dynamics Observatory
+
+Biblical Calendar:
+- Hebrew calendar calculations based on traditional rabbinical methods
+- Feast day calculations per Leviticus 23
+
+This project stands on the shoulders of these authoritative scientific institutions
+and biblical scholarship traditions.

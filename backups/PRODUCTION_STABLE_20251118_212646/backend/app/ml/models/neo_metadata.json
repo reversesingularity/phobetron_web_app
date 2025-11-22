@@ -1,0 +1,34 @@
+{
+  "model_name": "NEO Trajectory Predictor",
+  "version": "1.0.0",
+  "trained_date": "2025-11-05T16:02:58.329942",
+  "dataset_size": 50,
+  "features": [
+    "semi_major_axis_au",
+    "eccentricity",
+    "inclination_deg",
+    "perihelion_distance_au",
+    "aphelion_distance_au",
+    "orbital_period_years",
+    "absolute_magnitude",
+    "diameter_km"
+  ],
+  "algorithms": [
+    "Random Forest",
+    "Gradient Boosting"
+  ],
+  "performance": {
+    "close_approach_prediction_r2": 0.92,
+    "collision_probability_auc": 0.94,
+    "torino_scale_accuracy": 0.89,
+    "mae_distance_au": 0.0034,
+    "rmse_distance_au": 0.0045
+  },
+  "risk_thresholds": {
+    "minimal": 0.0001,
+    "low": 0.001,
+    "moderate": 0.01,
+    "high": 0.1,
+    "critical": 0.5
+  }
+}

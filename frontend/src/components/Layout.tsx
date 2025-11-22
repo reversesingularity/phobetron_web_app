@@ -14,7 +14,8 @@ import {
   Book,
   Brain,
   Sparkles,
-  TrendingUp
+  TrendingUp,
+  BarChart3
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -40,6 +41,7 @@ const Layout = ({ children }: LayoutProps) => {
     { name: 'AI Pattern Detection', href: '/advanced-pattern-detection', icon: Brain, highlight: true },
     { name: 'Orbital Elements', href: '/orbital-elements', icon: Orbit, highlight: true },
     { name: 'ML Models', href: '/ml-models', icon: Brain, highlight: true },
+    { name: 'Analytics', href: '/analytics', icon: BarChart3, highlight: true },
   ]
 
   const isActive = (path: string) => location.pathname === path

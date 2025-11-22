@@ -177,13 +177,13 @@ Copy-Item "backups\PRODUCTION_STABLE_20251118_212646\*" -Destination . -Recurse 
 - **Node.js:** 18.x
 - **PostgreSQL:** 16
 - **TensorFlow:** 2.20.0
-- **Next.js:** 16.0
-- **React:** 19.2
-- **Three.js:** Latest
+- **Vite:** 5.4.9
+- **React:** 18.3.1
+- **Three.js:** 0.181.0
 - **aiohttp:** >=3.9.0 (CRITICAL)
 
 ### Architecture
-- **3-Tier:** Frontend (Next.js) → Backend (FastAPI) → Database (PostgreSQL)
+- **3-Tier:** Frontend (Vite React) → Backend (FastAPI) → Database (PostgreSQL)
 - **3D Engine:** Three.js with parent-child scene graph
 - **Time Management:** Closure-based requestAnimationFrame loop
 - **UI Design:** Glassmorphic with cyan accents

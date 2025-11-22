@@ -1,0 +1,21 @@
+tetrad_id,tetrad_start_year,tetrad_end_year,eclipse_date,eclipse_type,biblical_feast,jerusalem_visible,historical_context,prophecy_significance,is_spring_feast,is_fall_feast
+1,1493,1494,1493-04-02,Total Lunar,Passover,True,Spanish Inquisition expulsion of Jews from Spain (1492),Diaspora and persecution,True,False
+1,1493,1494,1493-09-25,Total Lunar,Tabernacles,True,Spanish Inquisition expulsion of Jews from Spain (1492),Diaspora and persecution,False,True
+1,1493,1494,1494-03-22,Total Lunar,Passover,True,Spanish Inquisition expulsion of Jews from Spain (1492),Diaspora and persecution,True,False
+1,1493,1494,1494-09-15,Total Lunar,Tabernacles,False,Spanish Inquisition expulsion of Jews from Spain (1492),Diaspora and persecution,False,True
+2,1949,1950,1949-04-13,Total Lunar,Passover,True,"State of Israel established (1948), War of Independence",Rebirth of Israel - Fig Tree Generation,True,False
+2,1949,1950,1949-10-07,Total Lunar,Tabernacles,True,"State of Israel established (1948), War of Independence",Rebirth of Israel - Fig Tree Generation,False,True
+2,1949,1950,1950-04-02,Total Lunar,Passover,False,"State of Israel established (1948), War of Independence",Rebirth of Israel - Fig Tree Generation,True,False
+2,1949,1950,1950-09-26,Total Lunar,Tabernacles,True,"State of Israel established (1948), War of Independence",Rebirth of Israel - Fig Tree Generation,False,True
+3,1967,1968,1967-04-24,Total Lunar,Passover,True,"Six-Day War (1967), Jerusalem reunified under Israeli control",Jerusalem no longer trampled - Times of Gentiles,True,False
+3,1967,1968,1967-10-18,Total Lunar,Tabernacles,True,"Six-Day War (1967), Jerusalem reunified under Israeli control",Jerusalem no longer trampled - Times of Gentiles,False,True
+3,1967,1968,1968-04-13,Total Lunar,Passover,True,"Six-Day War (1967), Jerusalem reunified under Israeli control",Jerusalem no longer trampled - Times of Gentiles,True,False
+3,1967,1968,1968-10-06,Total Lunar,Tabernacles,False,"Six-Day War (1967), Jerusalem reunified under Israeli control",Jerusalem no longer trampled - Times of Gentiles,False,True
+4,2014,2015,2014-04-15,Total Lunar,Passover,False,"ISIS rise, Syrian civil war, Jerusalem tensions, Third Temple movement","Wars and rumors of wars, Birth pains intensifying",True,False
+4,2014,2015,2014-10-08,Total Lunar,Tabernacles,True,"ISIS rise, Syrian civil war, Jerusalem tensions, Third Temple movement","Wars and rumors of wars, Birth pains intensifying",False,True
+4,2014,2015,2015-04-04,Total Lunar,Passover,False,"ISIS rise, Syrian civil war, Jerusalem tensions, Third Temple movement","Wars and rumors of wars, Birth pains intensifying",True,False
+4,2014,2015,2015-09-28,Total Lunar,Tabernacles,True,"ISIS rise, Syrian civil war, Jerusalem tensions, Third Temple movement","Wars and rumors of wars, Birth pains intensifying",False,True
+5,2032,2033,2032-04-25,Total Lunar,Passover,True,Predicted tetrad - 2000 years from resurrection (AD 33),Potential prophetic fulfillment window,True,False
+5,2032,2033,2032-10-18,Total Lunar,Tabernacles,True,Predicted tetrad - 2000 years from resurrection (AD 33),Potential prophetic fulfillment window,False,True
+5,2032,2033,2033-04-14,Total Lunar,Passover,True,Predicted tetrad - 2000 years from resurrection (AD 33),Potential prophetic fulfillment window,True,False
+5,2032,2033,2033-10-08,Total Lunar,Tabernacles,True,Predicted tetrad - 2000 years from resurrection (AD 33),Potential prophetic fulfillment window,False,True

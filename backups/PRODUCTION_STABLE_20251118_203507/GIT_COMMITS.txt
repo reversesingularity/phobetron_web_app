@@ -1,0 +1,10 @@
+1df4435 Fix AttributeError: Initialize AdvancedPatternDetector in PatternDetectionService
+c3a75b4 Fix Event Type Correlation Matrix data structure
+ceb50bb CRITICAL FIX: Sync currentTime prop to animation loop via useEffect
+fb3f4ff Fix time progression and speed controls
+3bc64a2 Fix all moons to orbit correctly in local space
+c7c24cf Fix moon orbit visualization - parent orbit lines to planets
+6d04dd3 Fix lunar orbit rendering in Solar System Visualization
+3fed614 Add missing aiohttp dependency
+68737f4 Restore working Railway config from PRODUCTION_STABLE_20251116_180000
+31a6426 Fix Railway backend crash: optimize memory and deployment

@@ -1,0 +1,787 @@
+date,feast_day,feast_type,significance,earthquake_count,earthquake_max_magnitude,volcanic_count,volcanic_max_vei,hurricane_count,hurricane_max_category,tsunami_count,total_events,is_high_correlation,dominant_event_type,month,day_of_year,season
+1900-04-13,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,103,Spring
+1900-04-14,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,104,Spring
+1900-06-02,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,153,Summer
+1900-09-24,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,267,Fall
+1900-10-03,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,276,Fall
+1900-10-08,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,281,Fall
+1901-04-03,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,93,Spring
+1901-04-04,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,94,Spring
+1901-05-23,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,143,Spring
+1901-09-14,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,257,Fall
+1901-09-23,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,266,Fall
+1901-09-28,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,271,Fall
+1902-04-21,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,111,Spring
+1902-04-22,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,112,Spring
+1902-06-10,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,161,Summer
+1902-10-02,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,10,275,Fall
+1902-10-11,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,284,Fall
+1902-10-16,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,289,Fall
+1903-04-11,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,101,Spring
+1903-04-12,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,102,Spring
+1903-05-31,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,151,Spring
+1903-09-22,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,265,Fall
+1903-10-01,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,274,Fall
+1903-10-06,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,279,Fall
+1904-03-30,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,90,Spring
+1904-03-31,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,91,Spring
+1904-05-19,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,140,Spring
+1904-09-10,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,254,Fall
+1904-09-19,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,263,Fall
+1904-09-24,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,268,Fall
+1905-04-19,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,109,Spring
+1905-04-20,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,110,Spring
+1905-06-08,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,159,Summer
+1905-09-30,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,273,Fall
+1905-10-09,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,282,Fall
+1905-10-14,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,287,Fall
+1906-04-09,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,99,Spring
+1906-04-10,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,100,Spring
+1906-05-29,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,149,Spring
+1906-09-20,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,263,Fall
+1906-09-29,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,272,Fall
+1906-10-04,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,277,Fall
+1907-03-29,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,88,Spring
+1907-03-30,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,89,Spring
+1907-05-18,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,138,Spring
+1907-09-09,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,252,Fall
+1907-09-18,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,261,Fall
+1907-09-23,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,266,Fall
+1908-04-15,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,106,Spring
+1908-04-16,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,107,Spring
+1908-06-04,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,156,Summer
+1908-09-26,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,270,Fall
+1908-10-05,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,279,Fall
+1908-10-10,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,284,Fall
+1909-04-05,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,95,Spring
+1909-04-06,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,96,Spring
+1909-05-25,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,145,Spring
+1909-09-16,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,259,Fall
+1909-09-25,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,268,Fall
+1909-09-30,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,273,Fall
+1910-04-23,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,113,Spring
+1910-04-24,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,114,Spring
+1910-06-12,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,163,Summer
+1910-10-04,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,10,277,Fall
+1910-10-13,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,286,Fall
+1910-10-18,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,291,Fall
+1911-04-12,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,102,Spring
+1911-04-13,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,103,Spring
+1911-06-01,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,152,Summer
+1911-09-23,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,266,Fall
+1911-10-02,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,275,Fall
+1911-10-07,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,280,Fall
+1912-04-01,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,92,Spring
+1912-04-02,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,93,Spring
+1912-05-21,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,142,Spring
+1912-09-12,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,256,Fall
+1912-09-21,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,265,Fall
+1912-09-26,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,270,Fall
+1913-04-21,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,111,Spring
+1913-04-22,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,112,Spring
+1913-06-10,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,161,Summer
+1913-10-02,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,10,275,Fall
+1913-10-11,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,284,Fall
+1913-10-16,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,289,Fall
+1914-04-10,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,100,Spring
+1914-04-11,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,101,Spring
+1914-05-30,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,150,Spring
+1914-09-21,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,264,Fall
+1914-09-30,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,273,Fall
+1914-10-05,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,278,Fall
+1915-03-29,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,88,Spring
+1915-03-30,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,89,Spring
+1915-05-18,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,138,Spring
+1915-09-09,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,252,Fall
+1915-09-18,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,261,Fall
+1915-09-23,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,266,Fall
+1916-04-17,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,108,Spring
+1916-04-18,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,109,Spring
+1916-06-06,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,158,Summer
+1916-09-28,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,272,Fall
+1916-10-07,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,281,Fall
+1916-10-12,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,286,Fall
+1917-04-06,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,96,Spring
+1917-04-07,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,97,Spring
+1917-05-26,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,146,Spring
+1917-09-17,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,260,Fall
+1917-09-26,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,269,Fall
+1917-10-01,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,274,Fall
+1918-03-27,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,86,Spring
+1918-03-28,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,87,Spring
+1918-05-16,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,136,Spring
+1918-09-07,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,250,Fall
+1918-09-16,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,259,Fall
+1918-09-21,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,264,Fall
+1919-04-14,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,104,Spring
+1919-04-15,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,105,Spring
+1919-06-03,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,154,Summer
+1919-09-25,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,268,Fall
+1919-10-04,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,277,Fall
+1919-10-09,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,282,Fall
+1920-04-02,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,93,Spring
+1920-04-03,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,94,Spring
+1920-05-22,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,143,Spring
+1920-09-13,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,257,Fall
+1920-09-22,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,266,Fall
+1920-09-27,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,271,Fall
+1921-04-22,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,112,Spring
+1921-04-23,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,113,Spring
+1921-06-11,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,162,Summer
+1921-10-03,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,10,276,Fall
+1921-10-12,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,285,Fall
+1921-10-17,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,290,Fall
+1922-04-12,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,102,Spring
+1922-04-13,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,103,Spring
+1922-06-01,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,152,Summer
+1922-09-23,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,266,Fall
+1922-10-02,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,275,Fall
+1922-10-07,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,280,Fall
+1923-03-31,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,90,Spring
+1923-04-01,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,91,Spring
+1923-05-20,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,140,Spring
+1923-09-11,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,254,Fall
+1923-09-20,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,263,Fall
+1923-09-25,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,268,Fall
+1924-04-18,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,109,Spring
+1924-04-19,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,110,Spring
+1924-06-07,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,159,Summer
+1924-09-29,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,273,Fall
+1924-10-08,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,282,Fall
+1924-10-13,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,287,Fall
+1925-04-08,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,98,Spring
+1925-04-09,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,99,Spring
+1925-05-28,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,148,Spring
+1925-09-19,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,262,Fall
+1925-09-28,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,271,Fall
+1925-10-03,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,276,Fall
+1926-03-29,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,88,Spring
+1926-03-30,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,89,Spring
+1926-05-18,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,138,Spring
+1926-09-09,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,252,Fall
+1926-09-18,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,261,Fall
+1926-09-23,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,266,Fall
+1927-04-16,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,106,Spring
+1927-04-17,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,107,Spring
+1927-06-05,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,156,Summer
+1927-09-27,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,270,Fall
+1927-10-06,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,279,Fall
+1927-10-11,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,284,Fall
+1928-04-04,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,95,Spring
+1928-04-05,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,96,Spring
+1928-05-24,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,145,Spring
+1928-09-15,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,259,Fall
+1928-09-24,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,268,Fall
+1928-09-29,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,273,Fall
+1929-04-24,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,114,Spring
+1929-04-25,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,115,Spring
+1929-06-13,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,164,Summer
+1929-10-05,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,10,278,Fall
+1929-10-14,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,287,Fall
+1929-10-19,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,292,Fall
+1930-04-12,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,102,Spring
+1930-04-13,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,103,Spring
+1930-06-01,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,152,Summer
+1930-09-23,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,266,Fall
+1930-10-02,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,275,Fall
+1930-10-07,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,280,Fall
+1931-04-01,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,91,Spring
+1931-04-02,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,92,Spring
+1931-05-21,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,141,Spring
+1931-09-12,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,255,Fall
+1931-09-21,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,264,Fall
+1931-09-26,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,269,Fall
+1932-04-20,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,111,Spring
+1932-04-21,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,112,Spring
+1932-06-09,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,161,Summer
+1932-10-01,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,10,275,Fall
+1932-10-10,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,284,Fall
+1932-10-15,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,289,Fall
+1933-04-10,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,100,Spring
+1933-04-11,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,101,Spring
+1933-05-30,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,150,Spring
+1933-09-21,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,264,Fall
+1933-09-30,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,273,Fall
+1933-10-05,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,278,Fall
+1934-03-30,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,89,Spring
+1934-03-31,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,90,Spring
+1934-05-19,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,139,Spring
+1934-09-10,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,253,Fall
+1934-09-19,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,262,Fall
+1934-09-24,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,267,Fall
+1935-04-17,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,107,Spring
+1935-04-18,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,108,Spring
+1935-06-06,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,157,Summer
+1935-09-28,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,271,Fall
+1935-10-07,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,280,Fall
+1935-10-12,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,285,Fall
+1936-04-06,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,97,Spring
+1936-04-07,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,98,Spring
+1936-05-26,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,147,Spring
+1936-09-17,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,261,Fall
+1936-09-26,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,270,Fall
+1936-10-01,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,275,Fall
+1937-03-26,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,85,Spring
+1937-03-27,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,86,Spring
+1937-05-15,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,135,Spring
+1937-09-06,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,249,Fall
+1937-09-15,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,258,Fall
+1937-09-20,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,263,Fall
+1938-04-15,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,105,Spring
+1938-04-16,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,106,Spring
+1938-06-04,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,155,Summer
+1938-09-26,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,269,Fall
+1938-10-05,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,278,Fall
+1938-10-10,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,283,Fall
+1939-04-03,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,93,Spring
+1939-04-04,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,94,Spring
+1939-05-23,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,143,Spring
+1939-09-14,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,257,Fall
+1939-09-23,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,266,Fall
+1939-09-28,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,271,Fall
+1940-04-22,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,113,Spring
+1940-04-23,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,114,Spring
+1940-06-11,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,163,Summer
+1940-10-03,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,10,277,Fall
+1940-10-12,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,286,Fall
+1940-10-17,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,291,Fall
+1941-04-11,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,101,Spring
+1941-04-12,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,102,Spring
+1941-05-31,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,151,Spring
+1941-09-22,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,265,Fall
+1941-10-01,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,274,Fall
+1941-10-06,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,279,Fall
+1942-04-01,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,91,Spring
+1942-04-02,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,92,Spring
+1942-05-21,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,141,Spring
+1942-09-12,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,255,Fall
+1942-09-21,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,264,Fall
+1942-09-26,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,269,Fall
+1943-04-19,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,109,Spring
+1943-04-20,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,110,Spring
+1943-06-08,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,159,Summer
+1943-09-30,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,273,Fall
+1943-10-09,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,282,Fall
+1943-10-14,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,287,Fall
+1944-04-07,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,98,Spring
+1944-04-08,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,99,Spring
+1944-05-27,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,148,Spring
+1944-09-18,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,262,Fall
+1944-09-27,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,271,Fall
+1944-10-02,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,276,Fall
+1945-03-28,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,87,Spring
+1945-03-29,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,88,Spring
+1945-05-17,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,137,Spring
+1945-09-08,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,251,Fall
+1945-09-17,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,260,Fall
+1945-09-22,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,265,Fall
+1946-04-15,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,105,Spring
+1946-04-16,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,106,Spring
+1946-06-04,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,155,Summer
+1946-09-26,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,269,Fall
+1946-10-05,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,278,Fall
+1946-10-10,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,283,Fall
+1947-04-04,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,94,Spring
+1947-04-05,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,95,Spring
+1947-05-24,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,144,Spring
+1947-09-15,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,258,Fall
+1947-09-24,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,267,Fall
+1947-09-29,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,272,Fall
+1948-04-23,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,114,Spring
+1948-04-24,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,115,Spring
+1948-06-12,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,164,Summer
+1948-10-04,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,10,278,Fall
+1948-10-13,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,287,Fall
+1948-10-18,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,292,Fall
+1949-04-13,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,103,Spring
+1949-04-14,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,104,Spring
+1949-06-02,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,153,Summer
+1949-09-24,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,267,Fall
+1949-10-03,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,276,Fall
+1949-10-08,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,281,Fall
+1950-04-01,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,91,Spring
+1950-04-02,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,92,Spring
+1950-05-21,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,141,Spring
+1950-09-12,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,255,Fall
+1950-09-21,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,264,Fall
+1950-09-26,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,269,Fall
+1951-04-20,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,110,Spring
+1951-04-21,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,111,Spring
+1951-06-09,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,160,Summer
+1951-10-01,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,10,274,Fall
+1951-10-10,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,283,Fall
+1951-10-15,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,288,Fall
+1952-04-09,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,100,Spring
+1952-04-10,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,101,Spring
+1952-05-29,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,150,Spring
+1952-09-20,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,264,Fall
+1952-09-29,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,273,Fall
+1952-10-04,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,278,Fall
+1953-03-30,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,89,Spring
+1953-03-31,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,90,Spring
+1953-05-19,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,139,Spring
+1953-09-10,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,253,Fall
+1953-09-19,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,262,Fall
+1953-09-24,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,267,Fall
+1954-04-17,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,107,Spring
+1954-04-18,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,108,Spring
+1954-06-06,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,157,Summer
+1954-09-28,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,271,Fall
+1954-10-07,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,280,Fall
+1954-10-12,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,285,Fall
+1955-04-06,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,96,Spring
+1955-04-07,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,97,Spring
+1955-05-26,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,146,Spring
+1955-09-17,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,260,Fall
+1955-09-26,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,269,Fall
+1955-10-01,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,274,Fall
+1956-03-26,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,86,Spring
+1956-03-27,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,87,Spring
+1956-05-15,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,136,Spring
+1956-09-06,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,250,Fall
+1956-09-15,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,259,Fall
+1956-09-20,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,264,Fall
+1957-04-15,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,105,Spring
+1957-04-16,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,106,Spring
+1957-06-04,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,155,Summer
+1957-09-26,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,269,Fall
+1957-10-05,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,278,Fall
+1957-10-10,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,283,Fall
+1958-04-04,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,94,Spring
+1958-04-05,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,95,Spring
+1958-05-24,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,144,Spring
+1958-09-15,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,258,Fall
+1958-09-24,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,267,Fall
+1958-09-29,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,272,Fall
+1959-04-22,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,112,Spring
+1959-04-23,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,113,Spring
+1959-06-11,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,162,Summer
+1959-10-03,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,10,276,Fall
+1959-10-12,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,285,Fall
+1959-10-17,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,290,Fall
+1960-04-11,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,102,Spring
+1960-04-12,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,103,Spring
+1960-05-31,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,152,Spring
+1960-09-22,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,266,Fall
+1960-10-01,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,275,Fall
+1960-10-06,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,280,Fall
+1961-03-31,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,90,Spring
+1961-04-01,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,91,Spring
+1961-05-20,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,140,Spring
+1961-09-11,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,254,Fall
+1961-09-20,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,263,Fall
+1961-09-25,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,268,Fall
+1962-04-18,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,108,Spring
+1962-04-19,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,109,Spring
+1962-06-07,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,158,Summer
+1962-09-29,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,272,Fall
+1962-10-08,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,281,Fall
+1962-10-13,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,286,Fall
+1963-04-08,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,98,Spring
+1963-04-09,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,99,Spring
+1963-05-28,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,148,Spring
+1963-09-19,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,262,Fall
+1963-09-28,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,271,Fall
+1963-10-03,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,276,Fall
+1964-03-27,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,87,Spring
+1964-03-28,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,88,Spring
+1964-05-16,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,137,Spring
+1964-09-07,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,251,Fall
+1964-09-16,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,260,Fall
+1964-09-21,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,265,Fall
+1965-04-16,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,106,Spring
+1965-04-17,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,107,Spring
+1965-06-05,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,156,Summer
+1965-09-27,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,270,Fall
+1965-10-06,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,279,Fall
+1965-10-11,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,284,Fall
+1966-04-04,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,94,Spring
+1966-04-05,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,95,Spring
+1966-05-24,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,144,Spring
+1966-09-15,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,258,Fall
+1966-09-24,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,267,Fall
+1966-09-29,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,272,Fall
+1967-04-24,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,114,Spring
+1967-04-25,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,115,Spring
+1967-06-13,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,164,Summer
+1967-10-05,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,10,278,Fall
+1967-10-14,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,287,Fall
+1967-10-19,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,292,Fall
+1968-04-12,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,103,Spring
+1968-04-13,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,104,Spring
+1968-06-01,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,153,Summer
+1968-09-23,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,267,Fall
+1968-10-02,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,276,Fall
+1968-10-07,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,281,Fall
+1969-04-02,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,92,Spring
+1969-04-03,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,93,Spring
+1969-05-22,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,142,Spring
+1969-09-13,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,256,Fall
+1969-09-22,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,265,Fall
+1969-09-27,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,270,Fall
+1970-04-20,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,110,Spring
+1970-04-21,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,111,Spring
+1970-06-09,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,160,Summer
+1970-10-01,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,10,274,Fall
+1970-10-10,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,283,Fall
+1970-10-15,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,288,Fall
+1971-04-09,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,99,Spring
+1971-04-10,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,100,Spring
+1971-05-29,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,149,Spring
+1971-09-20,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,263,Fall
+1971-09-29,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,272,Fall
+1971-10-04,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,277,Fall
+1972-03-29,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,89,Spring
+1972-03-30,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,90,Spring
+1972-05-18,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,139,Spring
+1972-09-09,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,253,Fall
+1972-09-18,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,262,Fall
+1972-09-23,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,267,Fall
+1973-04-16,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,106,Spring
+1973-04-17,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,107,Spring
+1973-06-05,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,156,Summer
+1973-09-27,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,270,Fall
+1973-10-06,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,279,Fall
+1973-10-11,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,284,Fall
+1974-04-06,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,96,Spring
+1974-04-07,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,97,Spring
+1974-05-26,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,146,Spring
+1974-09-17,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,260,Fall
+1974-09-26,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,269,Fall
+1974-10-01,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,274,Fall
+1975-03-26,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,85,Spring
+1975-03-27,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,86,Spring
+1975-05-15,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,135,Spring
+1975-09-06,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,249,Fall
+1975-09-15,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,258,Fall
+1975-09-20,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,263,Fall
+1976-04-14,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,105,Spring
+1976-04-15,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,106,Spring
+1976-06-03,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,155,Summer
+1976-09-25,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,269,Fall
+1976-10-04,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,278,Fall
+1976-10-09,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,283,Fall
+1977-04-02,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,92,Spring
+1977-04-03,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,93,Spring
+1977-05-22,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,142,Spring
+1977-09-13,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,256,Fall
+1977-09-22,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,265,Fall
+1977-09-27,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,270,Fall
+1978-04-21,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,111,Spring
+1978-04-22,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,112,Spring
+1978-06-10,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,161,Summer
+1978-10-02,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,10,275,Fall
+1978-10-11,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,284,Fall
+1978-10-16,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,289,Fall
+1979-04-11,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,101,Spring
+1979-04-12,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,102,Spring
+1979-05-31,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,151,Spring
+1979-09-22,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,265,Fall
+1979-10-01,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,274,Fall
+1979-10-06,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,279,Fall
+1980-03-31,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,91,Spring
+1980-04-01,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,92,Spring
+1980-05-20,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,1,5,0,0,0,1,1,volcanic,5,141,Spring
+1980-09-11,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,255,Fall
+1980-09-20,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,264,Fall
+1980-09-25,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,269,Fall
+1981-04-18,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,108,Spring
+1981-04-19,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,109,Spring
+1981-06-07,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,158,Summer
+1981-09-29,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,272,Fall
+1981-10-08,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,281,Fall
+1981-10-13,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,286,Fall
+1982-04-07,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,97,Spring
+1982-04-08,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,98,Spring
+1982-05-27,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,147,Spring
+1982-09-18,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,261,Fall
+1982-09-27,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,270,Fall
+1982-10-02,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,275,Fall
+1983-03-28,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,87,Spring
+1983-03-29,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,88,Spring
+1983-05-17,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,137,Spring
+1983-09-08,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,251,Fall
+1983-09-17,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,260,Fall
+1983-09-22,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,265,Fall
+1984-04-16,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,107,Spring
+1984-04-17,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,108,Spring
+1984-06-05,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,157,Summer
+1984-09-27,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,271,Fall
+1984-10-06,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,280,Fall
+1984-10-11,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,285,Fall
+1985-04-05,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,95,Spring
+1985-04-06,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,96,Spring
+1985-05-25,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,145,Spring
+1985-09-16,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,259,Fall
+1985-09-25,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,268,Fall
+1985-09-30,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,273,Fall
+1986-04-23,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,113,Spring
+1986-04-24,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,114,Spring
+1986-06-12,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,163,Summer
+1986-10-04,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,10,277,Fall
+1986-10-13,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,286,Fall
+1986-10-18,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,291,Fall
+1987-04-13,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,103,Spring
+1987-04-14,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,104,Spring
+1987-06-02,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,153,Summer
+1987-09-24,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,267,Fall
+1987-10-03,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,276,Fall
+1987-10-08,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,281,Fall
+1988-04-01,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,92,Spring
+1988-04-02,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,93,Spring
+1988-05-21,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,142,Spring
+1988-09-12,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,256,Fall
+1988-09-21,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,265,Fall
+1988-09-26,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,270,Fall
+1989-04-19,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,109,Spring
+1989-04-20,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,110,Spring
+1989-06-08,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,159,Summer
+1989-09-30,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,273,Fall
+1989-10-09,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,282,Fall
+1989-10-14,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,287,Fall
+1990-04-09,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,99,Spring
+1990-04-10,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,100,Spring
+1990-05-29,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,149,Spring
+1990-09-20,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,263,Fall
+1990-09-29,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,272,Fall
+1990-10-04,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,277,Fall
+1991-03-29,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,88,Spring
+1991-03-30,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,89,Spring
+1991-05-18,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,138,Spring
+1991-09-09,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,252,Fall
+1991-09-18,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,261,Fall
+1991-09-23,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,266,Fall
+1992-04-17,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,108,Spring
+1992-04-18,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,109,Spring
+1992-06-06,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,158,Summer
+1992-09-28,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,272,Fall
+1992-10-07,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,281,Fall
+1992-10-12,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,286,Fall
+1993-04-05,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,95,Spring
+1993-04-06,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,96,Spring
+1993-05-25,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,145,Spring
+1993-09-16,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,259,Fall
+1993-09-25,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,268,Fall
+1993-09-30,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,273,Fall
+1994-03-26,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,85,Spring
+1994-03-27,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,86,Spring
+1994-05-15,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,135,Spring
+1994-09-06,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,249,Fall
+1994-09-15,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,258,Fall
+1994-09-20,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,263,Fall
+1995-04-14,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,104,Spring
+1995-04-15,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,105,Spring
+1995-06-03,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,154,Summer
+1995-09-25,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,268,Fall
+1995-10-04,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,277,Fall
+1995-10-09,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,282,Fall
+1996-04-03,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,94,Spring
+1996-04-04,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,95,Spring
+1996-05-23,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,144,Spring
+1996-09-14,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,258,Fall
+1996-09-23,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,267,Fall
+1996-09-28,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,272,Fall
+1997-04-21,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,111,Spring
+1997-04-22,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,112,Spring
+1997-06-10,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,161,Summer
+1997-10-02,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,10,275,Fall
+1997-10-11,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,284,Fall
+1997-10-16,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,289,Fall
+1998-04-10,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,100,Spring
+1998-04-11,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,101,Spring
+1998-05-30,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,150,Spring
+1998-09-21,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,264,Fall
+1998-09-30,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,273,Fall
+1998-10-05,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,278,Fall
+1999-03-31,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,90,Spring
+1999-04-01,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,91,Spring
+1999-05-20,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,140,Spring
+1999-09-11,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,254,Fall
+1999-09-20,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,263,Fall
+1999-09-25,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,268,Fall
+2000-04-19,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,110,Spring
+2000-04-20,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,111,Spring
+2000-06-08,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,160,Summer
+2000-09-30,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,274,Fall
+2000-10-09,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,283,Fall
+2000-10-14,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,288,Fall
+2001-04-07,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,97,Spring
+2001-04-08,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,98,Spring
+2001-05-27,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,147,Spring
+2001-09-18,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,261,Fall
+2001-09-27,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,270,Fall
+2001-10-02,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,275,Fall
+2002-03-27,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,86,Spring
+2002-03-28,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,87,Spring
+2002-05-16,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,136,Spring
+2002-09-07,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,250,Fall
+2002-09-16,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,259,Fall
+2002-09-21,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,264,Fall
+2003-04-16,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,106,Spring
+2003-04-17,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,107,Spring
+2003-06-05,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,156,Summer
+2003-09-27,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,270,Fall
+2003-10-06,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,279,Fall
+2003-10-11,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,284,Fall
+2004-04-05,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,96,Spring
+2004-04-06,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,97,Spring
+2004-05-25,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,146,Spring
+2004-09-16,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,260,Fall
+2004-09-25,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,269,Fall
+2004-09-30,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,274,Fall
+2005-04-23,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,113,Spring
+2005-04-24,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,114,Spring
+2005-06-12,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,163,Summer
+2005-10-04,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,10,277,Fall
+2005-10-13,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,286,Fall
+2005-10-18,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,291,Fall
+2006-04-12,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,102,Spring
+2006-04-13,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,103,Spring
+2006-06-01,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,152,Summer
+2006-09-23,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,266,Fall
+2006-10-02,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,275,Fall
+2006-10-07,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,280,Fall
+2007-04-02,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,92,Spring
+2007-04-03,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,93,Spring
+2007-05-22,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,142,Spring
+2007-09-13,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,256,Fall
+2007-09-22,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,265,Fall
+2007-09-27,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,270,Fall
+2008-04-19,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,110,Spring
+2008-04-20,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,111,Spring
+2008-06-08,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,160,Summer
+2008-09-30,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,274,Fall
+2008-10-09,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,283,Fall
+2008-10-14,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,288,Fall
+2009-04-08,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,98,Spring
+2009-04-09,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,99,Spring
+2009-05-28,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,148,Spring
+2009-09-19,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,262,Fall
+2009-09-28,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,271,Fall
+2009-10-03,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,276,Fall
+2010-03-29,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,88,Spring
+2010-03-30,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,89,Spring
+2010-05-18,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,138,Spring
+2010-09-09,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,252,Fall
+2010-09-18,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,261,Fall
+2010-09-23,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,266,Fall
+2011-04-18,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,108,Spring
+2011-04-19,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,109,Spring
+2011-06-07,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,158,Summer
+2011-09-29,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,272,Fall
+2011-10-08,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,281,Fall
+2011-10-13,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,286,Fall
+2012-04-06,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,97,Spring
+2012-04-07,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,98,Spring
+2012-05-26,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,147,Spring
+2012-09-17,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,261,Fall
+2012-09-26,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,270,Fall
+2012-10-01,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,275,Fall
+2013-03-25,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,84,Spring
+2013-03-26,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,85,Spring
+2013-05-14,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,134,Spring
+2013-09-05,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,248,Fall
+2013-09-14,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,257,Fall
+2013-09-19,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,262,Fall
+2014-04-14,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,104,Spring
+2014-04-15,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,105,Spring
+2014-06-03,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,154,Summer
+2014-09-25,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,268,Fall
+2014-10-04,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,277,Fall
+2014-10-09,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,282,Fall
+2015-04-03,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,93,Spring
+2015-04-04,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,94,Spring
+2015-05-23,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,143,Spring
+2015-09-14,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,257,Fall
+2015-09-23,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,266,Fall
+2015-09-28,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,271,Fall
+2016-04-22,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,113,Spring
+2016-04-23,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,114,Spring
+2016-06-11,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,163,Summer
+2016-10-03,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,10,277,Fall
+2016-10-12,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,286,Fall
+2016-10-17,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,291,Fall
+2017-04-10,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,100,Spring
+2017-04-11,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,101,Spring
+2017-05-30,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,150,Spring
+2017-09-21,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",1,7.1,0,0,1,5,0,2,1,earthquake,9,264,Fall
+2017-09-30,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,273,Fall
+2017-10-05,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,278,Fall
+2018-03-30,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,89,Spring
+2018-03-31,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,90,Spring
+2018-05-19,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,139,Spring
+2018-09-10,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,253,Fall
+2018-09-19,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,262,Fall
+2018-09-24,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,1,7.5,0,0,0,0,1,2,1,earthquake,9,267,Fall
+2019-04-19,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,109,Spring
+2019-04-20,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,110,Spring
+2019-06-08,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,159,Summer
+2019-09-30,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,273,Fall
+2019-10-09,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,282,Fall
+2019-10-14,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,287,Fall
+2020-04-08,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,99,Spring
+2020-04-09,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,100,Spring
+2020-05-28,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,149,Spring
+2020-09-19,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,263,Fall
+2020-09-28,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,272,Fall
+2020-10-03,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,277,Fall
+2021-03-27,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,86,Spring
+2021-03-28,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,87,Spring
+2021-05-16,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,136,Spring
+2021-09-07,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,250,Fall
+2021-09-16,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,259,Fall
+2021-09-21,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,264,Fall
+2022-04-15,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,105,Spring
+2022-04-16,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,106,Spring
+2022-06-04,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,155,Summer
+2022-09-26,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",1,7.6,0,0,1,5,0,2,1,earthquake,9,269,Fall
+2022-10-05,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,278,Fall
+2022-10-10,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,283,Fall
+2023-04-05,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,95,Spring
+2023-04-06,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,96,Spring
+2023-05-25,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,145,Spring
+2023-09-16,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,259,Fall
+2023-09-25,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,268,Fall
+2023-09-30,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,273,Fall
+2024-04-22,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,113,Spring
+2024-04-23,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,114,Spring
+2024-06-11,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,163,Summer
+2024-10-03,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,10,277,Fall
+2024-10-12,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,286,Fall
+2024-10-17,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,291,Fall
+2025-04-12,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,102,Spring
+2025-04-13,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,103,Spring
+2025-06-01,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,152,Summer
+2025-09-23,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,266,Fall
+2025-10-02,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,275,Fall
+2025-10-07,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,280,Fall
+2026-04-01,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,91,Spring
+2026-04-02,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,92,Spring
+2026-05-21,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,141,Spring
+2026-09-12,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,255,Fall
+2026-09-21,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,264,Fall
+2026-09-26,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,269,Fall
+2027-04-21,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,111,Spring
+2027-04-22,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,112,Spring
+2027-06-10,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,161,Summer
+2027-10-02,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,10,275,Fall
+2027-10-11,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,284,Fall
+2027-10-16,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,289,Fall
+2028-04-10,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,101,Spring
+2028-04-11,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,102,Spring
+2028-05-30,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,151,Spring
+2028-09-21,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,265,Fall
+2028-09-30,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,274,Fall
+2028-10-05,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,279,Fall
+2029-03-30,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,3,89,Spring
+2029-03-31,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,3,90,Spring
+2029-05-19,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,5,139,Spring
+2029-09-10,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,253,Fall
+2029-09-19,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,9,262,Fall
+2029-09-24,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,9,267,Fall
+2030-04-17,Passover (Pesach),passover,Commemorates the Exodus from Egypt,0,0.0,0,0,0,0,0,0,0,none,4,107,Spring
+2030-04-18,Feast of Unleavened Bread,unleavened_bread,Commemorates the haste of the Exodus,0,0.0,0,0,0,0,0,0,0,none,4,108,Spring
+2030-06-06,Pentecost (Shavuot),pentecost,Commemorates the giving of the Torah at Mount Sinai,0,0.0,0,0,0,0,0,0,0,none,6,157,Summer
+2030-09-28,Feast of Trumpets (Rosh Hashanah),trumpets,"Jewish New Year, Day of Judgment",0,0.0,0,0,0,0,0,0,0,none,9,271,Fall
+2030-10-07,Day of Atonement (Yom Kippur),atonement,"Holiest day, day of repentance and forgiveness",0,0.0,0,0,0,0,0,0,0,none,10,280,Fall
+2030-10-12,Feast of Tabernacles (Sukkot),tabernacles,Commemorates the 40 years in the wilderness,0,0.0,0,0,0,0,0,0,0,none,10,285,Fall

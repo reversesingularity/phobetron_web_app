@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database with PostGIS
+  postgres:
+    image: postgis/postgis:15-3.4-alpine
+    container_name: phobetron_db_prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: phobetron
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-phobetron_secure_password}
+      POSTGRES_DB: phobetron
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U phobetron -d phobetron"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - phobetron_network
+
+  # Backend API (FastAPI)
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    image: phobetron/backend:latest
+    container_name: phobetron_backend_prod
+    restart: unless-stopped
+    environment:
+      # Database
+      DATABASE_URL: postgresql://phobetron:${POSTGRES_PASSWORD:-phobetron_secure_password}@postgres:5432/phobetron
+      
+      # API Configuration
+      API_V1_STR: /api/v1
+      PROJECT_NAME: "Phobetron - Celestial Signs"
+      
+      # CORS
+      CORS_ORIGINS: http://localhost:3000,http://frontend:3000,https://phobetron.app
+      
+      # Security
+      SECRET_KEY: ${SECRET_KEY:-change_this_secret_key_in_production}
+      
+      # Environment
+      ENVIRONMENT: production
+    ports:
+      - "8020:8020"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - phobetron_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8020/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend (React + Vite + Nginx)
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    image: phobetron/frontend:latest
+    container_name: phobetron_frontend_prod
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: http://localhost:8020
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - phobetron_network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  phobetron_network:
+    driver: bridge
+    name: phobetron_network

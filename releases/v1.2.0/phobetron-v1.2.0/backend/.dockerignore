@@ -1,0 +1,77 @@
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Testing
+.pytest_cache
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Local env files
+.env
+.env.local
+.env.*.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+README.md
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Alembic (keep migrations but not temp files)
+alembic/versions/__pycache__
+
+# ML Models (keep source, exclude trained models if too large)
+*.pkl
+*.h5
+*.pt
+*.pth
+
+# Data files
+data/cache/
+data/temp/

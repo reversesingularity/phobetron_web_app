@@ -1,0 +1,88 @@
+# Railway Environment Variables Backup
+# Production Deployment - November 9, 2025
+# Database Instance: crossover.proxy.rlwy.net:44440
+
+# ===================================
+# CRITICAL: KEEP THIS FILE SECURE
+# Contains sensitive database credentials
+# ===================================
+
+# Database Connection (Primary)
+DATABASE_URL=postgresql://postgres:***@crossover.proxy.rlwy.net:44440/railway
+
+# Individual PostgreSQL Variables (Used by Alembic)
+PGHOST=crossover.proxy.rlwy.net
+PGPORT=44440
+PGUSER=postgres
+PGPASSWORD=***
+PGDATABASE=railway
+
+# Public Database URL (if different)
+DATABASE_PUBLIC_URL=postgresql://postgres:***@crossover.proxy.rlwy.net:44440/railway
+
+# Application Configuration
+PORT=8080
+RAILWAY_ENVIRONMENT=production
+
+# ===================================
+# IMPORTANT NOTES
+# ===================================
+
+# 1. PGHOST must use proxy hostname (crossover.proxy.rlwy.net)
+#    NOT postgres.railway.internal (DNS not accessible from containers)
+
+# 2. DATABASE_URL uses postgresql:// dialect (Railway format)
+#    Application automatically converts to postgresql+psycopg2://
+
+# 3. PORT is set by Railway, typically 8080
+#    Application listens on this port internally
+#    Railway handles external routing
+
+# 4. If database is recreated, update:
+#    - PGHOST (new proxy hostname)
+#    - PGPORT (new port number)
+#    - PGPASSWORD (new password)
+#    - DATABASE_URL (complete new URL)
+
+# ===================================
+# RAILWAY PROJECT INFORMATION
+# ===================================
+
+# Project ID: ec728152-5db4-4a95-ae07-dd1d835594db
+# Environment: production (1565ae93-5b95-4488-a683-0f05f0cff11f)
+# Service ID: d674b1bb-7679-4e87-a14e-839cabec3cdc
+# Region: us-east4
+
+# ===================================
+# RESTORATION INSTRUCTIONS
+# ===================================
+
+# If you need to restore these variables in Railway:
+# 1. Go to Railway dashboard
+# 2. Select project: phobetron_web_app
+# 3. Select environment: production
+# 4. Select service: backend
+# 5. Go to Variables tab
+# 6. Add each variable above with actual values
+# 7. Redeploy the service
+
+# ===================================
+# DATABASE INSTANCE HISTORY
+# ===================================
+
+# Instance 1 (FAILED - crashed):
+# - Host: nozomi.proxy.rlwy.net
+# - Port: 31417
+# - Status: Server crashed during connection attempts
+
+# Instance 2 (FAILED - DNS issues):
+# - Host: yamabiko.proxy.rlwy.net
+# - Port: 35574
+# - Status: postgres.railway.internal DNS not resolvable
+
+# Instance 3 (CURRENT - WORKING):
+# - Host: crossover.proxy.rlwy.net
+# - Port: 44440
+# - Status: Active and healthy
+# - Migrations: All 5 migrations applied successfully
+# - Created: November 9, 2025

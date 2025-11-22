@@ -1,0 +1,162 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database with PostGIS
+  postgres:
+    image: postgis/postgis:15-3.4-alpine
+    container_name: phobetron_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: phobetron
+      POSTGRES_PASSWORD: phobetron_secure_password_2025
+      POSTGRES_DB: phobetron
+      POSTGRES_INITDB_ARGS: "-E UTF8"
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U phobetron -d phobetron"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - phobetron_network
+
+  # Backend API
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: phobetron_backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://phobetron:phobetron_secure_password_2025@postgres:5432/phobetron
+      CORS_ORIGINS: http://localhost:3000,http://localhost:3001,http://frontend:3000
+      API_V1_STR: /api/v1
+      PYTHONUNBUFFERED: 1
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+    ports:
+      - "8020:8020"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../backend/app:/app/app
+      - ../backend/scripts:/app/scripts
+      - backend_ml_models:/app/ml/models
+      - backend_logs:/app/logs
+    networks:
+      - phobetron_network
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8020 --reload
+
+  # Frontend
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:8020
+    container_name: phobetron_frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: http://localhost:8020
+      NODE_ENV: production
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - phobetron_network
+
+  # Redis (Message Broker for Celery)
+  redis:
+    image: redis:7-alpine
+    container_name: phobetron_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - phobetron_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+
+  # Celery Worker (Background Tasks)
+  celery_worker:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: phobetron_celery_worker
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://phobetron:phobetron_secure_password_2025@postgres:5432/phobetron
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      PYTHONUNBUFFERED: 1
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../backend/app:/app/app
+      - ../backend/scripts:/app/scripts
+      - backend_ml_models:/app/ml/models
+      - backend_logs:/app/logs
+    networks:
+      - phobetron_network
+    command: celery -A app.tasks.data_fetching:celery_app worker --loglevel=info --concurrency=4
+
+  # Celery Beat (Scheduler)
+  celery_beat:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: phobetron_celery_beat
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://phobetron:phobetron_secure_password_2025@postgres:5432/phobetron
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      PYTHONUNBUFFERED: 1
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../backend/app:/app/app
+      - ../backend/scripts:/app/scripts
+      - backend_ml_models:/app/ml/models
+      - backend_logs:/app/logs
+    networks:
+      - phobetron_network
+    command: celery -A app.tasks.data_fetching:celery_app beat --loglevel=info
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  backend_ml_models:
+    driver: local
+  backend_logs:
+    driver: local
+
+networks:
+  phobetron_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
