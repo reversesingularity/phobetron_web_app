@@ -114,7 +114,7 @@ const AnalyticsDashboard = () => {
         />
         <StatCard
           title="Countries"
-          value={stats.top_countries.length}
+          value={stats.top_countries.length.toString()}
           icon={Globe}
           color="purple"
         />
