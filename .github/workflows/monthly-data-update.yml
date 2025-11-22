@@ -108,6 +108,7 @@ jobs:
   recalculate-correlations:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    continue-on-error: true
     needs: [update-earthquake-data, update-volcanic-data, update-neo-data, update-solar-events]
     
     steps:
