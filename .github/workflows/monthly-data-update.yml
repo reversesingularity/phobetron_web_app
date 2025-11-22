@@ -31,8 +31,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
         run: |
-          cd backend/scripts
-          python fetch_earthquake_data.py --days=30 --min-magnitude=4.0
+          python backend/scripts/fetch_earthquake_data.py --days=30 --min-magnitude=4.0
       
       - name: Log completion
         run: echo "✅ Earthquake data updated successfully"
@@ -59,8 +58,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
         run: |
-          cd backend/scripts
-          python fetch_volcanic_data.py
+          python backend/scripts/fetch_volcanic_data.py
       
       - name: Log completion
         run: echo "✅ Volcanic data updated successfully"
@@ -88,8 +86,7 @@ jobs:
           DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
           NASA_API_KEY: ${{ secrets.NASA_API_KEY }}
         run: |
-          cd backend/scripts
-          python fetch_neo_data.py --days=90
+          python backend/scripts/fetch_neo_data.py --days=90
       
       - name: Log completion
         run: echo "✅ NEO data updated successfully"
@@ -116,8 +113,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
         run: |
-          cd backend/scripts
-          python fetch_solar_events.py --days=30
+          python backend/scripts/fetch_solar_events.py --days=30
       
       - name: Log completion
         run: echo "✅ Solar event data updated successfully"
@@ -145,8 +141,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
         run: |
-          cd backend/scripts
-          python recalculate_correlations.py
+          python backend/scripts/recalculate_correlations.py
       
       - name: Log completion
         run: echo "✅ ML correlations recalculated successfully"
