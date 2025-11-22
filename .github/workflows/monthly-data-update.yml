@@ -12,6 +12,7 @@ jobs:
   update-earthquake-data:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    continue-on-error: true
     
     steps:
       - name: Checkout repository
@@ -36,6 +37,7 @@ jobs:
   update-volcanic-data:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    continue-on-error: true
     
     steps:
       - name: Checkout repository
@@ -60,6 +62,7 @@ jobs:
   update-neo-data:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    continue-on-error: true
     
     steps:
       - name: Checkout repository
@@ -84,6 +87,7 @@ jobs:
   update-solar-events:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    continue-on-error: true
     
     steps:
       - name: Checkout repository
