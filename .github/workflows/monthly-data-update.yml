@@ -1,0 +1,158 @@
+name: Monthly Data Update
+
+on:
+  # Run on the 1st of every month at 2 AM UTC
+  schedule:
+    - cron: '0 2 1 * *'
+  
+  # Allow manual triggering from GitHub UI
+  workflow_dispatch:
+
+jobs:
+  update-earthquake-data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install requests sqlalchemy psycopg2-binary python-dotenv
+      
+      - name: Fetch USGS Earthquake Data
+        env:
+          DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
+        run: |
+          cd backend/scripts
+          python fetch_earthquake_data.py --days=30 --min-magnitude=4.0
+      
+      - name: Log completion
+        run: echo "✅ Earthquake data updated successfully"
+
+  update-volcanic-data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install requests sqlalchemy psycopg2-binary python-dotenv
+      
+      - name: Fetch Volcanic Activity Data
+        env:
+          DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
+        run: |
+          cd backend/scripts
+          python fetch_volcanic_data.py
+      
+      - name: Log completion
+        run: echo "✅ Volcanic data updated successfully"
+
+  update-neo-data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install requests sqlalchemy psycopg2-binary python-dotenv
+      
+      - name: Fetch NASA NEO Data
+        env:
+          DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
+          NASA_API_KEY: ${{ secrets.NASA_API_KEY }}
+        run: |
+          cd backend/scripts
+          python fetch_neo_data.py --days=90
+      
+      - name: Log completion
+        run: echo "✅ NEO data updated successfully"
+
+  update-solar-events:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install requests sqlalchemy psycopg2-binary python-dotenv
+      
+      - name: Fetch Solar Event Data
+        env:
+          DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
+        run: |
+          cd backend/scripts
+          python fetch_solar_events.py --days=30
+      
+      - name: Log completion
+        run: echo "✅ Solar event data updated successfully"
+
+  recalculate-correlations:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [update-earthquake-data, update-volcanic-data, update-neo-data, update-solar-events]
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install sqlalchemy psycopg2-binary python-dotenv numpy scikit-learn
+      
+      - name: Recalculate ML Correlations
+        env:
+          DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
+        run: |
+          cd backend/scripts
+          python recalculate_correlations.py
+      
+      - name: Log completion
+        run: echo "✅ ML correlations recalculated successfully"
+      
+      - name: Send completion notification
+        run: |
+          echo "🎉 Monthly data update completed!"
+          echo "Updated: Earthquakes, Volcanoes, NEOs, Solar Events"
+          echo "Timestamp: $(date -u)"
