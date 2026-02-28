@@ -1,6 +1,17 @@
 """
 Solar Event Data Fetcher for GitHub Actions
-Fetches solar flare and geomagnetic storm data from NOAA
+Fetches solar flare and geomagnetic storm data from NASA DONKI API.
+
+The old implementation used the NOAA GOES real-time X-ray sensor feed
+(services.swpc.noaa.gov/json/goes/primary/xrays-7-day.json) which only
+provides sensor readings for the last 7 days — after the initial import
+every record was a duplicate, so nothing new was ever inserted.
+
+The NASA DONKI API (https://kauai.ccmc.gsfc.nasa.gov/DONKI) provides a
+proper event catalog (solar flares + geomagnetic storms) going back years,
+with unique event IDs, so historical back-fills and incremental monthly
+updates both work correctly.  API key is optional (rate-limited but usable
+without one).
 """
 
 import requests
@@ -15,74 +26,143 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 
+# NASA DONKI base URL
+DONKI_BASE = "https://kauai.ccmc.gsfc.nasa.gov/DONKI/WS/get"
+
+
+def _date_range(days: int):
+    """Return (start_date_str, end_date_str) for the last `days` days."""
+    end = datetime.utcnow().date()
+    start = end - timedelta(days=days)
+    return start.strftime("%Y-%m-%d"), end.strftime("%Y-%m-%d")
+
+
+def fetch_solar_flares(start_date: str, end_date: str) -> list:
+    """Fetch solar flare events from NASA DONKI FLR endpoint."""
+    url = f"{DONKI_BASE}/FLR"
+    params = {"startDate": start_date, "endDate": end_date}
+
+    try:
+        response = requests.get(url, params=params, timeout=30)
+        response.raise_for_status()
+        data = response.json() or []
+    except Exception as e:
+        print(f"  ⚠️ Could not fetch solar flares: {e}")
+        return []
+
+    events = []
+    for flare in data:
+        begin_time = flare.get("beginTime") or flare.get("peakTime")
+        if not begin_time:
+            continue
+
+        try:
+            event_start = datetime.strptime(begin_time[:16], "%Y-%m-%dT%H:%M")
+        except ValueError:
+            continue
+
+        end_time = flare.get("endTime")
+        if end_time:
+            try:
+                event_end = datetime.strptime(end_time[:16], "%Y-%m-%dT%H:%M")
+            except ValueError:
+                event_end = event_start + timedelta(minutes=30)
+        else:
+            event_end = event_start + timedelta(minutes=30)
+
+        # classType looks like "M5.0", "X1.2", "C3.4" — store the letter
+        class_type = (flare.get("classType") or "C").strip()
+        intensity = class_type[0].upper() if class_type else "C"
+
+        events.append({
+            'donki_id': flare.get("flrID", ""),
+            'event_type': 'solar_flare',
+            'event_start': event_start,
+            'event_end': event_end,
+            'intensity': intensity,
+            'kp_index': None,
+            'data_source': 'NASA DONKI',
+            'created_at': datetime.utcnow()
+        })
+
+    print(f"  ☀️  Fetched {len(events)} solar flare events from DONKI")
+    return events
+
+
+def fetch_geomagnetic_storms(start_date: str, end_date: str) -> list:
+    """Fetch geomagnetic storm events from NASA DONKI GST endpoint."""
+    url = f"{DONKI_BASE}/GST"
+    params = {"startDate": start_date, "endDate": end_date}
+
+    try:
+        response = requests.get(url, params=params, timeout=30)
+        response.raise_for_status()
+        data = response.json() or []
+    except Exception as e:
+        print(f"  ⚠️ Could not fetch geomagnetic storms: {e}")
+        return []
+
+    events = []
+    for storm in data:
+        start_time = storm.get("startTime")
+        if not start_time:
+            continue
+
+        try:
+            event_start = datetime.strptime(start_time[:16], "%Y-%m-%dT%H:%M")
+        except ValueError:
+            continue
+
+        # kpIndex is a list of measurements — take the max
+        kp_values = [
+            float(m.get("kpIndex", 0))
+            for m in (storm.get("allKpIndex") or [])
+            if m.get("kpIndex") is not None
+        ]
+        kp_index = max(kp_values) if kp_values else None
+
+        events.append({
+            'donki_id': storm.get("gstID", ""),
+            'event_type': 'geomagnetic_storm',
+            'event_start': event_start,
+            'event_end': event_start + timedelta(hours=24),  # storms last ~24 h
+            'intensity': None,
+            'kp_index': kp_index,
+            'data_source': 'NASA DONKI',
+            'created_at': datetime.utcnow()
+        })
+
+    print(f"  🌐 Fetched {len(events)} geomagnetic storm events from DONKI")
+    return events
+
 
 def fetch_solar_events(days: int = 30):
     """
-    Fetch solar events from NOAA Space Weather Prediction Center
-    
+    Fetch solar events (flares + geomagnetic storms) from NASA DONKI API.
+
     Args:
         days: Number of days to look back
     """
-    print(f"☀️ Fetching solar events from last {days} days from NOAA...")
-    
-    # NOAA SWPC provides JSON feeds (free, no API key)
-    solar_flare_url = "https://services.swpc.noaa.gov/json/goes/primary/xrays-7-day.json"
-    
-    try:
-        # Fetch X-ray flux data (solar flares)
-        response = requests.get(solar_flare_url, timeout=30)
-        response.raise_for_status()
-        data = response.json()
-        
-        events = []
-        for record in data[-100:]:  # Last 100 measurements
-            # Parse timestamp
-            time_tag = record.get('time_tag')
-            if not time_tag:
-                continue
-            
-            event_time = datetime.strptime(time_tag, "%Y-%m-%dT%H:%M:%SZ")
-            
-            # Check if within requested time range
-            if (datetime.utcnow() - event_time).days > days:
-                continue
-            
-            # Classify flare based on flux
-            flux = float(record.get('flux', 0))
-            if flux >= 1e-4:
-                flare_class = 'X'
-            elif flux >= 1e-5:
-                flare_class = 'M'
-            elif flux >= 1e-6:
-                flare_class = 'C'
-            else:
-                continue  # Skip lower classes
-            
-            event = {
-                'event_type': 'solar_flare',
-                'event_start': event_time,
-                'event_end': event_time + timedelta(minutes=30),  # Approximate duration
-                'intensity': flare_class,
-                'kp_index': None,
-                'data_source': 'NOAA SWPC',
-                'created_at': datetime.utcnow()
-            }
-            events.append(event)
-        
-        print(f"  ✅ Fetched {len(events)} solar flare events")
-        
-        # Insert into database
-        insert_solar_events(events)
-        
-        return len(events)
-        
-    except Exception as e:
-        print(f"  ❌ Error fetching solar event data: {e}")
-        return 0
+    print(f"☀️ Fetching solar events from last {days} days via NASA DONKI API...")
+
+    start_date, end_date = _date_range(days)
+
+    events = fetch_solar_flares(start_date, end_date)
+    events += fetch_geomagnetic_storms(start_date, end_date)
+
+    print(f"  ✅ Total solar events to process: {len(events)}")
+
+    insert_solar_events(events)
+    return len(events)
 
 
 def insert_solar_events(events):
-    """Insert solar events into database, skipping duplicates"""
+    """Insert solar events into database, skipping duplicates.
+
+    Deduplication uses the DONKI event ID when available; falls back to a
+    1-hour time window around event_start + event_type (old behaviour) so
+    any records imported by the previous version are still detected.
+    """
     
     database_url = os.getenv('DATABASE_URL')
     if not database_url:
@@ -99,7 +179,25 @@ def insert_solar_events(events):
     
     with Session(engine) as session:
         for event in events:
-            # Check if event already exists (within 1 hour window)
+            donki_id = event.pop('donki_id', None)
+
+            # Prefer dedup by DONKI ID if the column exists
+            if donki_id:
+                try:
+                    result = session.execute(
+                        text("""
+                            SELECT id FROM solar_events 
+                            WHERE donki_id = :donki_id
+                        """),
+                        {"donki_id": donki_id}
+                    )
+                    if result.fetchone():
+                        skipped += 1
+                        continue
+                except Exception:
+                    pass  # Column may not exist yet; fall through to time window
+
+            # Fallback: dedup by time window
             result = session.execute(
                 text("""
                     SELECT id FROM solar_events 
@@ -118,18 +216,32 @@ def insert_solar_events(events):
                 skipped += 1
                 continue
             
-            # Insert new solar event
-            session.execute(
-                text("""
-                    INSERT INTO solar_events 
-                    (event_type, event_start, event_end, intensity, kp_index, 
-                     data_source, created_at)
-                    VALUES 
-                    (:event_type, :event_start, :event_end, :intensity, :kp_index,
-                     :data_source, :created_at)
-                """),
-                event
-            )
+            # Insert new solar event — try with donki_id first, fall back without
+            try:
+                session.execute(
+                    text("""
+                        INSERT INTO solar_events 
+                        (donki_id, event_type, event_start, event_end, intensity, kp_index, 
+                         data_source, created_at)
+                        VALUES 
+                        (:donki_id, :event_type, :event_start, :event_end, :intensity, :kp_index,
+                         :data_source, :created_at)
+                    """),
+                    {**event, 'donki_id': donki_id}
+                )
+            except Exception:
+                # donki_id column doesn't exist yet — insert without it
+                session.execute(
+                    text("""
+                        INSERT INTO solar_events 
+                        (event_type, event_start, event_end, intensity, kp_index, 
+                         data_source, created_at)
+                        VALUES 
+                        (:event_type, :event_start, :event_end, :intensity, :kp_index,
+                         :data_source, :created_at)
+                    """),
+                    event
+                )
             inserted += 1
         
         session.commit()

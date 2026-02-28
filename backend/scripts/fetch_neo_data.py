@@ -18,63 +18,74 @@ from sqlalchemy.orm import Session
 
 def fetch_nasa_neos(days: int = 90):
     """
-    Fetch NEO close approaches from NASA JPL
+    Fetch NEO close approaches from NASA JPL.
+    The API is limited to 7-day windows per request, so we loop through
+    the full requested range in 7-day chunks.
     
     Args:
-        days: Number of days to look ahead
+        days: Total number of days to look ahead (split into 7-day chunks)
     """
-    print(f"☄️ Fetching NEO data for next {days} days from NASA JPL...")
+    print(f"☄️ Fetching NEO data for next {days} days from NASA JPL (7-day chunks)...")
     
     # NASA NeoWs API (no key required for basic queries)
     url = "https://api.nasa.gov/neo/rest/v1/feed"
-    
-    start_date = datetime.utcnow().date()
-    end_date = start_date + timedelta(days=min(days, 7))  # API limits to 7 days per query
-    
-    params = {
-        "start_date": start_date.strftime("%Y-%m-%d"),
-        "end_date": end_date.strftime("%Y-%m-%d"),
-        "api_key": os.getenv('NASA_API_KEY', 'DEMO_KEY')
-    }
-    
-    try:
-        response = requests.get(url, params=params, timeout=30)
-        response.raise_for_status()
-        data = response.json()
-        
-        neos = []
-        for date_str, neo_list in data.get("near_earth_objects", {}).items():
-            for neo in neo_list:
-                close_approach = neo["close_approach_data"][0] if neo.get("close_approach_data") else {}
-                
-                neo_data = {
-                    'neo_id': neo.get('id'),
-                    'name': neo.get('name'),
-                    'approach_date': datetime.strptime(
-                        close_approach.get('close_approach_date', date_str), 
-                        "%Y-%m-%d"
-                    ),
-                    'miss_distance_km': float(close_approach.get('miss_distance', {}).get('kilometers', 0)),
-                    'miss_distance_au': float(close_approach.get('miss_distance', {}).get('astronomical', 0)),
-                    'relative_velocity_kmh': float(close_approach.get('relative_velocity', {}).get('kilometers_per_hour', 0)),
-                    'diameter_min_km': float(neo.get('estimated_diameter', {}).get('kilometers', {}).get('estimated_diameter_min', 0)),
-                    'diameter_max_km': float(neo.get('estimated_diameter', {}).get('kilometers', {}).get('estimated_diameter_max', 0)),
-                    'is_potentially_hazardous': neo.get('is_potentially_hazardous_asteroid', False),
-                    'data_source': 'NASA JPL',
-                    'created_at': datetime.utcnow()
-                }
-                neos.append(neo_data)
-        
-        print(f"  ✅ Fetched {len(neos)} NEO close approaches")
-        
-        # Insert into database
-        insert_neos(neos)
-        
-        return len(neos)
-        
-    except Exception as e:
-        print(f"  ❌ Error fetching NEO data: {e}")
-        return 0
+    api_key = os.getenv('NASA_API_KEY', 'DEMO_KEY')
+
+    chunk_size = 7  # API hard limit
+    all_neos = []
+    chunk_start = datetime.utcnow().date()
+    days_remaining = days
+
+    while days_remaining > 0:
+        chunk_days = min(chunk_size, days_remaining)
+        chunk_end = chunk_start + timedelta(days=chunk_days)
+
+        params = {
+            "start_date": chunk_start.strftime("%Y-%m-%d"),
+            "end_date": chunk_end.strftime("%Y-%m-%d"),
+            "api_key": api_key,
+        }
+
+        try:
+            response = requests.get(url, params=params, timeout=30)
+            response.raise_for_status()
+            data = response.json()
+
+            for date_str, neo_list in data.get("near_earth_objects", {}).items():
+                for neo in neo_list:
+                    close_approach = neo["close_approach_data"][0] if neo.get("close_approach_data") else {}
+
+                    neo_data = {
+                        'neo_id': neo.get('id'),
+                        'name': neo.get('name'),
+                        'approach_date': datetime.strptime(
+                            close_approach.get('close_approach_date', date_str),
+                            "%Y-%m-%d"
+                        ),
+                        'miss_distance_km': float(close_approach.get('miss_distance', {}).get('kilometers', 0)),
+                        'miss_distance_au': float(close_approach.get('miss_distance', {}).get('astronomical', 0)),
+                        'relative_velocity_kmh': float(close_approach.get('relative_velocity', {}).get('kilometers_per_hour', 0)),
+                        'diameter_min_km': float(neo.get('estimated_diameter', {}).get('kilometers', {}).get('estimated_diameter_min', 0)),
+                        'diameter_max_km': float(neo.get('estimated_diameter', {}).get('kilometers', {}).get('estimated_diameter_max', 0)),
+                        'is_potentially_hazardous': neo.get('is_potentially_hazardous_asteroid', False),
+                        'data_source': 'NASA JPL',
+                        'created_at': datetime.utcnow()
+                    }
+                    all_neos.append(neo_data)
+
+        except Exception as e:
+            print(f"  ⚠️ Error fetching chunk {chunk_start} → {chunk_end}: {e}")
+
+        # Advance window (NASA feed is exclusive of end_date, so step by chunk_days)
+        chunk_start = chunk_end
+        days_remaining -= chunk_days
+
+    print(f"  ✅ Fetched {len(all_neos)} NEO close approaches across all chunks")
+
+    # Insert into database
+    insert_neos(all_neos)
+
+    return len(all_neos)
 
 
 def insert_neos(neos):

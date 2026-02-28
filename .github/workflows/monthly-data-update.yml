@@ -1,5 +1,14 @@
 name: Monthly Data Update
 
+# ─────────────────────────────────────────────────────────────────────────────
+# IMPORTANT: GitHub automatically disables scheduled workflows when a
+# repository has had NO activity for 60 days.  If your data has gone stale
+# after a long quiet period, re-enable the workflow from:
+#   https://github.com/reversesingularity/phobetron_web_app/actions
+# Then click "Enable workflow".  You can also trigger a one-off run with
+# the "Run workflow" button on the Actions tab.
+# ─────────────────────────────────────────────────────────────────────────────
+
 on:
   # Run on the 1st of every month at 2 AM UTC
   schedule:
@@ -7,6 +16,15 @@ on:
   
   # Allow manual triggering from GitHub UI
   workflow_dispatch:
+    inputs:
+      days_back:
+        description: 'Days of history to fetch (earthquakes / solar)'
+        required: false
+        default: '30'
+      neo_days_ahead:
+        description: 'Days ahead to fetch for NEO close approaches'
+        required: false
+        default: '90'
 
 jobs:
   update-earthquake-data:
@@ -29,7 +47,9 @@ jobs:
       - name: Fetch USGS Earthquake Data
         env:
           DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
-        run: python backend/scripts/fetch_earthquake_data.py --days=30 --min-magnitude=4.0
+        run: |
+          DAYS=${{ github.event.inputs.days_back || '30' }}
+          python backend/scripts/fetch_earthquake_data.py --days=$DAYS --min-magnitude=4.0
       
       - name: Log completion
         run: echo "✅ Earthquake data updated successfully"
@@ -54,6 +74,7 @@ jobs:
       - name: Fetch Volcanic Activity Data
         env:
           DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
+        # Fetches current + prior year eruptions from Smithsonian GVP
         run: python backend/scripts/fetch_volcanic_data_standalone.py
       
       - name: Log completion
@@ -61,7 +82,7 @@ jobs:
 
   update-neo-data:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     continue-on-error: true
     
     steps:
@@ -79,7 +100,11 @@ jobs:
       - name: Fetch NASA NEO Data
         env:
           DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
-        run: python backend/scripts/fetch_neo_data.py --days=90
+          NASA_API_KEY: ${{ secrets.NASA_API_KEY }}
+        run: |
+          DAYS=${{ github.event.inputs.neo_days_ahead || '90' }}
+          # Loops through the full range in 7-day API chunks
+          python backend/scripts/fetch_neo_data.py --days=$DAYS
       
       - name: Log completion
         run: echo "✅ NEO data updated successfully"
@@ -101,10 +126,14 @@ jobs:
       - name: Install dependencies
         run: pip install requests sqlalchemy psycopg2-binary python-dotenv
       
-      - name: Fetch Solar Event Data
+      - name: Fetch Solar Event Data (NASA DONKI)
         env:
           DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
-        run: python backend/scripts/fetch_solar_events.py --days=30
+          NASA_API_KEY: ${{ secrets.NASA_API_KEY }}
+        run: |
+          DAYS=${{ github.event.inputs.days_back || '30' }}
+          # Uses NASA DONKI flare + geomagnetic storm catalog (not NOAA sensor feed)
+          python backend/scripts/fetch_solar_events.py --days=$DAYS
       
       - name: Log completion
         run: echo "✅ Solar event data updated successfully"
@@ -132,11 +161,10 @@ jobs:
           DATABASE_URL: ${{ secrets.RAILWAY_DATABASE_URL }}
         run: python backend/scripts/recalculate_correlations.py
       
-      - name: Log completion
-        run: echo "✅ ML correlations recalculated successfully"
-      
-      - name: Send completion notification
+      - name: Summary
         run: |
           echo "🎉 Monthly data update completed!"
-          echo "Updated: Earthquakes, Volcanoes, NEOs, Solar Events"
+          echo "Updated: Earthquakes, Volcanoes (GVP), NEOs (NASA, full range), Solar Events (DONKI)"
           echo "Timestamp: $(date -u)"
+          echo ""
+          echo "View this run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
