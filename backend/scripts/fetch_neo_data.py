@@ -56,18 +56,16 @@ def fetch_nasa_neos(days: int = 90):
                     close_approach = neo["close_approach_data"][0] if neo.get("close_approach_data") else {}
 
                     neo_data = {
-                        'neo_id': neo.get('id'),
-                        'name': neo.get('name'),
+                        'object_name': neo.get('name'),
                         'approach_date': datetime.strptime(
                             close_approach.get('close_approach_date', date_str),
                             "%Y-%m-%d"
                         ),
-                        'miss_distance_km': float(close_approach.get('miss_distance', {}).get('kilometers', 0)),
                         'miss_distance_au': float(close_approach.get('miss_distance', {}).get('astronomical', 0)),
-                        'relative_velocity_kmh': float(close_approach.get('relative_velocity', {}).get('kilometers_per_hour', 0)),
-                        'diameter_min_km': float(neo.get('estimated_diameter', {}).get('kilometers', {}).get('estimated_diameter_min', 0)),
-                        'diameter_max_km': float(neo.get('estimated_diameter', {}).get('kilometers', {}).get('estimated_diameter_max', 0)),
-                        'is_potentially_hazardous': neo.get('is_potentially_hazardous_asteroid', False),
+                        'miss_distance_lunar': float(close_approach.get('miss_distance', {}).get('lunar', 0)),
+                        'relative_velocity_km_s': float(close_approach.get('relative_velocity', {}).get('kilometers_per_second', 0)),
+                        'estimated_diameter_m': float(neo.get('estimated_diameter', {}).get('meters', {}).get('estimated_diameter_min', 0)),  # Use min as estimate
+                        'absolute_magnitude': float(neo.get('absolute_magnitude_h', 0)),
                         'data_source': 'NASA JPL',
                         'created_at': datetime.utcnow()
                     }
@@ -108,8 +106,8 @@ def insert_neos(neos):
         for neo in neos:
             # Check if NEO approach already exists
             result = session.execute(
-                text("SELECT id FROM neo_close_approaches WHERE neo_id = :neo_id AND approach_date = :approach_date"),
-                {"neo_id": neo['neo_id'], "approach_date": neo['approach_date']}
+                text("SELECT id FROM neo_close_approaches WHERE object_name = :object_name AND approach_date = :approach_date"),
+                {"object_name": neo['object_name'], "approach_date": neo['approach_date']}
             )
             
             if result.fetchone():
@@ -120,13 +118,13 @@ def insert_neos(neos):
             session.execute(
                 text("""
                     INSERT INTO neo_close_approaches 
-                    (neo_id, name, approach_date, miss_distance_km, miss_distance_au, 
-                     relative_velocity_kmh, diameter_min_km, diameter_max_km, 
-                     is_potentially_hazardous, data_source, created_at)
+                    (object_name, approach_date, miss_distance_au, miss_distance_lunar, 
+                     relative_velocity_km_s, estimated_diameter_m, absolute_magnitude, 
+                     data_source, created_at)
                     VALUES 
-                    (:neo_id, :name, :approach_date, :miss_distance_km, :miss_distance_au,
-                     :relative_velocity_kmh, :diameter_min_km, :diameter_max_km,
-                     :is_potentially_hazardous, :data_source, :created_at)
+                    (:object_name, :approach_date, :miss_distance_au, :miss_distance_lunar,
+                     :relative_velocity_km_s, :estimated_diameter_m, :absolute_magnitude,
+                     :data_source, :created_at)
                 """),
                 neo
             )
