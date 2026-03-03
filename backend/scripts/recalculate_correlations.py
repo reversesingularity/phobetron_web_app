@@ -46,7 +46,7 @@ def recalculate_correlations():
         # Get NEO close approaches (last 90 days)
         neos = session.execute(
             text("""
-                SELECT id, approach_date, miss_distance_au, diameter_max_km 
+                SELECT id, approach_date, miss_distance_au, estimated_diameter_m 
                 FROM neo_close_approaches 
                 WHERE approach_date >= NOW() - INTERVAL '90 days'
                 ORDER BY approach_date DESC
