@@ -11,7 +11,7 @@
 
 ## World's First Integration of Biblical Prophecy Analysis, NASA-Grade Astronomical Tracking, and Seismos Disaster Correlation ML Models
 
-**🚀 Live Demo**: [https://phobetronwebapp-production-d69a.up.railway.app](https://phobetronwebapp-production-d69a.up.railway.app)
+**🚀 Live Demo**: [https://phobetronwebapp-production-d69a.up.railway.app](https://phobetronwebapp-production-d69a.up.railway.app) (Last updated: March 3, 2026)
 
 ---
 
