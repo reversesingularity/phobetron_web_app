@@ -18,6 +18,7 @@ import requests
 import sys
 import os
 import argparse
+import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -75,6 +76,7 @@ def fetch_solar_flares(start_date: str, end_date: str) -> list:
         flare_class = class_type[0].upper() if class_type else "C"
 
         events.append({
+            'id': str(uuid.uuid4()),
             'donki_id': flare.get("flrID", ""),
             'event_type': 'solar_flare',
             'event_start': event_start,
@@ -122,6 +124,7 @@ def fetch_geomagnetic_storms(start_date: str, end_date: str) -> list:
         kp_index = max(kp_values) if kp_values else None
 
         events.append({
+            'id': str(uuid.uuid4()),
             'donki_id': storm.get("gstID", ""),
             'event_type': 'geomagnetic_storm',
             'event_start': event_start,
@@ -233,10 +236,10 @@ def insert_solar_events(events):
                 session.execute(
                     text("""
                         INSERT INTO solar_events 
-                        (donki_id, event_type, event_start, event_end, flare_class, kp_index, 
+                        (id, donki_id, event_type, event_start, event_end, flare_class, kp_index, 
                          data_source, created_at)
                         VALUES 
-                        (:donki_id, :event_type, :event_start, :event_end, :flare_class, :kp_index,
+                        (:id, :donki_id, :event_type, :event_start, :event_end, :flare_class, :kp_index,
                          :data_source, :created_at)
                     """),
                     {**event, 'donki_id': donki_id}
@@ -245,10 +248,10 @@ def insert_solar_events(events):
                 session.execute(
                     text("""
                         INSERT INTO solar_events 
-                        (event_type, event_start, event_end, flare_class, kp_index, 
+                        (id, event_type, event_start, event_end, flare_class, kp_index, 
                          data_source, created_at)
                         VALUES 
-                        (:event_type, :event_start, :event_end, :flare_class, :kp_index,
+                        (:id, :event_type, :event_start, :event_end, :flare_class, :kp_index,
                          :data_source, :created_at)
                     """),
                     event
