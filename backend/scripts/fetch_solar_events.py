@@ -72,14 +72,14 @@ def fetch_solar_flares(start_date: str, end_date: str) -> list:
 
         # classType looks like "M5.0", "X1.2", "C3.4" — store the letter
         class_type = (flare.get("classType") or "C").strip()
-        intensity = class_type[0].upper() if class_type else "C"
+        flare_class = class_type[0].upper() if class_type else "C"
 
         events.append({
             'donki_id': flare.get("flrID", ""),
             'event_type': 'solar_flare',
             'event_start': event_start,
             'event_end': event_end,
-            'intensity': intensity,
+            'flare_class': flare_class,
             'kp_index': None,
             'data_source': 'NASA DONKI',
             'created_at': datetime.utcnow()
@@ -126,7 +126,7 @@ def fetch_geomagnetic_storms(start_date: str, end_date: str) -> list:
             'event_type': 'geomagnetic_storm',
             'event_start': event_start,
             'event_end': event_start + timedelta(hours=24),  # storms last ~24 h
-            'intensity': None,
+            'flare_class': None,
             'kp_index': kp_index,
             'data_source': 'NASA DONKI',
             'created_at': datetime.utcnow()
@@ -156,105 +156,107 @@ def fetch_solar_events(days: int = 30):
     return len(events)
 
 
-def _has_donki_id_column(session) -> bool:
-    """Return True if the solar_events table has a donki_id column."""
-    result = session.execute(
-        text("""
-            SELECT 1
-            FROM information_schema.columns
-            WHERE table_name = 'solar_events'
-              AND column_name = 'donki_id'
-        """)
-    )
-    return result.fetchone() is not None
+def _has_donki_id_column(session):
+    """Check if the solar_events table has a donki_id column."""
+    try:
+        result = session.execute(text("""
+            SELECT column_name 
+            FROM information_schema.columns 
+            WHERE table_name = 'solar_events' AND column_name = 'donki_id'
+        """))
+        return result.fetchone() is not None
+    except Exception:
+        return False
 
 
 def insert_solar_events(events):
     """Insert solar events into database, skipping duplicates.
 
-    Checks ONCE whether the donki_id column exists before looping.
-    This avoids the PostgreSQL "InFailedSqlTransaction" cascade that
-    occurs when an exception inside the loop aborts the transaction and
-    all subsequent statements are ignored.
+    Deduplication uses the DONKI event ID when available; falls back to a
+    1-hour time window around event_start + event_type (old behaviour) so
+    any records imported by the previous version are still detected.
     """
-
+    
     database_url = os.getenv('DATABASE_URL')
     if not database_url:
         print("  ❌ DATABASE_URL not set")
         return
-
+    
     if database_url.startswith('postgres://'):
         database_url = database_url.replace('postgres://', 'postgresql://', 1)
-
+    
     engine = create_engine(database_url)
-
+    
     inserted = 0
     skipped = 0
-
+    
     with Session(engine) as session:
-        # Detect schema capability once — outside the event loop
-        has_donki_col = _has_donki_id_column(session)
-
+        has_donki_id = _has_donki_id_column(session)
+        
         for event in events:
             donki_id = event.pop('donki_id', None)
 
-            # --- Deduplication ---
-            if has_donki_col and donki_id:
-                result = session.execute(
-                    text("SELECT id FROM solar_events WHERE donki_id = :did"),
-                    {"did": donki_id}
-                )
-                if result.fetchone():
-                    skipped += 1
-                    continue
-            else:
-                # Time-window dedup (±1 hour) — same as the old NOAA approach
+            # Prefer dedup by DONKI ID if the column exists
+            if has_donki_id and donki_id:
                 result = session.execute(
                     text("""
-                        SELECT id FROM solar_events
-                        WHERE event_type  = :event_type
-                          AND event_start >= :start_w
-                          AND event_start <= :end_w
+                        SELECT id FROM solar_events 
+                        WHERE donki_id = :donki_id
                     """),
-                    {
-                        "event_type": event['event_type'],
-                        "start_w": event['event_start'] - timedelta(hours=1),
-                        "end_w":   event['event_start'] + timedelta(hours=1),
-                    }
+                    {"donki_id": donki_id}
                 )
                 if result.fetchone():
                     skipped += 1
                     continue
 
-            # --- Insert (no try/except so the transaction stays clean) ---
-            if has_donki_col:
+            # Fallback: dedup by time window
+            result = session.execute(
+                text("""
+                    SELECT id FROM solar_events 
+                    WHERE event_type = :event_type 
+                    AND event_start >= :start_window 
+                    AND event_start <= :end_window
+                """),
+                {
+                    "event_type": event['event_type'],
+                    "start_window": event['event_start'] - timedelta(hours=1),
+                    "end_window": event['event_start'] + timedelta(hours=1)
+                }
+            )
+            
+            if result.fetchone():
+                skipped += 1
+                continue
+            
+            # Insert new solar event
+            if has_donki_id:
                 session.execute(
                     text("""
-                        INSERT INTO solar_events
-                            (donki_id, event_type, event_start, event_end,
-                             intensity, kp_index, data_source, created_at)
-                        VALUES
-                            (:donki_id, :event_type, :event_start, :event_end,
-                             :intensity, :kp_index, :data_source, :created_at)
+                        INSERT INTO solar_events 
+                        (donki_id, event_type, event_start, event_end, flare_class, kp_index, 
+                         data_source, created_at)
+                        VALUES 
+                        (:donki_id, :event_type, :event_start, :event_end, :flare_class, :kp_index,
+                         :data_source, :created_at)
                     """),
                     {**event, 'donki_id': donki_id}
                 )
             else:
                 session.execute(
                     text("""
-                        INSERT INTO solar_events
-                            (event_type, event_start, event_end,
-                             intensity, kp_index, data_source, created_at)
-                        VALUES
-                            (:event_type, :event_start, :event_end,
-                             :intensity, :kp_index, :data_source, :created_at)
+                        INSERT INTO solar_events 
+                        (event_type, event_start, event_end, flare_class, kp_index, 
+                         data_source, created_at)
+                        VALUES 
+                        (:event_type, :event_start, :event_end, :flare_class, :kp_index,
+                         :data_source, :created_at)
                     """),
                     event
                 )
             inserted += 1
-
+        
         session.commit()
-
+    
     print(f"  📊 Inserted: {inserted} | Skipped (duplicates): {skipped}")
 
 
