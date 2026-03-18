@@ -6,6 +6,7 @@ Fetches recent earthquake data and updates production database
 import requests
 import sys
 import os
+import uuid
 import argparse
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -53,6 +54,7 @@ def fetch_usgs_earthquakes(days: int = 30, min_magnitude: float = 4.0):
             coords = feature["geometry"]["coordinates"]
             
             earthquake = {
+                'id': str(uuid.uuid4()),
                 'event_id': feature["id"],
                 'event_time': datetime.fromtimestamp(props["time"] / 1000),
                 'magnitude': props.get("mag"),
@@ -110,11 +112,11 @@ def insert_earthquakes(earthquakes):
             # Insert new earthquake
             session.execute(
                 text("""
-                    INSERT INTO earthquakes 
-                    (event_id, event_time, magnitude, magnitude_type, latitude, longitude, 
+                    INSERT INTO earthquakes
+                    (id, event_id, event_time, magnitude, magnitude_type, latitude, longitude,
                      depth_km, region, data_source, created_at)
-                    VALUES 
-                    (:event_id, :event_time, :magnitude, :magnitude_type, :latitude, :longitude,
+                    VALUES
+                    (:id, :event_id, :event_time, :magnitude, :magnitude_type, :latitude, :longitude,
                      :depth_km, :region, :data_source, :created_at)
                 """),
                 eq

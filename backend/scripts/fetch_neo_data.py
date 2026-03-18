@@ -6,6 +6,7 @@ Fetches Near-Earth Object close approach data
 import requests
 import sys
 import os
+import uuid
 import argparse
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -29,7 +30,7 @@ def fetch_nasa_neos(days: int = 90):
     
     # NASA NeoWs API (no key required for basic queries)
     url = "https://api.nasa.gov/neo/rest/v1/feed"
-    api_key = os.getenv('NASA_API_KEY', 'DEMO_KEY')
+    api_key = os.getenv('NASA_API_KEY') or 'DEMO_KEY'
 
     chunk_size = 7  # API hard limit
     all_neos = []
@@ -56,6 +57,7 @@ def fetch_nasa_neos(days: int = 90):
                     close_approach = neo["close_approach_data"][0] if neo.get("close_approach_data") else {}
 
                     neo_data = {
+                        'id': str(uuid.uuid4()),
                         'object_name': neo.get('name'),
                         'approach_date': datetime.strptime(
                             close_approach.get('close_approach_date', date_str),
@@ -117,12 +119,12 @@ def insert_neos(neos):
             # Insert new NEO
             session.execute(
                 text("""
-                    INSERT INTO neo_close_approaches 
-                    (object_name, approach_date, miss_distance_au, miss_distance_lunar, 
-                     relative_velocity_km_s, estimated_diameter_m, absolute_magnitude, 
+                    INSERT INTO neo_close_approaches
+                    (id, object_name, approach_date, miss_distance_au, miss_distance_lunar,
+                     relative_velocity_km_s, estimated_diameter_m, absolute_magnitude,
                      data_source, created_at)
-                    VALUES 
-                    (:object_name, :approach_date, :miss_distance_au, :miss_distance_lunar,
+                    VALUES
+                    (:id, :object_name, :approach_date, :miss_distance_au, :miss_distance_lunar,
                      :relative_velocity_km_s, :estimated_diameter_m, :absolute_magnitude,
                      :data_source, :created_at)
                 """),
