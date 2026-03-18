@@ -18,6 +18,8 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 
 GVP_API_BASE = "https://webservices.volcano.si.edu/geoserver/GVP-VOTW/ows"
+# Layer was renamed — old: Smithsonian_VOTW_Eruption_Results (removed)
+GVP_ERUPTIONS_LAYER = "GVP-VOTW:E3WebApp_Eruptions1960"
 
 
 def fetch_recent_eruptions(year: int = None) -> list:
@@ -30,17 +32,15 @@ def fetch_recent_eruptions(year: int = None) -> list:
 
     print(f"🌋 Fetching GVP eruption events for {year} from Smithsonian GVP...")
 
-    # Fetch all recent eruptions without a server-side CQL filter — the filter
-    # was causing a WFS XML exception on the GeoServer endpoint.  We apply the
-    # year constraint client-side instead.  maxFeatures=1000 covers several
-    # decades of confirmed eruptions without hitting memory limits.
+    # The CQL_FILTER parameter causes a WFS ServiceException on this GeoServer.
+    # Fetch all features and filter by year client-side instead.
     params = {
         'service': 'WFS',
         'version': '1.0.0',
         'request': 'GetFeature',
-        'typeName': 'GVP-VOTW:Smithsonian_VOTW_Eruption_Results',
+        'typeName': GVP_ERUPTIONS_LAYER,
         'outputFormat': 'application/json',
-        'maxFeatures': 1000,
+        'maxFeatures': 2000,
     }
 
     try:
@@ -62,11 +62,9 @@ def fetch_recent_eruptions(year: int = None) -> list:
     eruptions = []
     for feature in data.get('features', []):
         props = feature.get('properties', {})
-        geom = feature.get('geometry') or {}
-        coords = geom.get('coordinates', [0.0, 0.0])
 
-        # Parse eruption start date and filter to target year client-side
-        start_year = props.get('StartYear')
+        # E3WebApp_Eruptions1960 field names differ from the old layer
+        start_year = props.get('StartDateYear')
         try:
             start_year_int = int(start_year)
         except (TypeError, ValueError):
@@ -74,23 +72,23 @@ def fetch_recent_eruptions(year: int = None) -> list:
         if start_year_int != year:
             continue
 
-        start_month = props.get('StartMonth') or 1
-        start_day = props.get('StartDay') or 1
+        start_month = props.get('StartDateMonth') or 1
+        start_day = props.get('StartDateDay') or 1
         try:
             eruption_start = datetime(start_year_int, int(start_month), int(start_day))
         except (TypeError, ValueError):
             eruption_start = datetime(year, 1, 1)
 
-        # Parse eruption end date (may be unknown/ongoing)
-        end_year = props.get('EndYear')
-        end_month = props.get('EndMonth') or 12
-        end_day = props.get('EndDay') or 31
+        # Parse eruption end date (may be ongoing)
+        end_year = props.get('EndDateYear')
+        end_month = props.get('EndDateMonth') or 12
+        end_day = props.get('EndDateDay') or 28
         try:
             eruption_end = datetime(int(end_year), int(end_month), min(int(end_day), 28))
         except (TypeError, ValueError):
             eruption_end = eruption_start
 
-        vei = props.get('VEI')
+        vei = props.get('ExplosivityIndexMax')
         try:
             vei = int(vei) if vei is not None else None
         except (TypeError, ValueError):
@@ -98,14 +96,14 @@ def fetch_recent_eruptions(year: int = None) -> list:
 
         eruptions.append({
             'id': str(uuid.uuid4()),
-            'volcano_name': props.get('Volcano_Name', 'Unknown'),
-            'country': props.get('Country', 'Unknown'),
+            'volcano_name': props.get('VolcanoName', 'Unknown'),
+            'country': 'Unknown',  # not in this layer
             'vei': vei,
             'eruption_start': eruption_start,
             'eruption_end': eruption_end,
-            'latitude': coords[1] if len(coords) > 1 else 0.0,
-            'longitude': coords[0] if len(coords) > 0 else 0.0,
-            'eruption_type': props.get('EruptionCategory', 'Confirmed'),
+            'latitude': float(props.get('LatitudeDecimal') or 0.0),
+            'longitude': float(props.get('LongitudeDecimal') or 0.0),
+            'eruption_type': 'Confirmed',
             'data_source': 'Smithsonian GVP',
         })
 
