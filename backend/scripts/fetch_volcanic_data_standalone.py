@@ -30,27 +30,29 @@ def fetch_recent_eruptions(year: int = None) -> list:
 
     print(f"🌋 Fetching GVP eruption events for {year} from Smithsonian GVP...")
 
+    # Fetch all recent eruptions without a server-side CQL filter — the filter
+    # was causing a WFS XML exception on the GeoServer endpoint.  We apply the
+    # year constraint client-side instead.  maxFeatures=1000 covers several
+    # decades of confirmed eruptions without hitting memory limits.
     params = {
         'service': 'WFS',
         'version': '1.0.0',
         'request': 'GetFeature',
         'typeName': 'GVP-VOTW:Smithsonian_VOTW_Eruption_Results',
         'outputFormat': 'application/json',
-        'maxFeatures': 500,
-        # CQL filter: StartYear equals target year
-        'CQL_FILTER': f"StartYear={year}",
+        'maxFeatures': 1000,
     }
 
     try:
-        response = requests.get(GVP_API_BASE, params=params, timeout=30)
+        response = requests.get(GVP_API_BASE, params=params, timeout=60)
         response.raise_for_status()
         if not response.content:
-            print(f"  ⚠️ GVP returned empty response for {year}")
+            print(f"  ⚠️ GVP returned empty response")
             return []
         data = response.json()
-    except ValueError as e:
-        # JSON parse failed — log the raw response to help debug
-        raw = response.text[:300] if response.text else "(empty)"
+    except ValueError:
+        # JSON parse failed — server likely returned an XML WFS exception
+        raw = response.text[:500] if response.text else "(empty)"
         print(f"  ❌ GVP returned non-JSON response: {raw}")
         return []
     except Exception as e:
@@ -63,12 +65,19 @@ def fetch_recent_eruptions(year: int = None) -> list:
         geom = feature.get('geometry') or {}
         coords = geom.get('coordinates', [0.0, 0.0])
 
-        # Parse eruption start date
+        # Parse eruption start date and filter to target year client-side
         start_year = props.get('StartYear')
+        try:
+            start_year_int = int(start_year)
+        except (TypeError, ValueError):
+            continue
+        if start_year_int != year:
+            continue
+
         start_month = props.get('StartMonth') or 1
         start_day = props.get('StartDay') or 1
         try:
-            eruption_start = datetime(int(start_year), int(start_month), int(start_day))
+            eruption_start = datetime(start_year_int, int(start_month), int(start_day))
         except (TypeError, ValueError):
             eruption_start = datetime(year, 1, 1)
 
