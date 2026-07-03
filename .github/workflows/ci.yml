@@ -22,7 +22,7 @@ jobs:
         run: python -m compileall -q app
 
       - name: Install backend (hard gate — dependency resolvability)
-        run: uv pip install -e .
+        run: uv pip install -r pyproject.toml
 
       - name: Lint (advisory until baseline is clean)
         continue-on-error: true
