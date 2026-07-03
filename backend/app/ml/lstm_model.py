@@ -22,7 +22,7 @@ except ImportError:
     print("Install with: pip install tensorflow scikit-learn")
 
 
-class EarthquakeL STM:
+class EarthquakeLSTM:
     """
     LSTM Neural Network for Time Series Earthquake Prediction
     

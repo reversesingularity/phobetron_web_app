@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [001-database-schema, main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.11"
+
+      - name: Syntax check (hard gate)
+        run: python -m compileall -q app
+
+      - name: Install backend (hard gate — dependency resolvability)
+        run: uv pip install -r pyproject.toml
+
+      - name: Lint (advisory until baseline is clean)
+        continue-on-error: true
+        run: uvx ruff check app
+
+      - name: Test collection (advisory — full runs need PostgreSQL wiring)
+        continue-on-error: true
+        run: pytest --collect-only -q tests
